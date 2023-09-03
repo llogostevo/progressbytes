@@ -17,7 +17,7 @@ export default async function Questions() {
 
     return (
         <div>
-            <Link href={`/questions/addquestions`}>Add Question</Link>
+            <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/questions/addquestions`}>Add Question</Link>
             <div>
                 <div className="container mx-auto">
                     <h1 className="text-2xl font-bold mb-4">Questions Completed</h1>
@@ -31,6 +31,8 @@ export default async function Questions() {
                                 <th className="w-1/6 px-4 py-2 text-center">Assessed By</th>
                                 <th className="w-1/6 px-4 py-2 text-center">Student</th>
                                 <th className="w-1/6 px-4 py-2 text-center">Topic</th>
+                                <th className="w-1/6 px-4 py-2 text-center">Percent</th>
+
                             </tr>
                         </thead>
                         <tbody className="text-gray-700">
@@ -43,6 +45,7 @@ export default async function Questions() {
                                     <td className="border px-4 py-2 text-center">{question.assessed_by}</td>
                                     <td className="border px-4 py-2 text-center">{question.studentid}</td>
                                     <td className="border px-4 py-2 text-center">{question.topic_id}</td>
+                                    <td className="border px-4 py-2 text-center">{`${Math.round((question.no_of_marks/question.marks_available)*100)}`}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -21,6 +21,23 @@ export  type UnitTopics = {
       }]
 }
 
+export type Student = {
+    email: string
+    studentid: number
+    username: string
+}
+
+export type TopicWithUnits = {
+  topic_id: number
+  topic_name: string
+  unit_id: number | null
+  units:{
+    unit_id: number | null
+    unit_name: string
+    unit_title: string
+  }
+}
+
 /* 
 ####################################################
 Table Data Types
