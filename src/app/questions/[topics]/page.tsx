@@ -5,10 +5,12 @@ import { createClientComponentClient, createServerComponentClient } from "@supab
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { notFound } from 'next/navigation'
+
 
 export const dynamic = 'force-dynamic'
 
-export default async function Questions() {
+export default async function QuestionTopics({ params }: { params: { topics: string } }) {
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
@@ -18,19 +20,6 @@ export default async function Questions() {
     // check if user is logged in and redirect to page if they are
     if (!user) {
         redirect("/")
-    }
-
-    // CHANGE THIS WITH THE RLS AND POLICIES LATER
-    // check the user role
-    const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('profile_id', user.id)
-
-
-    // if not at the correct role then redirect to the unauthorised page
-    if (!profile) {
-        redirect("/unauthorised")
     }
 
     const { data: questions_completed, error: questionsError } = await supabase
@@ -50,12 +39,16 @@ export default async function Questions() {
       ),
       student_id: profiles (
         profile_id,
-        first_name, 
+        first_name,
         last_name
       )
-      
     `);
 
+    // Created a filter to pull out only the identified types in the db
+
+    //@ts-ignore
+    const filteredTopics = questions_completed?.filter(question => question.topic_id.topic_name === decodeURIComponent(params.topics));
+   
 
     const { data: topics } = await supabase.from('topics').select(`topic_name`)
 
@@ -70,15 +63,17 @@ export default async function Questions() {
                 <div>
                     <div className="flex flex-wrap gap-4"> {/* Added flex-wrap for responsiveness */}
                         <div className="flex items-center">
-                            <button className="px-2 py-1 text-xs bg-secondaryColor hover:bg-nonphotblue text-white rounded">
+                            <button className="px-2 py-1 text-xs bg-primaryColor hover:bg-secondaryColor text-white rounded">
                                 <Link href={`/questions/`}><span>All</span></Link>
                             </button>
                         </div>
                         {topicCategories?.map((topic) => {
                             const truncatedTopic = topic.length > 10 ? topic.substring(0, 10) + "..." : topic; // Truncate topic if it's longer than 20 characters
+                            const buttonColor = topic === decodeURIComponent(params.topics) ? 'bg-secondaryColor' : 'bg-primaryColor';
+
                             return (
                                 <div key={topic} className="flex items-center">
-                                    <button className="px-2 py-1 text-xs bg-primaryColor hover:bg-secondaryColor text-white rounded">
+                                    <button className={`px-2 py-1 text-xs ${buttonColor} hover:bg-secondaryColor text-white rounded`}>
                                         <Link href={`/questions/${topic}`}><span className="truncate max-w-[80px]">{`${truncatedTopic}`}</span></Link>
                                         {/* Added truncate and max-w-[80px] to truncate text */}
                                     </button>
@@ -96,19 +91,19 @@ export default async function Questions() {
                     <h1 className="text-2xl font-bold mb-4">Questions Completed</h1>
                     <div className="overflow-x-auto">
                         <table className="min-w-full bg-white">
-                            <thead className="bg-gray-800 text-center text-white">
+                            <thead className="bg-gray-800 text-white text-center ">
                                 <tr>
-                                    <th className=" w-1/6 px-4 py-2">Student</th>
-                                    <th className=" w-1/6 px-4 py-2">Topic</th>
-                                    <th className=" w-1/6 px-4 py-2">Date Answered</th>
-                                    <th className=" w-1/6 px-4 py-2">Marks Available</th>
-                                    <th className=" w-1/6 px-4 py-2">Number Of Marks</th>
-                                    <th className=" w-1/6 px-4 py-2">Percent</th>
-                                    <th className=" w-1/6 px-4 py-2">Assessed By</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Student</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Topic</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Date Answered</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Marks Available</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Number Of Marks</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Percent</th>
+                                    <th className="  w-1/6 px-4 py-2 bg-gray-800">Assessed By</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-700">
-                                {questions_completed?.map((question, index) => (
+                                {filteredTopics?.map((question, index) => (
                                     <tr key={index}>
                                         {/* @ts-ignore */}
                                         <td className="border px-4 py-2 text-center">{question.student_id.first_name} {question.student_id.last_name}</td>

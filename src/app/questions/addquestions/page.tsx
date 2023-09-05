@@ -27,12 +27,8 @@ export default async function addquestions() {
          .from('profiles')
          .select('*')
          .eq('profile_id', user.id )
-         .eq('role', "Student")
+         .eq('role', "Teacher")
          .single()
-
-         console.log(profileError)
-         
-    console.log(profiles)
      
          // if not at the correct role then redirect to the unauthorised page
      if (!profiles){

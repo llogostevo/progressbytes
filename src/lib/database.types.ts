@@ -27,6 +27,15 @@ export type Student = {
     username: string
 }
 
+export type Profiles = {
+  profile_id: string
+  first_name: string
+  last_name: string
+  role: string
+  organisation: string
+  
+}
+
 export type TopicWithUnits = {
   topic_id: number
   topic_name: string

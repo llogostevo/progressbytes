@@ -1,5 +1,5 @@
 "use client";
-import { Student, TopicWithUnits } from "@/lib/database.types";
+import { Profiles, Student, TopicWithUnits } from "@/lib/database.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { useRouter } from 'next/navigation'
@@ -39,7 +39,7 @@ export default function QuestionForm() {
 
     //  ############## GET DATA FOR DROP DOWNS ################## //
     // State variables for dropdown data
-    const [students, setStudents] = useState<Student[]>([]);
+    const [students, setStudents] = useState<Profiles[]>([]);
     const [topics, setTopics] = useState<TopicWithUnits[]>([]);
 
     // Fetching data for dropdowns
@@ -48,10 +48,11 @@ export default function QuestionForm() {
             const supabase = createClientComponentClient();
 
             // Fetch students
-            const { data: studentsData } = await supabase
-                .from('students')
-                .select('*');
-            setStudents(studentsData as Student[]);
+            const { data: students } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('role', 'Student');
+            setStudents(students as Profiles[]);
 
             // Fetch topics
             const { data: topicsData } = await supabase
@@ -67,7 +68,6 @@ export default function QuestionForm() {
             if (topicsData) {
                 setTopics(topicsData as unknown as TopicWithUnits[]);
             }
-            console.log(topicsData)
         };
 
         fetchDropdownData();
@@ -114,7 +114,7 @@ export default function QuestionForm() {
         //  @ts-ignore
         const assessed_by = event.target.assessedBy.value;
         //  @ts-ignore
-        const studentid = event.target.studentName.value;
+        const student_id = event.target.studentName.value;
         //  @ts-ignore
         const topic_id = event.target.topic.value;
 
@@ -128,7 +128,7 @@ export default function QuestionForm() {
                 // date_entered: default of today,
                 date_answered: date_answered,
                 assessed_by: assessed_by,
-                studentid: studentid,
+                student_id: student_id,
                 topic_id: topic_id
             })
 
@@ -150,6 +150,7 @@ export default function QuestionForm() {
         event.target.studentName.value = "";
         //  @ts-ignore
         event.target.topic.value = "";
+
     }
     //  ############## end handle form submit > ################## //
 
@@ -177,8 +178,8 @@ export default function QuestionForm() {
                             name="studentName"
                         >
                             {students.map((student) => (
-                                <option key={student.studentid} value={student.studentid}>
-                                    {student.username}
+                                <option key={student.profile_id} value={student.profile_id}>
+                                    {student.first_name} {student.last_name}
                                 </option>
                             ))}
                         </select>
