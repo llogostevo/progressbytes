@@ -23,17 +23,17 @@ export default async function addquestions() {
  
     //  THIS ALLOWS YOU TO CHECK ROLE OF USER BEFORE THEY ACCESS THE BELOW!
      // check the user role
-     const { data: profiles, error: profileError } = await supabase
-         .from('profiles')
-         .select('*')
-         .eq('profile_id', user.id )
-         .eq('role', "Teacher")
-         .single()
+    //  const { data: profiles, error: profileError } = await supabase
+    //      .from('profiles')
+    //      .select('*')
+    //      .eq('profile_id', user.id )
+    //      .eq('role', "Teacher")
+    //      .single()
      
          // if not at the correct role then redirect to the unauthorised page
-     if (!profiles){
-         redirect("/unauthorised")
-     }
+    //  if (!profiles){
+    //      redirect("/unauthorised")
+    //  }
 
 
     return (

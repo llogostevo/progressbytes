@@ -47,11 +47,13 @@ export default function QuestionForm() {
         const fetchDropdownData = async () => {
             const supabase = createClientComponentClient();
 
-            // Fetch students
+            // Fetch all students
             const { data: students } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('role', 'Student');
+
+            
             setStudents(students as Profiles[]);
 
             // Fetch topics
