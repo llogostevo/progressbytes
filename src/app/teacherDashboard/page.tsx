@@ -53,7 +53,9 @@ export default async function TeacherDashboard() {
                 *,
                 questiontable (
                 *,
-                answertable (*)
+                answertable (*, 
+                studenttable (*)
+                    )
                 )
             )
             )
@@ -61,7 +63,7 @@ export default async function TeacherDashboard() {
         `);
     if (topicError) {
         console.error('Error:', topicError);
-    } 
+    }
 
     // Calculations for the topic data
     // Initialize an empty array for processed topics
@@ -75,6 +77,10 @@ export default async function TeacherDashboard() {
 
                 let totalMarksForTopic = 0; // Total available marks for the topic
                 let totalMarksAchieved = 0; // Total marks achieved for the topic
+                let numberOfStudents = 0;   // Initialize here
+
+                // Use a Set to store unique student IDs
+                const studentIds = new Set();
 
                 // For each topic, loop through its subtopics
                 topic.subtopictable.forEach((subtopic: any) => {
@@ -89,8 +95,13 @@ export default async function TeacherDashboard() {
                         if (question.answertable && Array.isArray(question.answertable)) {
                             question.answertable.forEach((answer: any) => {
                                 totalMarksAchieved += answer.mark;
+                                // Add student ID to the set
+                                if (answer.studenttable && answer.studenttable.studentid) {
+                                    studentIds.add(answer.studenttable.studentid);
+                                }
                             });
                         }
+                        numberOfStudents = studentIds.size;
                     });
                 });
 
@@ -105,6 +116,7 @@ export default async function TeacherDashboard() {
                     performance: Math.round(percentageAchieved),
                     totalMarksAchieved: totalMarksAchieved,
                     totalMarks: totalMarksForTopic,
+                    numberOfStudents: numberOfStudents,
                 });
             });
 
@@ -145,6 +157,7 @@ export default async function TeacherDashboard() {
                             topicName={topic.topic_name}
                             totalMarksAchieved={topic.totalMarksAchieved}
                             totalMarks={topic.totalMarks}
+                            numberOfStudents={topic.numberOfStudents}
                             unitNumber={topic.unit_number}
                         />
                     ))}
@@ -157,6 +170,7 @@ export default async function TeacherDashboard() {
                             key={topic.topic_name}
                             topicName={topic.topic_name}
                             totalMarksAchieved={topic.totalMarksAchieved}
+                            numberOfStudents={topic.numberOfStudents}
                             totalMarks={topic.totalMarks}
                             unitNumber={topic.unit_number}
                         />
