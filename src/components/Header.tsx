@@ -22,8 +22,8 @@ export default async function Header() {
           {user ? (
             <>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">MyByte</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteMark</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/teacherDashboard">ByteTrack</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytemark">ByteMark</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytetrack/teacherdashboard">ByteTrack</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteNow</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/blog">BlogBytes</Link>
             </>

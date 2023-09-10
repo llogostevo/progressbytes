@@ -1,5 +1,6 @@
 
 'use client'
+import Link from 'next/link';
 import { useState } from 'react';
 
 type TopicCardProps = {
@@ -51,6 +52,8 @@ export default function TopicCard({
   return (
 
     // <div className="bg-white shadow-md p-6 rounded-lg max-w-xs m-2 transition-transform transform hover:scale-105">
+    <div>
+      <Link href={`./teacherdashboard/${topicName}`}>
     <div
       className="bg-white shadow-md p-6 rounded-lg max-w-xs m-2 transition-transform transform hover:scale-105 hover:bg-gray-100 cursor-pointer"
       onMouseEnter={() => setTooltipVisible(true)} // use state to control tooltip visibility
@@ -87,6 +90,8 @@ export default function TopicCard({
           {topicName} {unitNumber}
         </div>
       )}
+    </div>
+    </Link>
     </div>
 
   );

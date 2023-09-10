@@ -1,9 +1,9 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import TopicCard from "./TopicCard";
+import TopicCard from "../TopicCard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function TeacherDashboard() {
+export default async function StudentDashboard() {
     // check logged in as teacher
     // get assessment data
     // graphs for each topic
