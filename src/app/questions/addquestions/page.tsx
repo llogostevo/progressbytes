@@ -1,10 +1,8 @@
 import QuestionForm from "@/components/QuestionForm"
-import { usersCheck } from "@/lib/users";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
 
 
 export const dynamic = 'force-dynamic'

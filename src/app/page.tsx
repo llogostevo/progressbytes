@@ -14,7 +14,11 @@ export const dynamic = 'force-dynamic'
 
 export default async function Home() {
 
-  const user = await usersCheck();
+  const supabase = createServerComponentClient({ cookies })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   return (
     <main>

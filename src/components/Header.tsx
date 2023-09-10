@@ -23,7 +23,7 @@ export default async function Header() {
             <>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">MyByte</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteMark</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteTrack</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/teacherDashboard">ByteTrack</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteNow</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/blog">BlogBytes</Link>
             </>
@@ -54,8 +54,8 @@ export default async function Header() {
         <div>
           {user ? (
             <div className="flex items-center gap-4">
-            <span className="hidden sm:block truncate w-32">{user.email}</span>
-            <span className="block sm:hidden truncate w-20">{user.email}</span> {/* This will show truncated email on very small screens */}
+            <span className="hidden sm:block truncate w-32"><Link href="/update-profile">{user.email}</Link></span>
+            <span className="block sm:hidden truncate w-20"><Link href="/update-profile">{user.email}</Link></span> {/* This will show truncated email on very small screens */}
             <LogoutButton />
           </div>
           

@@ -1,7 +1,4 @@
-import StreakTracker from "@/components/StreakTracker";
-import { allUnitTopics } from "@/lib/database.queries";
-import { UnitTopics } from "@/lib/database.types";
-import { createClientComponentClient, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
