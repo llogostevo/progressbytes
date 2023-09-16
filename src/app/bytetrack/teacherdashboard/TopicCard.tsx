@@ -1,3 +1,8 @@
+/*
+This is the topic card
+this has pulls in the topic name, unit, total marks etc to calculate the detail for the topic
+This Works
+*/
 
 'use client'
 import Link from 'next/link';

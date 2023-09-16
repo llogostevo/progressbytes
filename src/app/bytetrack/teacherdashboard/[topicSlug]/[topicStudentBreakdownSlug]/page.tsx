@@ -1,9 +1,10 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import TopicCard from "../TopicCard";
+import TopicCardStudentBreakDown from "TopicStudentBreakdown.tsx";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+export const dynamic = 'force-dynamic'
 
-export default async function TeacherSubTopicData() {
+export default async function DynamicSubTopicData({ params }: { params: { topicStudentBreakdownSlug: string } }) {
     // check logged in as teacher
     // get assessment data
     // graphs for each topic
@@ -54,12 +55,21 @@ export default async function TeacherSubTopicData() {
         console.error('Error:', topicError);
     }
 
+    const topicStudentBreakdownSlug = decodeURIComponent(params.topicStudentBreakdownSlug)
+   
+    console.log("params:")
+    console.log(topicStudentBreakdownSlug)
+
     // Calculations for the topic data
     // Initialize an empty array for processed topics
     const processedSubtopics: any[] = [];
     if (topicData && topicData.length > 0) {
         topicData.forEach(unit => {
             unit.topictable.forEach((topic: any) => {
+                console.log("topictitle:")
+                console.log(topic.topictitle)
+                if (topic.topictitle == topicStudentBreakdownSlug) {
+
                 topic.subtopictable.forEach((subtopic: any) => {
                     let totalMarksForSubtopic = 0;
                     let totalMarksAchieved = 0;
@@ -90,6 +100,7 @@ export default async function TeacherSubTopicData() {
                         numberOfStudents: studentIds.size,
                     });
                 });
+            }
             });
         });
 

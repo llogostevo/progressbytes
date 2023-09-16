@@ -1,7 +1,8 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import TopicCard from "../../TopicCard";
+import TopicCard from "../TopicCard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import SubTopicCard from "./SubTopicCard";
 export const dynamic = 'force-dynamic'
 
 export default async function DynamicSubTopicData({ params }: { params: { topicSlug: string } }) {
@@ -136,9 +137,9 @@ export default async function DynamicSubTopicData({ params }: { params: { topicS
                 {/* ... */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {processedSubtopics.filter(t => t.unit_number === 'Unit 1').map(subtopic => (
-                    <TopicCard
+                    <SubTopicCard
                         key={subtopic.subtopic_name}   // Updated to subtopic_name
-                        topicName={subtopic.subtopic_name}   // Updated to subtopic_name
+                        subTopicName={subtopic.subtopic_name}   // Updated to subtopic_name
                         totalMarksAchieved={subtopic.totalMarksAchieved}
                         totalMarks={subtopic.totalMarks}
                         numberOfStudents={subtopic.numberOfStudents}
@@ -151,9 +152,9 @@ export default async function DynamicSubTopicData({ params }: { params: { topicS
                 {/* ... */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {processedSubtopics.filter(t => t.unit_number === 'Unit 2').map(subtopic => (
-                    <TopicCard
+                    <SubTopicCard
                         key={subtopic.subtopic_name}   // Updated to subtopic_name
-                        topicName={subtopic.subtopic_name}   // Updated to subtopic_name
+                        subTopicName={subtopic.subtopic_name}   // Updated to subtopic_name
                         totalMarksAchieved={subtopic.totalMarksAchieved}
                         totalMarks={subtopic.totalMarks}
                         numberOfStudents={subtopic.numberOfStudents}

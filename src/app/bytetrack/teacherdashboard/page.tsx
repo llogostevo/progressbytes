@@ -1,8 +1,9 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import TopicCard from "../TopicCard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+
+import TopicCardStudentBreakDown from "./[topicSlug]/[topicStudentBreakdownSlug]/TopicStudentBreakDown.tsx";
 
 export default async function TeacherDashboard() {
     // check logged in as teacher
@@ -102,7 +103,7 @@ export default async function TeacherDashboard() {
                 // Push the processed topic to the array
                 processedTopics.push({
                     unit_number: unit.unitnumber,
-                    topic_name: topic.topictitle,
+                    sub_topic_name: topic.subtopictitle,
                     performance: Math.round(percentageAchieved),
                     totalMarksAchieved: totalMarksAchieved,
                     totalMarks: totalMarksForTopic,
@@ -143,9 +144,9 @@ export default async function TeacherDashboard() {
                 <h2 className="text-4xl font-bold mt-10 mb-4">Unit 1</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {processedTopics.filter(t => t.unit_number === 'Unit 1').map((topic) => (
-                        <TopicCard
+                        <TopicCardStudentBreakDown
                             key={topic.topic_name}
-                            topicName={topic.topic_name}
+                            subTopicName={topic.topic_name}
                             totalMarksAchieved={topic.totalMarksAchieved}
                             totalMarks={topic.totalMarks}
                             numberOfStudents={topic.numberOfStudents}
@@ -157,7 +158,7 @@ export default async function TeacherDashboard() {
                 <h2 className="text-4xl font-bold mb-4 mt-10">Unit 2</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {processedTopics.filter(t => t.unit_number === 'Unit 2').map((topic) => (
-                        <TopicCard
+                        <TopicCardStudentBreakDown
                             key={topic.topic_name}
                             topicName={topic.topic_name}
                             totalMarksAchieved={topic.totalMarksAchieved}
