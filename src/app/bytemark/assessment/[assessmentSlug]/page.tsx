@@ -136,10 +136,6 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
             )
         `).eq('assessmentid', decodedSlug)
 
-
-    if (assessmentData) {
-        console.log(assessmentData[0])
-    }
     if (assessmentDataError) {
         console.log(assessmentDataError)
     }
