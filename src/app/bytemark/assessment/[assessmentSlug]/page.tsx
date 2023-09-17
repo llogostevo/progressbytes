@@ -217,10 +217,25 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                         : question.questionsubtopictable[0].subtopictable.subtopictitle
                                 }
                             </td>
+                            {/* use percentages to calculate the colours */}
                             {studentsArray.map(student => {
                                 const studentAnswer = question.answertable.find(ans => ans.studenttable.studentid === student.id);
-                                return <td key={student.id} title={studentAnswer ? String(Math.round((studentAnswer.mark / question.noofmarks) * 100))+'%' : '-'}
-                                className="border px-2 py-1 text-center">{studentAnswer ? studentAnswer.mark : '-'}</td>;
+                                const percentage = studentAnswer ? Math.round((studentAnswer.mark / question.noofmarks) * 100) : 0;
+                                const bgColor = percentage >= 90 ? 'bg-green-700' :
+                                    percentage >= 75 ? 'bg-green-500' :
+                                        percentage >= 65 ? 'bg-green-200' :
+                                            percentage >= 55 ? 'bg-yellow-400' :
+                                                percentage >= 45 ? 'bg-orange-300' :
+                                                    percentage < 45 && percentage >= 35 ? 'bg-orange-500' :
+                                                        'bg-red-500';
+                                return (
+                                    <td
+                                        key={student.id}
+                                        title={`${percentage}%`}
+                                        className={`border px-2 py-1 text-center ${bgColor}`}>
+                                        {studentAnswer ? studentAnswer.mark : '-'}
+                                    </td>
+                                );
                             })}
                         </tr>
                     ))}

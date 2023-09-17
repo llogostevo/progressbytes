@@ -28,6 +28,9 @@ const config: Config = {
         },
         mutedText: {
           DEFAULT: '#2C3E50',
+        }, 
+        fluroGreen: {
+          DEFAULT: '#35cc35',
         }
       },
     },
