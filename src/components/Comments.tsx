@@ -13,7 +13,7 @@ export default function Comments({ blogId }: { blogId: number }) {
 
   useEffect(() => {
     if (!blogId) return;  // Early exit if no blogId
-
+    console.log(blogId)
     const getComments = async () => {
       // This assumes you have a `todos` table in Supabase. Check out
       // the `Create Table and seed with data` section of the README 👇

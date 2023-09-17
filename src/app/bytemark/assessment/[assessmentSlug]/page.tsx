@@ -1,6 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
 /*
 
 amins data update
@@ -74,6 +75,7 @@ function extractInitials(name: string): string {
 export const dynamic = 'force-dynamic'
 
 export default async function AddAssessmentQuestions({ params }: { params: { assessmentSlug: string } }) {
+
 
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
@@ -192,6 +194,8 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                         {studentsArray.map(student => (
                             <th key={student.id} className="w-1/15 truncate px-2 py-1" title={student.name}>{extractInitials(student.name)}</th>
                         ))}
+                        <th className="w-1/30 truncate px-2 py-1">Edit</th>
+
                     </tr>
                 </thead>
                 <tbody className="text-gray-700">
@@ -214,6 +218,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                         : question.questionsubtopictable[0].subtopictable.subtopictitle
                                 }
                             </td>
+                        
                             {/* use percentages to calculate the colours */}
                             {studentsArray.map(student => {
                                 const studentAnswer = question.answertable.find(ans => ans.studenttable.studentid === student.id);
@@ -234,6 +239,9 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                     </td>
                                 );
                             })}
+                            <td title="Edit Question" className="border px-2 py-1 font-bold text-center hover:cursor-pointer hover:bg-primaryColor bg-white">
+                            <Link href={`${assessment.assessmentid}/assessmentquestion/${question.questionid}`}>📝</Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -244,6 +252,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                         {studentsArray.map(student => (
                             <td key={student.id} className="border px-2 py-1 text-center">{studentTotalMarks[student.id]}</td>
                         ))}
+                        <td title="Add new question" className="border px-2 py-1 font-bold text-center hover:cursor-pointer text-xl text-mutedText hover:text-primaryColor  bg-white">+</td>
                     </tr>
                     <tr>
                         <td className="border px-2 py-1 text-right font-bold" colSpan={5}>Max Possible Marks</td>
