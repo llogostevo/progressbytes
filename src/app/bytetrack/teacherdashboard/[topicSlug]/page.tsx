@@ -56,9 +56,7 @@ export default async function DynamicSubTopicData({ params }: { params: { topicS
     }
 
     const decodedTopicSlug = decodeURIComponent(params.topicSlug)
-   
-    console.log("params:")
-    console.log(decodedTopicSlug)
+
 
     // Calculations for the topic data
     // Initialize an empty array for processed topics

@@ -3,9 +3,13 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import React, { useState, useEffect } from 'react';
 
 
 export default async function ByteMark() {
+    // const [orderBy, setOrderBy] = useState('assessmentdate');  // Initial state for ordering by date
+
+
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
@@ -113,7 +117,7 @@ export default async function ByteMark() {
                             </h2>
                             <p className="text-sm">{formatDateToCustom(assessment.assessmentdate)}</p>
 
-                            <Link href={`./bytemark/${assessment.assessmentid}`} className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">Edit Assessment</Link>
+                            <Link href={`./bytemark/assessment/${assessment.assessmentid}`} className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">Edit Assessment</Link>
                         </div>
                     ))}
                 </div>
