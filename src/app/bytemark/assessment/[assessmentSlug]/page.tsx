@@ -160,6 +160,8 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
     });
 
     const studentsArray = Array.from(uniqueStudentsMap.values());
+    // Sort studentsArray by last name
+    studentsArray.sort((a, b) => a.name.split(" ")[1].localeCompare(b.name.split(" ")[1]));
 
     // Calculate Max Possible Marks
     const maxMarks = assessment.questiontable.reduce((acc, question) => acc + question.noofmarks, 0);
@@ -177,10 +179,9 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
     // Calculate Percentage for each student
     const studentPercentages: Record<number, string> = {};
     for (let id in studentTotalMarks) {
+        // @ts-ignore
         studentPercentages[id] = `${((studentTotalMarks[id] / maxMarks) * 100).toFixed(2)}%`;
     }
-
-
     return (
         <div className="container mx-auto overflow-x-auto">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
@@ -231,7 +232,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                 return (
                                     <td
                                         key={student.id}
-                                        title={`${percentage}%`}
+                                        title={`${percentage}% - ${question.questionsubtopictable[0].subtopictable.subtopictitle}`}
                                         className={`border px-2 py-1 text-center ${bgColor}`}>
                                         {studentAnswer ? studentAnswer.mark : '-'}
                                     </td>
