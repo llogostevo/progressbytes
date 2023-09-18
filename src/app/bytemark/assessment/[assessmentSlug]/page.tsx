@@ -182,22 +182,29 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
     }
     return (
         <div className="container mx-auto overflow-x-auto">
-            <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
-            <table className="min-w-full bg-white text-sm">
-                <thead className="bg-gray-800 text-center text-white">
-                    <tr>
-                        <th className="w-1/15 px-2 py-1">Order</th>
-                        <th className="w-1/15 px-2 py-1">Label</th>
-                        <th className="w-1/15 px-2 py-1">Max Mark</th>
-                        <th className="w-1/30 truncate px-2 py-1">Topic</th>
-                        <th className="w-1/30 truncate px-2 py-1">Subtopic</th>
-                        {studentsArray.map(student => (
-                            <th key={student.id} className="w-1/15 truncate px-2 py-1" title={student.name}>{extractInitials(student.name)}</th>
-                        ))}
-                        <th className="w-1/30 truncate px-2 py-1">Edit</th>
-
-                    </tr>
-                </thead>
+        <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
+        <table className="min-w-full bg-white text-sm">
+            <thead className="text-center text-white">
+                {/* Add a row for main headings */}
+                <tr className="bg-gray-800">
+                    <th className="w-1/5 px-2 py-1" colSpan={5}>Question Details</th>
+                    <th className="w-3/5 px-2 py-1" colSpan={studentsArray.length}>Students</th>
+                    <th className="w-1/30 truncate px-2 py-1">Add/Edit</th>
+                </tr>
+                <tr className="bg-gray-700">
+                    <th className="w-1/15 px-2 py-1">Order</th>
+                    <th className="w-1/15 px-2 py-1">Label</th>
+                    <th className="w-1/15 px-2 py-1">Max Mark</th>
+                    <th className="w-1/30 truncate px-2 py-1">Topic</th>
+                    <th className="w-1/30 truncate px-2 py-1">Subtopic</th>
+                    {studentsArray.map(student => (
+                        <th key={student.id} className="w-1/15 truncate px-2 py-1" title={student.name}>{extractInitials(student.name)}</th>
+                    ))}
+                    <th className="border px-2 py-1 font-bold text-center hover:cursor-pointer text-xl text-mutedText hover:text-primaryColor  bg-white" title="Add new student">
+                        <Link href={`${assessment.assessmentid}/addstudent`}>+</Link> {/* Adjust the href as per your routing */}
+                    </th>
+                </tr>
+            </thead>
                 <tbody className="text-gray-700">
                     {assessment.questiontable.map(question => (
                         <tr key={question.questionid}>
@@ -240,7 +247,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                 );
                             })}
                             <td title="Edit Question" className="border px-2 py-1 font-bold text-center hover:cursor-pointer hover:bg-primaryColor bg-white">
-                            <Link href={`${assessment.assessmentid}/assessmentquestion/${question.questionid}`}>📝</Link>
+                            <Link href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>📝</Link>
                             </td>
                         </tr>
                     ))}
@@ -252,7 +259,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                         {studentsArray.map(student => (
                             <td key={student.id} className="border px-2 py-1 text-center">{studentTotalMarks[student.id]}</td>
                         ))}
-                        <td title="Add new question" className="border px-2 py-1 font-bold text-center hover:cursor-pointer text-xl text-mutedText hover:text-primaryColor  bg-white">+</td>
+                        <td title="Add new question" className="border px-2 py-1 font-bold text-center hover:cursor-pointer text-xl text-mutedText hover:text-primaryColor  bg-white"><Link href={`${assessment.assessmentid}/addassessmentquestion`}>+</Link></td>
                     </tr>
                     <tr>
                         <td className="border px-2 py-1 text-right font-bold" colSpan={5}>Max Possible Marks</td>
