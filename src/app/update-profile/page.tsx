@@ -2,7 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import Link from "next/link"
-import UpdateProfileDetails from "@/components/UpdateProfileDetails"
+import UpdateProfileDetails from "@/app/update-profile/UpdateProfileDetails"
 
 export default async function UpdateProfile() {
     // Create a Supabase client configured to use cookies

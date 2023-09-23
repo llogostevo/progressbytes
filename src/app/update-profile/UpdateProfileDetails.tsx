@@ -1,12 +1,17 @@
-"use client";
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+
+export const dynamic = 'force-dynamic'
 import { Profiles } from "@/lib/database.types";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { ChangeEvent, useEffect, useState, useTransition } from "react";
 
-export default function UpdateProfileDetails() {
 
+export default async function UpdateProfileDetails() {
+
+     // Create a Supabase client configured to use cookies
+  const supabase = createServerComponentClient({ cookies })
+
+  const { data: profiles } = await supabase.from('profilestable').select()
     function handleFormSubmit() {
-        console.log("submit clicked")
         
         // fetch the user data
 
