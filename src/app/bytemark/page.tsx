@@ -121,7 +121,7 @@ export default async function ByteMark() {
                         </div>
                     ))}
                 </div>
-                {/* ...other cards... */}
+                {/* ...end card... */}
 
             </section>
 

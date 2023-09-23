@@ -77,6 +77,7 @@ export const dynamic = 'force-dynamic'
 export default async function StudentAssessmentView({ params }: { params: { assessmentSlug: string } }) {
     const supabase = createServerComponentClient({ cookies })
     const { data: { user } } = await supabase.auth.getUser()
+    const userId = user?.id;
 
     if (!user) {
         redirect("/")
@@ -85,10 +86,10 @@ export default async function StudentAssessmentView({ params }: { params: { asse
     const decodedSlug = decodeURIComponent(params.assessmentSlug)
 
 
-// THIS ISNT WORKING
-const { data: assessmentData, error: assessmentDataError } = await supabase
-    .from('assessmenttable')
-    .select(`
+    // THIS ISNT WORKING
+    const { data: assessmentData, error: assessmentDataError } = await supabase
+        .from('assessmenttable')
+        .select(`
         assessmentid,
         assessmentdate, 
         assessmentname, 
@@ -112,25 +113,48 @@ const { data: assessmentData, error: assessmentDataError } = await supabase
                         )
                     )
                 )
-            ),
-            answertable (
-                answerid, 
-                questionid, 
-                studentid, 
-                mark,
-                studenttable (
+                ),
+                answertable (
+                    answerid, 
+                    questionid, 
                     studentid, 
-                    firstname, 
-                    lastname,
-                    profiles(profilesid:auth:user_id) (
-                        profilesid
+                    mark,
+                    studenttable (
+                        studentid, 
+                        firstname, 
+                        lastname,
+                        profilestable(
+                            profileid
+                        )
                     )
                 )
             )
         )
     `)
-    .eq('assessmentid', decodedSlug)
-    .eq('answertable.studenttable.profiles.profilesid', user.id);
+        .eq('assessmentid', decodedSlug)
+    // .eq('answertable.studenttable.profiletable.profileid', `${userId}`);
+
+    // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
+    const { data: profilesData, error: profilesDataError } = await supabase
+        .from('profilestable')
+        .select(`
+            profileid, 
+            studenttable(
+                profileid,
+                studentid
+                )
+        `)
+        .eq('profileid', userId);
+
+    let studentId: number;
+
+    if (profilesData && profilesData.length > 0) {
+        studentId = profilesData[0].studenttable[0].studentid;
+        console.log("Student ID for logged in user:", studentId);
+    } else {
+        console.log("No matching record found");
+    }
+
 
 
     // Handle the error
@@ -138,13 +162,22 @@ const { data: assessmentData, error: assessmentDataError } = await supabase
         console.log(assessmentDataError)
     }
 
+    if (!assessmentData) {
+        return (
+            <div>
+                <p>No Assessment Found for this user</p>
+            </div>
+        )
+    }
+
+    // @ts-ignore
     const assessment: Assessment = assessmentData[0];
 
     const maxMarks = assessment.questiontable.reduce((acc, question) => acc + question.noofmarks, 0);
-
+    const studentsProfileIDs = assessment.questiontable
     // Calculate the student's total marks
     const studentTotalMarks = assessment.questiontable.reduce((acc, question) => {
-        const studentAnswer = question.answertable.find(ans => ans.studentid === user.id);
+        const studentAnswer = question.answertable.find(ans => ans.studentid === studentId);
         return acc + (studentAnswer ? studentAnswer.mark : 0);
     }, 0);
 
@@ -182,7 +215,7 @@ const { data: assessmentData, error: assessmentDataError } = await supabase
                     </thead>
                     <tbody>
                         {assessment.questiontable.sort((a, b) => a.questionorder - b.questionorder).map(question => {
-                            const studentAnswerMark = question.answertable.find(ans => ans.studentid === user.id)?.mark || 0;
+                            const studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark || 0;
                             const maxMarks = question.noofmarks;
                             const percentage = ((studentAnswerMark / maxMarks) * 100).toFixed(2);
                             const topicTitle = question.questionsubtopictable?.subtopictable?.topictable?.topictitle || 'N/A';
