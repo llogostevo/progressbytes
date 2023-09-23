@@ -21,8 +21,11 @@ export default async function Header() {
         <nav className={`${logoFont.className} mt-2 space-y-2 md:space-y-0 md:flex md:space-x-4 md:ml-4`}>
           {user ? (
             <>
+            <h1>Teacher Links</h1>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">MyByte</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytemark">ByteMark</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytemark/student/assessment">BM:Student</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytemark/staff/assessment">BM:Staff</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/bytetrack/teacherdashboard">ByteTrack</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/questions">ByteNow</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor block" href="/blog">BlogBytes</Link>
