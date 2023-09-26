@@ -11,8 +11,8 @@ import { useEffect, useState } from 'react';
 
 import { useTransition } from "react";
 
-export default function CommentForm({ slug, studentId }: { slug: string; studentId: number}) {
-    
+export default function CommentForm({ slug, studentId }: { slug: string; studentId: number }) {
+
 
     // create the router hook to trigger a page refresh
     const router = useRouter()
@@ -43,8 +43,7 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
         const marksavailable = event.target.marksavailable.value
         //  @ts-ignore
         const mark = event.target.mark.value
-        //  @ts-ignore
-        const subtopic = event.target.subtopic.value
+
 
         // Create a Supabase client configured to use cookies
         const supabase = createClientComponentClient()
@@ -68,7 +67,7 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
 
         console.log(newQuestion)
         // @ts-ignore
-        const questionId= newQuestion[0].questionid ;
+        const questionId = newQuestion[0].questionid;
 
         // insert record into questionsubtopictable
         await supabase
@@ -90,12 +89,23 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
                 }
             ]);
 
+            // THIS ISNT WORKING
 
+        //  @ts-ignore
+        event.target.questionnumber.value = "";
+        //  @ts-ignore
+        event.target.questionorder.value = questionorder + 1;
+        //  @ts-ignore
+        event.target.marksavailable.value = "";
+        //  @ts-ignore
+        event.target.mark.value = "";
 
         startTransition(() => {
             router.refresh();
 
         })
+
+
 
     }
 
@@ -125,11 +135,11 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
                     </div>
 
                     <div className="mt-4 space-y-2">
-                    <SubTopicDropDown 
-                        selectedSubtopicId={selectedSubtopic} 
-                        onSubtopicChange={handleSubtopicChange} 
-                    />
-                </div>
+                        <SubTopicDropDown
+                            selectedSubtopicId={selectedSubtopic}
+                            onSubtopicChange={handleSubtopicChange}
+                        />
+                    </div>
                 </div>
 
                 <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md mt-6">Add Question</button>
