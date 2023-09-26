@@ -2,6 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
+import AddQuestionMark from "./AddQuestionMark";
 /*
 
 amins data update
@@ -147,12 +148,14 @@ export default async function StudentAssessmentView({ params }: { params: { asse
         .eq('profileid', userId);
 
     let studentId: number;
+    console.log(profilesData)
 
-    if (profilesData && profilesData.length > 0) {
+    if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
         console.log("Student ID for logged in user:", studentId);
     } else {
-        console.log("No matching record found");
+        console.log("No matching student record found");
+        redirect("/")
     }
 
 
@@ -198,6 +201,8 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                 <span className="font-bold">Percentage: </span>{studentPercentage}
             </div>
 
+            <AddQuestionMark slug={assessment.assessmentid} studentId={studentId}/>
+
             <h2 className="text-xl font-semibold mt-8 mb-4">Your Questions</h2>
 
             <div className="overflow-x-auto">
@@ -215,11 +220,10 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                     </thead>
                     <tbody>
                         {assessment.questiontable.sort((a, b) => a.questionorder - b.questionorder).map(question => {
-                            const studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark || 0;
+                            const studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark || NaN;
                             const maxMarks = question.noofmarks;
                             const percentage = ((studentAnswerMark / maxMarks) * 100).toFixed(2);
-                            const topicTitle = question.questionsubtopictable?.subtopictable?.topictable?.topictitle || 'N/A';
-
+                            const topicTitle = question.questionsubtopictable[0].subtopictable?.subtopictitle;
                             return (
                                 <tr key={question.questionid}>
                                     <td className="border px-2 py-1">{question.questionorder}</td>
@@ -239,37 +243,6 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                     </tbody>
                 </table>
             </div>
-
-            {/* Form to add new answer marks */}
-            <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-4">Add New Question</h3>
-                <form>
-                    <div className="mb-4">
-                        <label htmlFor="questionorder" className="block text-sm font-medium mb-2">Order Number:</label>
-                        <input type="number" id="questionorder" name="questionorder" className="p-2 border rounded" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="topic" className="block text-sm font-medium mb-2">Topic:</label>
-                        <input type="text" id="topic" name="topic" className="p-2 border rounded" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="questionLabel" className="block text-sm font-medium mb-2">Question Label:</label>
-                        <input type="text" id="questionLabel" name="questionLabel" className="p-2 border rounded" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="mark" className="block text-sm font-medium mb-2">Mark:</label>
-                        <input type="number" id="mark" name="mark" className="p-2 border rounded" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="totalMarks" className="block text-sm font-medium mb-2">Total Marks:</label>
-                        <input type="number" id="totalMarks" name="totalMarks" className="p-2 border rounded" />
-                    </div>
-                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Add Question
-                    </button>
-                </form>
-            </div>
-
 
         </div>
     )
