@@ -3,11 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import AddQuestionMark from "./AddQuestionMark";
-/*
 
-amins data update
-
-*/
 // Type Definitions
 interface Student {
     studentid: number;

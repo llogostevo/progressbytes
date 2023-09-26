@@ -9,15 +9,11 @@ import { useTransition } from "react";
 import { useState, FC, ChangeEvent, FormEvent } from 'react';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-type AssessmentFormProps = {
-    supabase: SupabaseClient;
-};
-
 type AddAssessmentData = {
     assessmentdate: string;
     assessmentname: string;
 };
-export default function AddAssessementForm() {
+export default function AddAssessementForm({ userId }: {userId: string}) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
 
@@ -45,9 +41,7 @@ export default function AddAssessementForm() {
         //  @ts-ignore
         const assessmentname = assessmentData.assessmentname;
 
-        console.log(assessmentdate)
-        console.log(assessmentname)
-
+    
 
         // Create a Supabase client configured to use cookies
         const supabase = createClientComponentClient()
@@ -55,7 +49,7 @@ export default function AddAssessementForm() {
         const { data, error } = await supabase
             .from('assessmenttable')
             .insert([
-                { assessmentdate: assessmentdate, assessmentname: assessmentname, schoolid: 1 },
+                { assessmentdate: assessmentdate, assessmentname: assessmentname, schoolid: 1, created_by: userId },
             ]);
 
         if (error) {
