@@ -1,5 +1,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 
 export async function usersCheck() {
@@ -33,4 +34,45 @@ export async function teacherCheck() {
     return false
   }
 
+}
+
+export async function profileCheck() {
+
+      // Create a Supabase client configured to use cookies
+    const supabase = createServerComponentClient({ cookies })
+
+    // get the users sessions
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // check if user is logged in and redirect to page if they are not
+    if (!user) {
+        redirect("/")
+    }
+
+    // check if profile exists in DB
+    const { data: profile, error: profileError } = await supabase
+        .from('profilestable')
+        .select('*')
+        .eq('profileid', user.id)
+
+        if (profile) {
+          return profile[0].profileid as string;
+      }
+      return ""; 
+}
+
+export async function studentCheck() {
+  const supabase = createServerComponentClient({ cookies })
+
+  const profile = await profileCheck();
+
+  const { data: student, error: studentError } = await supabase
+  .from('studenttable')
+  .select('*')
+  .eq('profileid', profile)
+
+  if (student) {
+    return student[0].profileid as string;
+}
+return "";
 }
