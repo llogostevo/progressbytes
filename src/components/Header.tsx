@@ -15,25 +15,25 @@ export default async function Header() {
 
   return (
     <div className="text-mainText mt-5 px-4 md:pl-10 pt-12 pb-11 mb-10 border-t-2 border-b-2 border-primaryColor flex flex-row justify-between">
-      <div className="flex items-center gap-5">
-    <div className="md:ml-4 mx-auto mb-4">
-        <Logo logoClasses="text-mainText text-3xl md:text-5xl lg:text-6xl" />
-    </div>
-    
-    <div className="flex items-center gap-5">
-        {user ? (
+      <div>
+        <div className="md:ml-4 mx-auto mb-4">
+          <Logo logoClasses="text-mainText text-3xl md:text-5xl lg:text-6xl" />
+        </div>
+
+        <div className="flex items-center gap-5">
+          {user ? (
             <>
-                <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyByte</Link>
-                <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">ByteMark</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyByte</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">ByteMark</Link>
             </>
-        ) : (
+          ) : (
             <div className="flex items-center gap-3">
-                <JoinNow />
-                <BlogBytes />
+              <JoinNow />
+              <BlogBytes />
             </div>
-        )}
-    </div>
-</div>
+          )}
+        </div>
+      </div>
 
 
       <div className="flex flex-row gap-5">
