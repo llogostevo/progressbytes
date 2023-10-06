@@ -25,6 +25,7 @@ export default async function Header() {
             <>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyByte</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">ByteMark</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">ByteCheck</Link>
             </>
           ) : (
             <div className="flex items-center gap-3">
