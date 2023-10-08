@@ -1,6 +1,4 @@
-import '../globals.css'
 import { Analytics } from '@vercel/analytics/react';
-
 
 import type { Metadata } from 'next'
 import { Inter, Roboto_Mono, Fira_Mono } from 'next/font/google'
