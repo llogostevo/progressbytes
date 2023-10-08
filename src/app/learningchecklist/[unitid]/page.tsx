@@ -68,9 +68,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     if (!profilesData) {
         redirect("/unauthorised")
     }
-
-
-
+    
     const { data: unittopics, error } = await supabase
         .from('unittable')
         .select(`
