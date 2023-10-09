@@ -1,5 +1,3 @@
-// TODO: Duplicate or move this file outside the `_examples` folder to make it a route
-
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -30,8 +28,13 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
-    const confidenceLevels = ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"];
-
+    const confidenceLevels = [
+        "Needs Significant Support", 
+        "Requires Some Assistance", 
+        "Almost Independent", 
+        "Fully Independent"
+    ];
+    
     // get the users sessions
     const { data: { user } } = await supabase.auth.getUser()
 
