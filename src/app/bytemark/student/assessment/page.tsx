@@ -140,9 +140,6 @@ export default async function ByteMarkStudent() {
     //     console.error('Error:', assessmentError);
     // }
 
-    console.log("DATA HERE")
-    console.log(assessments);
-
     return (
         <Assessments
         // @ts-ignore

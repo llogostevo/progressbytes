@@ -125,12 +125,12 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
                             <input type="text" name="questionorder" className="mt-1 p-2 w-full rounded-md" placeholder="Enter Question Order" />
                         </label>
                         <label className="block">
-                            <span className="text-gray-700">Marks Available:</span>
-                            <input type="text" name="marksavailable" className="mt-1 p-2 w-full rounded-md" placeholder="Enter Marks Available" />
+                            <span className="text-gray-700">Marks Awarded:</span>
+                            <input type="text" name="mark" className="mt-1 p-2 w-full rounded-md" placeholder="Enter Marks Awarded" />
                         </label>
                         <label className="block">
-                            <span className="text-gray-700">Marks:</span>
-                            <input type="text" name="mark" className="mt-1 p-2 w-full rounded-md" placeholder="Enter Marks Achieved" />
+                            <span className="text-gray-700">Marks Available:</span>
+                            <input type="text" name="marksavailable" className="mt-1 p-2 w-full rounded-md" placeholder="Enter Marks Available" />
                         </label>
                     </div>
 

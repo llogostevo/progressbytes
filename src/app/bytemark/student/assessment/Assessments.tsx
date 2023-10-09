@@ -32,28 +32,30 @@ interface AssessmentProps {
     studentAssessment: Assessment[];
     user: {
         id: string;
-    }; 
+    };
     // You can add other properties if required.
 }
 
 
-export default function Assessments({studentAssessment, user}: AssessmentProps) {
+export default function Assessments({ studentAssessment, user }: AssessmentProps) {
 
 
     // 1. Use useState to manage sortOrder
     const [sortOrder, setSortOrder] = useState('assessmentdate');
+    const [sortedAssessments, setSortedAssessments] = useState([...studentAssessment]);
 
-    let sortedAssessments = studentAssessment ? [...studentAssessment] : [];
 
     // 2. Sort the assessments based on the sortOrder    
     useEffect(() => {
-        if (sortedAssessments) {
-            if (sortOrder === 'assessmentdate') {
-                sortedAssessments.sort((a, b) => new Date(b.assessmentdate).getTime() - new Date(a.assessmentdate).getTime());
-            } else if (sortOrder === 'assessmentname') {
-                sortedAssessments.sort((a, b) => a.assessmentname.localeCompare(b.assessmentname));
-            }
+        let sortedData = [...studentAssessment];  // Use a copy of the original data
+
+        if (sortOrder === 'assessmentdate') {
+            sortedData.sort((a, b) => new Date(b.assessmentdate).getTime() - new Date(a.assessmentdate).getTime());
+        } else if (sortOrder === 'assessmentname') {
+            sortedData.sort((a, b) => a.assessmentname.localeCompare(b.assessmentname));
         }
+
+        setSortedAssessments(sortedData); // Update the sortedAssessments state
     }, [sortOrder, studentAssessment]);
 
 
@@ -87,17 +89,26 @@ export default function Assessments({studentAssessment, user}: AssessmentProps) 
                         {/* Labels styled as buttons */}
                         <label
                             htmlFor="sortByDate"
-                            className={`px-2 py-1 text-xs rounded cursor-pointer ${false ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-nonphotblue hover:text-white'}`}
+                            className={`
+        px-2 py-1 text-xs rounded cursor-pointer 
+        ${sortOrder === 'assessmentdate' ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-secondaryColor hover:text-white'}
+    `}
+                            onClick={() => setSortOrder('assessmentdate')}
                         >
                             Sort by Date
                         </label>
 
                         <label
                             htmlFor="sortByName"
-                            className={`px-2 py-1 text-xs rounded cursor-pointer ${true ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-nonphotblue hover:text-white'}`}
+                            className={`
+        px-2 py-1 text-xs rounded cursor-pointer 
+        ${sortOrder === 'assessmentname' ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-secondaryColor hover:text-white'}
+    `}
+                            onClick={() => setSortOrder('assessmentname')}
                         >
                             Sort by Name
                         </label>
+
                     </div>
                 </div>
             </div>
@@ -112,11 +123,11 @@ export default function Assessments({studentAssessment, user}: AssessmentProps) 
 
             <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 {sortedAssessments.map((assessment) => (
-                    <div key={assessment.assessmentid} className="bg-white flex flex-col gap-1 p-3 justify-between rounded-lg shadow-lg mb-2">
+                    <div key={assessment.assessmentid} className="bg-white flex flex-col gap-1 p-3 justify-between rounded-lg shadow-lg mb-2 max-h-[140px]">
                         <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
                             {assessment.assessmentname}
                         </h2>
-                        <p className="text-sm">{formatDateToCustom(assessment.assessmentdate)}</p>
+                        <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
                         <Link className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200" href={`./assessment/${assessment.assessmentid}`}>Edit Assessment</Link>
                     </div>
                 ))}

@@ -13,6 +13,13 @@ type AddAssessmentData = {
     assessmentdate: string;
     assessmentname: string;
 };
+
+function formatDateToUKFormat(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+}
+
+
 export default function AddAssessementForm({ userId }: {userId: string}) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
@@ -22,13 +29,25 @@ export default function AddAssessementForm({ userId }: {userId: string}) {
 
     const [assessmentData, setAssessmentData] = useState<AddAssessmentData>({
         assessmentdate: new Date().toISOString().slice(0, 10),
-        assessmentname: "Assessment: " + new Date().toISOString().slice(0, 10)
+        assessmentname: "Assessment: " + formatDateToUKFormat(new Date().toISOString().slice(0, 10))
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        setAssessmentData(prev => ({ ...prev, [id]: value }));
+        setAssessmentData(prev => {
+            // If the field being changed is 'assessmentdate', update 'assessmentname' as well
+            if (id === 'assessmentdate') {
+                return {
+                    ...prev,
+                    assessmentdate: value,
+                    assessmentname: "Assessment: " + formatDateToUKFormat(value)
+                };
+            }
+            // Otherwise, update the field that was changed
+            return { ...prev, [id]: value };
+        });
     };
+    
 
     // async function to handle the form submission
     async function handleCreateAssessment(event: React.FormEvent<HTMLFormElement>) {
