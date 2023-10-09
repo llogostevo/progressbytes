@@ -13,12 +13,6 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
-      backgroundColor: {
-        'level-1': '#ffe5e5', // pale red
-        'level-2': '#fff2cc', // pale orange
-        'level-3': '#d9ead3', // light green
-        'level-4': '#c4e17f'  // green
-      },
       colors: {
         primaryColor: {
           DEFAULT: '#14B8A6',
