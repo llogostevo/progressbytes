@@ -7,6 +7,31 @@ import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic'
 
+interface Unit {
+    unitid: string;
+    courseid: string;
+    unittitle: string;
+    unitnumber: string;
+    // ... other unit properties ...
+}
+
+interface Course {
+    courseid: string;
+    subjectname: string;
+    level: string;
+    examboard: string;
+    // ... other course properties ...
+}
+
+interface CourseGroup {
+    courseid: string;
+    subjectname: string;
+    level: string;
+    examboard: string;
+    units: Unit[];
+}
+
+
 export default async function coursejudgements() {
     // Create a Supabase client configured to use cookies
     // Create a Supabase client configured to use cookies
@@ -53,34 +78,44 @@ export default async function coursejudgements() {
     // the `Create Table and seed with data` section of the README 👇
     // https://github.com/vercel/next.js/blob/canary/examples/with-supabase/README.md
     const { data: units } = await supabase.from('unittable').select()
+    const { data: course } = await supabase.from('coursetable').select()
+
+    const groupedData = course?.map(c => ({
+        ...c,
+        units: units?.filter(u => u.courseid === c.courseid)
+    }));
+
 
     return (
-
-        <div className="p-4 bg-gray-100"> {/* Added a light gray background for contrast */}
-
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4"> {/* Container for the cards */}
+        <div className="p-4 bg-gray-100">
+            {/* <div className="bg-white p-4 rounded-md shadow-sm mb-4">
                 <h2 className="text-xl mb-4 font-semibold">Learning Checklists</h2>
-            </div>
+            </div> */}
 
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                {units?.map((unit) => (
-                    <Link href={`/learningchecklist/${unit.unitid}`}>
-                    <div
-                        key={unit.unittitle}
-                        className="bg-white flex flex-col gap-1 p-3 rounded-lg shadow-lg mb-2 max-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
-                    >
-                        <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
-                            {unit.courseid}: {unit.unitnumber}
-                        </h2>
-                        <h2 className="sm:text-base md:text-md lg:text-lg mb-2">
-                            {unit.unittitle}
-                        </h2>
-                        {/* Other elements and code... */}
+            {/* Iterate over each course-group */}
+            {groupedData?.map((group: CourseGroup) => (
+                <div key={group.courseid} >
+                    <div className="bg-white p-4 rounded-md shadow-sm mb-4">
+                        <h2 className="text-2xl mb-4 font-semibold">{group.subjectname}</h2>
+                        <h2 className="text-2sm mb-4 ">{group.level} {group.examboard}</h2>
                     </div>
-                    </Link>
-                ))}
-            </section>
+                    <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        {group.units.map((unit: Unit) => (
+                            <Link href={`/learningchecklist/${unit.unitid}`} key={unit.unitid}>
+                                <div className="bg-white flex flex-col gap-1 p-3 rounded-lg shadow-lg mb-2 min-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                                    <h3 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
+                                        {unit.courseid}: {unit.unitnumber}
+                                    </h3>
+                                    <h4 className="sm:text-base md:text-md lg:text-lg mb-2">
+                                        {unit.unittitle}
+                                    </h4>
+                                </div>
+                            </Link>
+                        ))}
+                    </section>
+                </div>
+            ))}
 
         </div>
     )
-}
+}    
