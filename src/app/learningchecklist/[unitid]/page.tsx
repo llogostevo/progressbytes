@@ -156,7 +156,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                         <tr key={subtopic.subtopicid} className={`${judgmentColor}`}>
                                             <td className="px-4 py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
                                             <td className="px-4 py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
-                                            <td className="px-4 py-2 border-r  border border-gray-900">
+                                            <td className="px-4 py-2 border-r border border-gray-900">
                                                 <JudgmentComponent
                                                     studentId={studentId}
                                                     subtopic={subtopic}
