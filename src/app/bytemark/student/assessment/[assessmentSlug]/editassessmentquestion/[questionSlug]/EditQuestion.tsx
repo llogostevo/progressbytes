@@ -1,3 +1,10 @@
+'use client'
+
+// TODO: Duplicate or move this file outside the `_examples` folder to make it a route
+
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useEffect, useState } from 'react'
+
 type Unit = {
     unittitle: string;
     unitnumber: string;
@@ -52,6 +59,38 @@ type Props = {
 };
 
 export default function EditQuestion({ questionData }: Props) {
+    const [editableQuestionData, setEditableQuestionData] = useState(questionData);
+    const [answers, setAnswers] = useState(questionData.answertable);
+
+
+    // Create a Supabase client configured to use cookies
+    const supabase = createClientComponentClient()
+
+    const handleQuestionDataChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof QuestionData) => {
+        setEditableQuestionData({
+            ...editableQuestionData,
+            [field]: e.target.value
+        });
+    };
+
+    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>, answerId: number) => {
+        const updatedAnswers = answers.map(answer =>
+            answer.answerid === answerId
+                ? { ...answer, mark: Number(e.target.value) }
+                : answer
+        );
+        setAnswers(updatedAnswers);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Here: update your global state or send the updated data back to your server.
+
+    console.log('Updated Question Data:', editableQuestionData);
+    console.log('Updated Answers:', answers);
+};
+
     return (
         <div className="edit-question-container p-4 md:p-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-6">Edit Question Results</h2>
@@ -61,7 +100,12 @@ export default function EditQuestion({ questionData }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label className="block">
                             <span className="text-gray-700">Question Number:</span>
-                            <input type="text" value={questionData.questionnumber} className="mt-1 p-2 w-full rounded-md" />
+                            <input
+                                type="text"
+                                value={editableQuestionData.questionnumber}
+                                onChange={(e) => handleQuestionDataChange(e, 'questionnumber')}
+                                className="mt-1 p-2 w-full rounded-md"
+                            />
                         </label>
                         <label className="block">
                             <span className="text-gray-700">Question Order:</span>
@@ -96,7 +140,12 @@ export default function EditQuestion({ questionData }: Props) {
                                     <tr key={answer.answerid} className="border-t">
                                         <td className="px-4 py-2">{answer.studenttable.firstname} {answer.studenttable.lastname}</td>
                                         <td className="px-4 py-2">
-                                            <input type="text" value={answer.mark} className="p-2 w-20 rounded-md" />
+                                            <input
+                                                type="text"
+                                                value={answer.mark}
+                                                onChange={(e) => handleAnswerChange(e, answer.answerid)}
+                                                className="p-2 w-20 rounded-md"
+                                            />                                        
                                         </td>
                                     </tr>
                                 ))}
