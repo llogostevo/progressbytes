@@ -154,8 +154,6 @@ export default async function StudentAssessmentView({ params }: { params: { asse
         redirect("/")
     }
 
-
-
     // Handle the error
     if (assessmentDataError) {
         console.log(assessmentDataError)

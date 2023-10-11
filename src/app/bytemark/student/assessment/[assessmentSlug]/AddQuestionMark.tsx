@@ -12,6 +12,8 @@ import { useTransition } from "react";
 
 export default function CommentForm({ slug, studentId }: { slug: string; studentId: number }) {
 
+// Create a Supabase client configured to use cookies
+const supabase = createClientComponentClient()
 
     // create the router hook to trigger a page refresh
     const router = useRouter()
@@ -33,7 +35,7 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
 
     // Function to fetch and set the next question order
     const fetchNextQuestionOrder = async () => {
-        const supabase = createClientComponentClient()
+        // const supabase = createClientComponentClient()
 
         // Retrieve the highest 'questionorder' for the current assessment.
         const { data: highestOrderData, error: highestOrderError } = await supabase
@@ -117,9 +119,7 @@ export default function CommentForm({ slug, studentId }: { slug: string; student
         const mark = event.target.mark.value
 
 
-        // Create a Supabase client configured to use cookies
-        const supabase = createClientComponentClient()
-
+        
 
         // Use userQuestionOrder if it's not null; otherwise, use nextQuestionOrder
         const finalQuestionOrder = userQuestionOrder !== null ? userQuestionOrder : nextQuestionOrder;
