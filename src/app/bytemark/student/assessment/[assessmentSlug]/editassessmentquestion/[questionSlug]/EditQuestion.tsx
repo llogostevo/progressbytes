@@ -59,8 +59,16 @@ type Props = {
 };
 
 export default function EditQuestion({ questionData }: Props) {
+
+    // I HAVE THE QUESTION DATA AS PROPS
+    // I NEED TO FIND THE CORESPONDING QUESTION IN THE DATABASE
+    // IF SOMETHING HAS BEEN CHANGED IN THE FORM
+    // EDIT THE CORRESPONDING DATA IN THE DATABASE
+    // QUESTION HAS BEEN UPDATED 
+    // ELSE MESSAGE SAYING, QUESTION STAYS SAME
     const [editableQuestionData, setEditableQuestionData] = useState(questionData);
     const [answers, setAnswers] = useState(questionData.answertable);
+    const [dataChangeFlag, setDataChangeFlag] = useState(false);
 
 
     // Create a Supabase client configured to use cookies
@@ -71,6 +79,7 @@ export default function EditQuestion({ questionData }: Props) {
             ...editableQuestionData,
             [field]: e.target.value
         });
+        setDataChangeFlag(true)
     };
 
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>, answerId: number) => {
@@ -80,22 +89,55 @@ export default function EditQuestion({ questionData }: Props) {
                 : answer
         );
         setAnswers(updatedAnswers);
+        setDataChangeFlag(true)
+
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submissionMessage, setSubmissionMessage] = useState("");
 
-    // Here: update your global state or send the updated data back to your server.
 
-    console.log('Updated Question Data:', editableQuestionData);
-    console.log('Updated Answers:', answers);
-};
+    
+    const handleFormSubmit =  (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (isSubmitting) return;  // Prevent multiple submissions
+        setIsSubmitting(true);  // Set submitting state to true
+        
+        // check if the data has been altered, if so send back to server
+        if (dataChangeFlag == true) {
+            console.log('Updated Question Data:', editableQuestionData);
+            console.log('Updated Answers:', answers);
+
+            // THIS IS AN ISSUE< NEEDS SOME OTHER METHOD TO WRITE TO DB FROM CLIENT COMPEONT
+            const { data, error } = await supabase
+                .from('questiontable')
+                .update({
+                    questionnumber: editableQuestionData.questionnumber,
+                    questionorder: editableQuestionData.questionorder,
+                    noofmarks: editableQuestionData.noofmarks
+                })
+                .eq('questionid', questionData.questionid)
+                .select()
+
+            if (error) {
+                console.error("Error updating question:", error);
+                setSubmissionMessage("Error updating question. Please try again.");
+            } else {
+                setSubmissionMessage("Question updated successfully!");
+            }
+            setDataChangeFlag(false) //set data change to false after data uploaded
+        } else {
+            setSubmissionMessage("Data not altered!");
+        }
+        setIsSubmitting(false);  // Set submitting state to false after submitting
+    };
 
     return (
         <div className="edit-question-container p-4 md:p-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-6">Edit Question Results</h2>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleFormSubmit}>
                 <div className="question-details bg-gray-100 p-4 rounded-md">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label className="block">
@@ -109,11 +151,21 @@ export default function EditQuestion({ questionData }: Props) {
                         </label>
                         <label className="block">
                             <span className="text-gray-700">Question Order:</span>
-                            <input type="text" value={questionData.questionorder} className="mt-1 p-2 w-full rounded-md" />
+                            <input
+                                type="text"
+                                value={editableQuestionData.questionorder}
+                                onChange={(e) => handleQuestionDataChange(e, 'questionorder')}
+                                className="mt-1 p-2 w-full rounded-md"
+                            />
                         </label>
                         <label className="block">
                             <span className="text-gray-700">No of Marks:</span>
-                            <input type="text" value={questionData.noofmarks} className="mt-1 p-2 w-full rounded-md" />
+                            <input
+                                type="text"
+                                value={editableQuestionData.noofmarks}
+                                onChange={(e) => handleQuestionDataChange(e, 'noofmarks')}
+                                className="mt-1 p-2 w-full rounded-md"
+                            />
                         </label>
                     </div>
 
@@ -136,7 +188,7 @@ export default function EditQuestion({ questionData }: Props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {questionData.answertable.map((answer) => (
+                                {answers.map((answer) => (
                                     <tr key={answer.answerid} className="border-t">
                                         <td className="px-4 py-2">{answer.studenttable.firstname} {answer.studenttable.lastname}</td>
                                         <td className="px-4 py-2">
@@ -145,7 +197,7 @@ export default function EditQuestion({ questionData }: Props) {
                                                 value={answer.mark}
                                                 onChange={(e) => handleAnswerChange(e, answer.answerid)}
                                                 className="p-2 w-20 rounded-md"
-                                            />                                        
+                                            />
                                         </td>
                                     </tr>
                                 ))}
