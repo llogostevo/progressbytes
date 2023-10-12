@@ -3,7 +3,7 @@
 // TODO: Duplicate or move this file outside the `_examples` folder to make it a route
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 type Unit = {
     unittitle: string;
@@ -60,12 +60,6 @@ type Props = {
 
 export default function EditQuestion({ questionData }: Props) {
 
-    // I HAVE THE QUESTION DATA AS PROPS
-    // I NEED TO FIND THE CORESPONDING QUESTION IN THE DATABASE
-    // IF SOMETHING HAS BEEN CHANGED IN THE FORM
-    // EDIT THE CORRESPONDING DATA IN THE DATABASE
-    // QUESTION HAS BEEN UPDATED 
-    // ELSE MESSAGE SAYING, QUESTION STAYS SAME
     const [editableQuestionData, setEditableQuestionData] = useState(questionData);
     const [answers, setAnswers] = useState(questionData.answertable);
     const [dataChangeFlag, setDataChangeFlag] = useState(false);
@@ -96,7 +90,45 @@ export default function EditQuestion({ questionData }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionMessage, setSubmissionMessage] = useState("");
 
+    const updateQuestionData = useCallback(
+        async () => {
+            const { data:questionData, error:questionError } = await supabase
+                .from('questiontable')
+                .update({
+                    questionnumber: editableQuestionData.questionnumber,
+                    questionorder: editableQuestionData.questionorder,
+                    noofmarks: editableQuestionData.noofmarks
+                })
+                .eq('questionid', editableQuestionData.questionid)
+                .select();
 
+                if (questionError) {
+                    console.error("Error updating question:", questionError);
+                    setSubmissionMessage("Error updating question. Please try again.");
+                    return;  // Exit early if there's an error
+                }
+        
+                // Updating the student data
+                const updateStudentPromises = answers.map(answer =>
+                    supabase
+                        .from('answertable')
+                        .update({ mark: answer.mark })
+                        .eq('answerid', answer.answerid)
+                );
+                const studentResults = await Promise.all(updateStudentPromises);
+        
+                // Check for any errors in updating the student data
+                const studentErrors = studentResults.filter(result => result.error);
+                if (studentErrors.length > 0) {
+                    console.error("Errors updating student data:", studentErrors);
+                    setSubmissionMessage("Error updating student data. Please try again.");
+                } else {
+                    setSubmissionMessage("Question and student data updated successfully!");
+                    setDataChangeFlag(false);  // set data change to false after data uploaded
+                }
+            },
+            [supabase, editableQuestionData, questionData.questionid, answers]
+        );
     
     const handleFormSubmit =  (e: React.FormEvent) => {
         e.preventDefault();
@@ -109,24 +141,8 @@ export default function EditQuestion({ questionData }: Props) {
             console.log('Updated Question Data:', editableQuestionData);
             console.log('Updated Answers:', answers);
 
-            // THIS IS AN ISSUE< NEEDS SOME OTHER METHOD TO WRITE TO DB FROM CLIENT COMPEONT
-            const { data, error } = await supabase
-                .from('questiontable')
-                .update({
-                    questionnumber: editableQuestionData.questionnumber,
-                    questionorder: editableQuestionData.questionorder,
-                    noofmarks: editableQuestionData.noofmarks
-                })
-                .eq('questionid', questionData.questionid)
-                .select()
+            updateQuestionData();
 
-            if (error) {
-                console.error("Error updating question:", error);
-                setSubmissionMessage("Error updating question. Please try again.");
-            } else {
-                setSubmissionMessage("Question updated successfully!");
-            }
-            setDataChangeFlag(false) //set data change to false after data uploaded
         } else {
             setSubmissionMessage("Data not altered!");
         }
