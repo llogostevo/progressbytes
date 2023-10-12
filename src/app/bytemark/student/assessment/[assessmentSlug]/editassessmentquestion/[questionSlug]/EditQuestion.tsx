@@ -88,11 +88,11 @@ export default function EditQuestion({ questionData }: Props) {
     };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submissionMessage, setSubmissionMessage] = useState("");
+    const [submissionMessage, setSubmissionMessage] = useState({ text: "", type: "success" });
 
     const updateQuestionData = useCallback(
         async () => {
-            const { data:questionData, error:questionError } = await supabase
+            const { data: questionData, error: questionError } = await supabase
                 .from('questiontable')
                 .update({
                     questionnumber: editableQuestionData.questionnumber,
@@ -102,40 +102,40 @@ export default function EditQuestion({ questionData }: Props) {
                 .eq('questionid', editableQuestionData.questionid)
                 .select();
 
-                if (questionError) {
-                    console.error("Error updating question:", questionError);
-                    setSubmissionMessage("Error updating question. Please try again.");
-                    return;  // Exit early if there's an error
-                }
-        
-                // Updating the student data
-                const updateStudentPromises = answers.map(answer =>
-                    supabase
-                        .from('answertable')
-                        .update({ mark: answer.mark })
-                        .eq('answerid', answer.answerid)
-                );
-                const studentResults = await Promise.all(updateStudentPromises);
-        
-                // Check for any errors in updating the student data
-                const studentErrors = studentResults.filter(result => result.error);
-                if (studentErrors.length > 0) {
-                    console.error("Errors updating student data:", studentErrors);
-                    setSubmissionMessage("Error updating student data. Please try again.");
-                } else {
-                    setSubmissionMessage("Question and student data updated successfully!");
-                    setDataChangeFlag(false);  // set data change to false after data uploaded
-                }
-            },
-            [supabase, editableQuestionData, questionData.questionid, answers]
-        );
-    
-    const handleFormSubmit =  (e: React.FormEvent) => {
+            if (questionError) {
+                console.error("Error updating question:", questionError);
+                setSubmissionMessage({ text: "Error updating question. Please try again.", type: "error" });
+                return;  // Exit early if there's an error
+            }
+
+            // Updating the student data
+            const updateStudentPromises = answers.map(answer =>
+                supabase
+                    .from('answertable')
+                    .update({ mark: answer.mark })
+                    .eq('answerid', answer.answerid)
+            );
+            const studentResults = await Promise.all(updateStudentPromises);
+
+            // Check for any errors in updating the student data
+            const studentErrors = studentResults.filter(result => result.error);
+            if (studentErrors.length > 0) {
+                console.error("Errors updating student data:", studentErrors);
+                setSubmissionMessage({ text: "Error updating student data. Please try again.", type: "error" });  // or "success" as per your requirement
+            } else {
+                setSubmissionMessage({ text: "Data updated succesfully", type: "success" });  // or "success" as per your requirement
+                setDataChangeFlag(false);  // set data change to false after data uploaded
+            }
+        },
+        [supabase, editableQuestionData, questionData.questionid, answers]
+    );
+
+    const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (isSubmitting) return;  // Prevent multiple submissions
         setIsSubmitting(true);  // Set submitting state to true
-        
+
         // check if the data has been altered, if so send back to server
         if (dataChangeFlag == true) {
             console.log('Updated Question Data:', editableQuestionData);
@@ -144,7 +144,7 @@ export default function EditQuestion({ questionData }: Props) {
             updateQuestionData();
 
         } else {
-            setSubmissionMessage("Data not altered!");
+            setSubmissionMessage({ text: "Data not altered as not changes made", type: "success" });  // or "success" as per your requirement
         }
         setIsSubmitting(false);  // Set submitting state to false after submitting
     };
@@ -223,6 +223,17 @@ export default function EditQuestion({ questionData }: Props) {
                 </div>
 
                 <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md mt-6">Save Changes</button>
+                {/* CUSTOM FORM VALIDATION ERRORS WILL DISPLAY HERE */}
+                {submissionMessage.text && (
+                    <p className={`text-center mt-4 border p-3 
+        ${submissionMessage.type === 'error' ? 'bg-red-500' : 'bg-green-500'} 
+        transition-opacity ease-in-out delay-1000
+        ${submissionMessage.text ? 'opacity-100' : 'opacity-0'} 
+        rounded-md`}
+                    >
+                        {submissionMessage.text}
+                    </p>
+                )}
             </form>
         </div>
 
