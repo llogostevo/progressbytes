@@ -29,6 +29,7 @@ export default async function Courses({ params }: { params: { schoolcoursesslug:
     redirect("/unauthorised")
   }
 
+  // get course information
   let { data: coursetable, error } = await supabase
     .from('coursetable')
     .select('*')
