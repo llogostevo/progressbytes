@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 import { useTransition } from "react";
 
-export default function CommentForm({ slug }: { slug: string; }) {
+export default function AddCourseForm({ slug }: { slug: string; }) {
 
     const [formData, setFormData] = useState({
         level: 'GCSE',

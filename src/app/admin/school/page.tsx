@@ -57,7 +57,7 @@ export default async function School() {
               </Link>
 
               <Link
-                href={`/admin/school/profiles/${school.schoolid}`}
+                href={`/admin/school/users/${school.schoolid}`}
                 className="inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
               >
                 Manage Profiles

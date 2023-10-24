@@ -1,8 +1,5 @@
 'use client'
 const StudyDetailsModal = () => {
-// const AssessmentModal = ({ isOpen, onClose }) => {
-  // if (!isOpen) return null;
-
   const assessments = [
     {
       label: 'Needs Significant Study',

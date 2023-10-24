@@ -39,10 +39,6 @@ interface ConfidenceLevelColors {
     [key: string]: string;
 }
 
-
-
-
-
 export default async function UnitChecklist({ params }: { params: { unitid: string } }) {
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
