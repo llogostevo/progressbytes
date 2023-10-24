@@ -2,6 +2,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import JudgmentComponent from './JudgementComponent'
+import AssessmentModal from '@/components/assessmentModal/AssesmentModal'
 
 export const dynamic = 'force-dynamic'
 
@@ -124,6 +125,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     return (
         <>
             <div className="space-y-8">  {/* Adjust vertical space between each topic section */}
+            <AssessmentModal />
                 {topics?.map((topic) => (
                     <section key={topic.topicid} className="space-y-4">  {/* Adjust vertical space between heading and table */}
                         <h2 className="text-2xl font-bold mb-2">  {/* Optionally, additional bottom margin from heading to table */}

@@ -1,5 +1,5 @@
 'use client'
-const AssessmentModal = () => {
+const StudyDetailsModal = () => {
 // const AssessmentModal = ({ isOpen, onClose }) => {
   // if (!isOpen) return null;
 
@@ -32,24 +32,17 @@ const AssessmentModal = () => {
   ];
 
   return (
-    <div className="fixed z-10 inset-0 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white rounded-lg p-8 max-w-xl mx-auto relative shadow-xl">
-          <button onClick={onClose} className="absolute top-2 right-2">
-            &times;
-          </button>
+    <div className="assessments-container">
           {assessments.map((assessment, index) => (
-            <div key={index} className={`p-4 ${assessment.color}`}>
+            <div key={assessment.label} className={`p-4 ${assessment.color}`}>
               <h3 className="font-bold">{assessment.label}</h3>
-              <p>{assessment.description}</p>
-              <p className="mt-2 text-sm italic">{assessment.action}</p>
+              <p className="mt-2 px-2">{assessment.description}</p>
+              <p className="mt-2 text-sm italic px-4">{assessment.action}</p>
             </div>
           ))}
-        </div>
-      </div>
     </div>
   );
 };
 
-export default AssessmentModal;
+export default StudyDetailsModal;
 
