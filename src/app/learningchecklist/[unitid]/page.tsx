@@ -52,10 +52,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         "Fully Independent"];
 
     const confidenceLevelColors: ConfidenceLevelColors = {
-        "Needs Significant Support": "bg-red-300",
-        "Requires Some Assistance": "bg-yellow-300",
-        "Almost Independent": "bg-green-200",
-        "Fully Independent": "bg-green-500"
+        "Needs Significant Study": "bg-red-300",
+        "Requires Revision": "bg-yellow-300",
+        "Almost Secure": "bg-green-200",
+        "Fully Secure": "bg-green-500"
     };
 
 

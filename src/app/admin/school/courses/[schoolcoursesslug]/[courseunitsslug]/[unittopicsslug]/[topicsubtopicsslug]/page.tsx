@@ -2,6 +2,8 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import RealTimeSubTopics from './RealTimeSubTopics'
+import AddSubTopicForm from './AddSubTopicForm'
 
 export default async function SubTopics({ params }: { params: { topicsubtopicsslug: number } }) {
   const supabase = createServerComponentClient({ cookies })
@@ -31,10 +33,37 @@ export default async function SubTopics({ params }: { params: { topicsubtopicssl
     .select('*')
     .eq('topicid', params.topicsubtopicsslug)
     .order('subtopicnumber', { ascending: true })
-  console.log(subtopictable)
-  return (
+
+
+    let { data: topictable } = await supabase
+    .from('topictable')
+    .select('*')
+    .eq('topicid', params.topicsubtopicsslug)
+    .order('topicnumber', { ascending: true })
+
+
+    // @ts-ignore
+    let topicName = topictable[0].topictitle
+    // @ts-ignore
+    let topicNumber = topictable[0].topicnumber
+    // @ts-ignore
+    let unitID = topictable[0].unitid
+
+
+    let { data: unitDetails } = await supabase
+    .from('unittable')
+    .select('unittitle, unitnumber')
+    .eq('unitid', unitID)
+
+    console.log(unitDetails)
+
+    return (
     <div className="max-w-screen-lg overflow-auto mx-auto p-4">
       <h1 className="text-4xl font-semibold mb-4">SubTopics</h1>
+      <h2 className="text-xl font-semibold mb-4">Unit {unitDetails?.[0].unitnumber}: {unitDetails?.[0].unittitle}</h2>
+      <h3 className="text-xl font-semibold mb-4">{topicNumber} : {topicName}</h3>
+      <AddSubTopicForm slug={params.topicsubtopicsslug}/>
+
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
@@ -45,7 +74,7 @@ export default async function SubTopics({ params }: { params: { topicsubtopicssl
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {subtopictable?.map((subtopic) => (
+          {/* {subtopictable?.map((subtopic) => (
             <tr key={subtopic.subtopicid}>
               <td className="px-6 py-4 text-center  whitespace-nowrap">{subtopic.subtopicnumber}</td>
               <td className="px-6 py-4 overflow-hidden overflow-ellipsis">{subtopic.subtopictitle}</td>
@@ -59,7 +88,8 @@ export default async function SubTopics({ params }: { params: { topicsubtopicssl
                 </Link>
               </td>
             </tr>
-          ))}
+          ))} */}
+          <RealTimeSubTopics subtopics={subtopictable} />
         </tbody>
       </table>
     </div>

@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 export const dynamic = 'force-dynamic'
 
 
-export default async function Home() {
+export default async function Admin() {
 
   // check logged in as teacher
     // get assessment data
@@ -28,11 +28,17 @@ export default async function Home() {
         .select('*')
         .eq('profileid', user.id)
 
+        console.log(profile)
+
     // check if profile exists in DB, if not redirect to unauthorised
-    // if not at the correct role i.e. admin then redirect to the unauthorised page
-    if (!profile || profile[0].admin==false) {
+    if (!profile || profile.length === 0) {
         redirect("/unauthorised")
     }
+
+    // if not at the correct role i.e. admin then redirect to the unauthorised page
+    if (profile[0].admin==false) {
+      redirect("/unauthorised")
+  }
 
     return (
         <main>

@@ -23,9 +23,10 @@ export default async function Header() {
         <div className="flex items-center gap-5">
           {user ? (
             <>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyByte</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">ByteMark</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">ByteCheck</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyDashboard</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/admin">Admin</Link>
             </>
           ) : (
             <div className="flex items-center gap-3">
