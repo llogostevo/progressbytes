@@ -1,8 +1,11 @@
 "use client";
+
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, ChangeEvent } from 'react';
 
 // import use router, make sure it is from next/navigation
 import { useRouter } from 'next/navigation'
+import createSchoolUser from "./createSchoolUser";
 
 
 export default function AddUserForm({ slug }: { slug: number; }) {
@@ -26,32 +29,64 @@ export default function AddUserForm({ slug }: { slug: number; }) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
 
-        async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
-            event.preventDefault()
-            console.log(formData);
-    
-            
-            const response = await fetch(`/api/createSchoolUser`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ ...formData, schoolid: slug }),
-            })
-            
-            const data = await response.json()
-          
-            if (response.ok) {
-              console.log(data.user)
-              console.log("response good")
 
-            } else {
-              console.error(data.error)
-              console.log("response error")
+    // async function to handle the form submission
+    async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
 
-            }
-            
-          }
+        event.preventDefault();
+        // const supabase = createClientComponentClient()
+
+
+        // // THIS WAS THE METHOD USED USING AN API ROUTE< IT DOESNT WORK!!!! NEED MORE RESEARCH
+        // const response = await fetch('./createUser', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(formData),
+        // });
+
+
+        // // Check if the response status is not OK
+        // if (!response.ok) {
+        //     console.error('Network response was not ok', response);
+        //     return;
+        // }
+
+        // const data = await response.json();
+
+        // if (data.error) {
+        //     console.error("error");
+        //     console.error(data.error);
+        // } else {
+        //     console.log(data.user);
+        // }
+    // }
+
+    // THIS WAS TRYING TO DO IT CLIENT SIDE BUT THERE IS AN ERROR BASED ON ADMIN TOKEN
+        // const { data: userData, error: userError } = await supabase.auth.admin.createUser({
+        //     email: `${formData.userEmail}`,
+        //     password: `${formData.password}`,
+        //     user_metadata: { 
+        //         schoolid: slug, 
+        //         firstname: `${formData.firstname}`, 
+        //         lastname:`${formData.lastname}`,
+        //         type: `${formData.type}`
+        //     }, 
+        //     email_confirm: true
+        // })
+
+
+        // if (userData) {
+        //     console.log(userData)
+        // } else {
+        //     console.log(userError)
+        //     console.log(formData)
+        // }
+        // console.log("submit")
+        createSchoolUser(formData, slug)
+    }
+
 
     return (
         <form

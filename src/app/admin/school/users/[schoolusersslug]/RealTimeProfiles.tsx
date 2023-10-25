@@ -37,7 +37,7 @@ export default function RealTimeProfiles({ schoolProfiles }: { schoolProfiles: a
         <tbody className="text-gray-700">
           {schoolProfiles && schoolProfiles.length > 0 ? (
             schoolProfiles.map((profile: any) => (
-              <tr key={profile.id} className="border-b border-gray-200">
+              <tr key={profile.profileid} className="border-b border-gray-200">
                 <td className="py-2 px-4">{profile.email}</td>
                 <td className="py-2 px-4">{profile.profiletype}</td>
                 <td className="py-2 px-4">{profile.admin ? 'Yes' : 'No'}</td>
