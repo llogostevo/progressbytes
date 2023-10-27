@@ -33,7 +33,7 @@ export default function RealTimeClasses({classes}:{classes:any}) {
             <p className="">{schoolclass.classid}</p>
 
               <Link
-                href={`${schoolclass.schoolid}/${schoolclass.classid}`}
+                href={`${schoolclass.schoolid}/${decodeURIComponent(schoolclass.classid)}`}
                 className="inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
               >
                 Enrollments

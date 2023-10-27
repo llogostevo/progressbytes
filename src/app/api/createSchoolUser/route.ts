@@ -36,8 +36,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   let admin=false;
 
-  if (type == "Teacher" || "School Admin" || "Super Admin") {
-     admin = true;
+  if (type == "Teacher" || type == "School Admin" || type == "Super Admin") {
+    admin = true;
   }
  
  
