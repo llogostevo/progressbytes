@@ -36,7 +36,7 @@ export default async function School() {
 
   return (
     <div>
-      <h1 className="text-4xl font-semibold mb-4">School Page</h1>
+      <h1 className="text-4xl font-semibold mb-4">School Admin Page</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {schools?.map((school) => (
           <div key={school.schoolname} className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">

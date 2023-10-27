@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
+// Currently this is not in use, I am directing straight to the school page so that I can access this. 
+// possibly this might be used in the future. 
 
 export default async function Admin() {
 

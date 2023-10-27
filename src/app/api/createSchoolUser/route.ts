@@ -33,6 +33,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
   // get the returned user so can access the id
   const newUser = user.user;
+
+  let admin=false;
+
+  if (type == "Teacher" || "School Admin" || "Super Admin") {
+     admin = true;
+  }
+ 
  
   // insert corresponding record into the profile table using values from the created user
   const { data: profileData, error: profileError } = await supabase
@@ -41,14 +48,44 @@ export async function POST(req: NextRequest, res: NextResponse) {
       profileid: newUser.id,
       email: userEmail,
       schoolid: schoolid,
-      profiletype: 'student',
-      admin: true,
+      profiletype: type,
+      admin: admin,
     });
 
-  if (profileError) {
-    return NextResponse.json({ error: profileError.message }, { status: 400 });
-  }
+    if (profileError) {
+      return NextResponse.json({ error: profileError.message }, { status: 400 });
+    }
 
+    if (type=="Student"){
+      const { data: studentdata, error: studentError } = await supabase
+    .from('studenttable')
+    .insert({
+      profileid: newUser.id,
+      schoolid: schoolid,
+      firstname: firstname,
+      lastname: lastname,
+    });
+
+    if (studentError) {
+      return NextResponse.json({ error: studentError.message }, { status: 400 });
+    }
+
+    } else if (type=="Teacher") {
+        const { data: teacherdata, error: teacherError } = await supabase
+      .from('teachertable')
+      .insert({
+        profileid: newUser.id,
+        schoolid: schoolid,
+        firstname: firstname,
+        lastname: lastname,
+      });
+
+      if (teacherError) {
+        return NextResponse.json({ error: teacherError.message }, { status: 400 });
+      }
+    }
+
+   
   return NextResponse.json({ user, profile: profileData });
 
 }

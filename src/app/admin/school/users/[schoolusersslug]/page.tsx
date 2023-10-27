@@ -45,8 +45,10 @@ export default async function AddSchoolUsers({ params }: { params: { schoolusers
   return (
     <div>
 
-      <h1 className="text-4xl font-semibold mb-4">Courses</h1>
-      <h1 className="text-xl font-semibold mb-4">{schoolName}</h1>
+      <h1 className="text-4xl font-semibold mb-4">School Users</h1>
+      <h2 className="ml-5 text-xl font-semibold mb-4">Add New Users:</h2>
+      <h3 className="ml-10 text font-semibold mb-4">{schoolName}</h3>
+
 
       <AddUserForm slug={params.schoolusersslug} />
 
