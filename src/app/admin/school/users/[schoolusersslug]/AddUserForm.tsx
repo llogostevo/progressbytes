@@ -162,6 +162,43 @@ export default function AddUserForm({ slug }: { slug: number; }) {
                         />
                         <span className="ml-2">Super Admin</span>
                     </label>
+
+                    {/* Conditionally render GCSE and A-level fields when "Student" is selected */}
+                    {formData.type === 'Student' && (
+                        <div className="mt-4 p-4 border rounded-md">
+                            <h4 className="mb-2 font-semibold text-gray-800">Student Target Details:</h4>
+                            <div className="mb-4">
+                                <label htmlFor="gcseTarget" className="block text-sm font-medium text-gray-700">GCSE Target Grade:</label>
+                                <select
+                                    id="gcseTarget"
+                                    name="gcseTarget"
+                                    onChange={handleInputChange}
+                                    className="mt-1 p-2 w-full border rounded-md"
+                                >
+                                    <option value="">Select Grade</option>
+                                    {[...Array(9)].reverse().map((_, idx) => (
+                                        <option key={idx} value={9 - idx}>{9 - idx}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="aLevelTarget" className="block text-sm font-medium text-gray-700">A-level Target Grade:</label>
+                                <select
+                                    id="aLevelTarget"
+                                    name="aLevelTarget"
+                                    onChange={handleInputChange}
+                                    className="mt-1 p-2 w-full border rounded-md"
+                                >
+                                    <option value="">Select Grade</option>
+                                    {['A*', 'A', 'B', 'C', 'D', 'E'].map(grade => (
+                                        <option key={grade} value={grade}>{grade}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    )}
+
+
                 </div>
             </div>
 

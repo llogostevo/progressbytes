@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest, res: NextResponse) {
 
-  const { userEmail, password, firstname, lastname, type, schoolid } = await req.json()
+  const { userEmail, password, firstname, lastname, type, schoolid, gcseTarget, aLevelTarget } = await req.json()
 
   const supabase_url = process.env.NEXT_PUBLIC_SUPABASE_URL as string
   const service_role_key = process.env.SERVICE_ROLE_KEY as string
@@ -64,6 +64,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       schoolid: schoolid,
       firstname: firstname,
       lastname: lastname,
+      gcsetargetgrade: gcseTarget,
+      aleveltargetgrade: aLevelTarget
     });
 
     if (studentError) {
