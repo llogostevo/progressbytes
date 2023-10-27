@@ -27,12 +27,15 @@ export default async function AddSchoolUsers({ params }: { params: { schoolusers
     redirect("/unauthorised")
   }
 
-  const { data: schoolProfiles, error: schoolProfilesError } = await supabase
+  const { data: schoolProfilesData, error: schoolProfilesError } = await supabase
     .from('profilestable')
     .select('*')
     .eq('schoolid', params.schoolusersslug)
 
     console.log(schoolProfilesError)
+
+    const schoolProfiles = Array.isArray(schoolProfilesData) ? schoolProfilesData : [];
+
 
   let { data: school, error: schoolerror } = await supabase
     .from('schooltable')
