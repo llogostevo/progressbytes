@@ -1,11 +1,8 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
-import { usersCheck } from '@/lib/users'
-// import Comments from '@/components/Comments'
-import CommentForm from '@/app/blog/[slug]/CommentForm'
+
 
 export const dynamic = 'force-dynamic'
 
