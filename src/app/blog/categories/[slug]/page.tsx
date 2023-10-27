@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usersCheck } from '@/lib/users'
-import Comments from '@/components/Comments'
+// import Comments from '@/components/Comments'
 import CommentForm from '@/app/blog/[slug]/CommentForm'
 
 export const dynamic = 'force-dynamic'
