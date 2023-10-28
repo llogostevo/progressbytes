@@ -1,5 +1,3 @@
-// TODO: Duplicate or move this file outside the `_examples` folder to make it a route
-
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from 'next/link';
@@ -57,14 +55,22 @@ export default async function coursejudgements() {
     `)
         .eq('profileid', user.id);
 
+
+// // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
+// const { data: testdata, error: testerror } = await supabase
+// .from('profilestable')
+// .select(`
+// profileid
+// `)
+// .eq('profileid', user.id);
+
     let studentId: number;
-    console.log(profilesData)
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
         // console.log("Student ID for logged in user:", studentId);
     } else {
-        // console.log("No matching student record found");
+        console.log("No matching student record found");
         redirect("/")
     }
 
