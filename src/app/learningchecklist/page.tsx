@@ -56,14 +56,6 @@ export default async function coursejudgements() {
         .eq('profileid', user.id);
 
 
-// // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
-// const { data: testdata, error: testerror } = await supabase
-// .from('profilestable')
-// .select(`
-// profileid
-// `)
-// .eq('profileid', user.id);
-
     let studentId: number;
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
