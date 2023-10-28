@@ -85,6 +85,7 @@ export default function RealTimeProfiles({ schoolProfiles }: RealTimeProfilesPro
                   <Link className="block text-center mb-1 text-green-900 hover:text-green-500" href="/view-route">View</Link>
                   <Link className="block text-center mb-1 text-yellow-900 hover:text-yellow-500" href="/edit-route">Edit</Link>
                   <Link className="block text-center mb-1 text-red-900 hover:text-red-500" href="/delete-route">Delete</Link>
+                  
                   {(((profile.profiletype === 'Student') || profile.profiletype === 'student')) && (
                     <Link className="block text-center mt-1 text-blue-900 hover:text-blue-500" href="/enrollments-route">Enrollments</Link>
                   )}

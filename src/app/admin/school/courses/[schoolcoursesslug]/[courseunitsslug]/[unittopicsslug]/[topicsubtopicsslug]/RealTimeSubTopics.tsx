@@ -1,5 +1,6 @@
 "use client"
 
+import DeleteRecord from "@/components/DeleteRecord"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -35,16 +36,22 @@ export default function RealTimeSubTopics({ subtopics }: { subtopics: any }) {
             <div className="flex flex-col items-right space-y-4">
               <Link
                 href="#"
-                className="text-red-600 hover:cursor-pointer hover:text-indigo-900"
+                className="m-2 inline-block border border-tertiaryColor text-center hover:bg-tertiaryColor hover:text-white hover:border-white text-tertiaryColor rounded px-4 py-2 transition duration-200"
               >
                 Edit
               </Link>
-              <Link
-                href="#"
-                className="text-red-600 hover:cursor-pointer hover:text-indigo-900"
-              >
-                Delete
-              </Link>
+              <DeleteRecord
+                  recordIdName='subtopicid'
+                  recordIdValue={subtopic.subtopicid} 
+                  tableName='subtopictable'
+                  onDelete={(error) => { 
+                    if (error) {
+                      alert('Deletion failed: ' + error.message);
+                    } else {
+                      alert('Deletion successful: Note any children related data will be deleted, related data will not delete if a many to many');
+                    }
+                  }}
+                />
             </div>
           </td>
         </tr>

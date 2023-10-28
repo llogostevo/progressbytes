@@ -1,6 +1,8 @@
 "use client"
 
+import DeleteRecord from "@/components/DeleteRecord"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { PostgrestError } from "@supabase/supabase-js"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -9,7 +11,7 @@ import { useEffect } from "react"
 function formatDateUK(dateString: string): string {
   if (!dateString) {
     return "";  // or return an empty string "" if you prefer
-}
+  }
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero indexed, so we add 1
@@ -60,18 +62,31 @@ export default function RealTimeEnrollments({ enrollments }: { enrollments: any 
               <td className="py-2 text-center px-4 border-b">{enrolled.offroll ? 'Yes' : 'No'}</td>
 
               <td className="py-2 text-center px-4 border-b">
-                <Link
-                  href={`#`}
-                  className="mx-2 inline-block border border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
-                >
-                  Edit
-                </Link>
-                <Link
-                  href={`#`}
-                  className="mx-2 inline-block border border-secondaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-secondaryColor rounded px-4 py-2 transition duration-200"
-                >
-                  Delete
-                </Link>
+              <Link
+                href="#"
+                className="m-2 inline-block border border-primaryColor text-center hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
+              >
+                View
+              </Link>
+              <Link
+                href="#"
+                className="m-2 inline-block border border-tertiaryColor text-center hover:bg-tertiaryColor hover:text-white hover:border-white text-tertiaryColor rounded px-4 py-2 transition duration-200"
+              >
+                Edit
+              </Link>
+                <DeleteRecord
+                  recordIdName='enrollmentid'
+                  recordIdValue={enrolled.enrollmentid} 
+                  tableName='enrollmenttable'
+                  onDelete={(error) => { 
+                    if (error) {
+                      alert('Deletion failed: ' + error.message);
+                    } else {
+                      alert('Deletion successful');
+                    }
+                  }}
+                />
+
               </td>
             </tr>
           ))}

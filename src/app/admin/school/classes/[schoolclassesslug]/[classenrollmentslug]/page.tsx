@@ -37,7 +37,8 @@ export default async function Courses({ params }: { params: { classenrollmentslu
 
     const { data: enrollments, error: enrollmentsError } = await supabase
       .from('enrollmenttable')
-      .select(`studentid,
+      .select(`enrollmentid, 
+                studentid,
                 classid,
                 courseid,
                 startdate,
@@ -62,10 +63,7 @@ export default async function Courses({ params }: { params: { classenrollmentslu
       <EnrollStudentForm slug={`${params.classenrollmentslug}`} />
 
       <RealTimeEnrollments enrollments={enrollments} />
-      <p>{JSON.stringify(classtable)}</p>
-      <p>{JSON.stringify(enrollments)}</p>
-
-
+  
     </div>
 
   )

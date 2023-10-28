@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 import { useTransition } from "react";
 
-export default function AddClassForm({ slug }: { slug: string; }) {
+export default function AddClassForm({ slug }: { slug: number; }) {
 
     const [formData, setFormData] = useState({
         schoolClassName: '',
@@ -38,7 +38,7 @@ export default function AddClassForm({ slug }: { slug: string; }) {
         const { data, error } = await supabase
             .from('classtable')
             .insert([
-                { schoolid: `${slug}`, classname: `${formData.schoolClassName}`,},
+                { schoolid: `${slug}`, classid: `${formData.schoolClassName}`, classname: `${formData.schoolClassName}`,},
             ])
             .select()
 

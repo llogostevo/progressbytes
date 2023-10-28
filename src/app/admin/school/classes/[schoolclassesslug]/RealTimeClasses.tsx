@@ -1,5 +1,6 @@
 "use client"
 
+import DeleteRecord from "@/components/DeleteRecord"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -34,10 +35,28 @@ export default function RealTimeClasses({classes}:{classes:any}) {
 
               <Link
                 href={`${schoolclass.schoolid}/${decodeURIComponent(schoolclass.classid)}`}
-                className="inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
+                className="inline-block border mt-10 border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
               >
                 Enrollments
               </Link>
+              <Link
+                href="#"
+                className="m-2 inline-block border border-tertiaryColor text-center hover:bg-tertiaryColor hover:text-white hover:border-white text-tertiaryColor rounded px-4 py-2 transition duration-200"
+              >
+                Edit
+              </Link>
+              <DeleteRecord
+                  recordIdName='classid'
+                  recordIdValue={schoolclass.classid} 
+                  tableName='classtable'
+                  onDelete={(error) => { 
+                    if (error) {
+                      alert('Deletion failed: ' + error.message);
+                    } else {
+                      alert('Deletion successful: Note, any students and related data will still exist in DB');
+                    }
+                  }}
+                />
           </div>
         ))}
       </div>

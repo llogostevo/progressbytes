@@ -50,7 +50,7 @@ export default async function Courses({ params }: { params: { schoolclassesslug:
       <h1 className="text-4xl font-semibold mb-4">Classes</h1>
       <h1 className="text-xl font-semibold mb-4">{schoolName}</h1>
 
-      <AddClassForm slug={`${params.schoolclassesslug}`} />
+      <AddClassForm slug={params.schoolclassesslug} />
       
       <RealTimeClasses classes={classtable} />
     </div>
