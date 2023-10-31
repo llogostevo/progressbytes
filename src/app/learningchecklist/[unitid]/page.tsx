@@ -43,10 +43,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
-    const confidenceLevels = ["Needs Significant Support",
-        "Requires Some Assistance",
-        "Almost Independent",
-        "Fully Independent"];
+    const confidenceLevels = ["Needs Significant Study",
+        "Requires Revision",
+        "Almost Secure",
+        "Fully Secure"];
 
     const confidenceLevelColors: ConfidenceLevelColors = {
         "Needs Significant Study": "bg-red-300",
@@ -61,7 +61,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     // check if user is logged in and redirect to page if they are not
     if (!user) {
-        redirect("/")
+        redirect("./login")
     }
 
     // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
@@ -84,7 +84,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         // console.log("Student ID for logged in user:", studentId);
     } else {
         // console.log("No matching student record found");
-        redirect("/")
+        redirect("./login")
     }
 
     // check if student profile exists in DB, if not redirect to unauthorised
@@ -120,10 +120,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     return (
         <>
-            <div className="space-y-8">  {/* Adjust vertical space between each topic section */}
+            <div className="space-y-4">  {/* Adjust vertical space between each topic section */}
             <AssessmentModal />
                 {topics?.map((topic) => (
-                    <section key={topic.topicid} className="space-y-4">  {/* Adjust vertical space between heading and table */}
+                    <section key={topic.topicid} className="">  {/* Adjust vertical space between heading and table */}
                         <h2 className="text-2xl font-bold mb-2">  {/* Optionally, additional bottom margin from heading to table */}
                             {topic.topicnumber} - {topic.topictitle}
                         </h2>

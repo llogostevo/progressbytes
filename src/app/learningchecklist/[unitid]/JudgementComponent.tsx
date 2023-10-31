@@ -18,6 +18,17 @@ interface Props {
     confidenceLevels: string[];
 }
 
+interface ConfidenceLevelColors {
+    [key: string]: string;
+}
+
+const confidenceLevelColors: ConfidenceLevelColors = {
+    "Needs Significant Study": "bg-red-300",
+    "Requires Revision": "bg-yellow-300",
+    "Almost Secure": "bg-green-200",
+    "Fully Secure": "bg-green-500"
+};
+
 const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => {
     const [selectedJudgment, setSelectedJudgment] = useState<string | null>(null);
 
@@ -43,6 +54,12 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
 
         getSelectedJudgment()
     }, [supabase, setSelectedJudgment])
+
+    // Get color class based on selectedJudgment value
+    const getColorClass = (judgment: string | null) => {
+        if (!judgment) return "text-gray-400"; // Default color
+        return confidenceLevelColors[judgment] || "text-gray-400";
+    }
 
     const handleJudgmentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newJudgment = e.target.value;
@@ -70,8 +87,9 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
     };
 
     return (
+      
         <select
-            className="text-gray-400 border rounded p-1"
+            className={`${getColorClass(selectedJudgment)} border  border-black rounded p-1`} // Use the function to set the class
             value={selectedJudgment || ""}
             onChange={handleJudgmentChange}
         >

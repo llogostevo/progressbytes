@@ -4,35 +4,6 @@ import { redirect } from "next/navigation";
 import Assessments from "./Assessments";
 
 
-// type Assessment = {
-//     assessmentid: string;
-//     assessmentdate: string;
-//     assessmentname: string;
-//     created_by: string;
-//     questiontable: Array<{
-//         questionid: string;
-//         assessmentid: string;
-//         answertable: Array<{
-//             answerid: string;
-//             questionid: string;
-//             studentid: string;
-//         }>
-//     }>;
-// };
-
-// type AssessmentReference = {
-//     assessmentid: string;
-//   };
-  
-//   interface AssessmentProps {
-//     studentAssessment: Assessment[];
-//     answeredByStudent: AssessmentReference[];
-//     createdByUser: AssessmentReference[];
-//     user: {
-//       id: string;
-//     };
-// }
-
 export default async function ByteMarkStudent() {
 
 
@@ -55,17 +26,33 @@ export default async function ByteMarkStudent() {
             studenttable(
                 profileid,
                 studentid
-                )
+                ), 
+            teachertable(
+                profileid,
+                teacherid
+                    )
         `)
         .eq('profileid', user.id);
 
     let studentId: number;
+    let teacherId: number;
+
     console.log(profilesData)
 
-    if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
+    if (profilesData && profilesData.length > 0 
+        && profilesData[0].studenttable 
+        && profilesData[0].studenttable.length > 0 
+        && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
         // console.log("Student ID for logged in user:", studentId);
-    } else {
+    } else if (profilesData && profilesData.length > 0 
+        && profilesData[0].teachertable
+        && profilesData[0].teachertable.length > 0 
+        && profilesData[0].teachertable[0].teacherid) {
+        teacherId = profilesData[0].teachertable[0].teacherid;
+        console.log("Teacer ID for logged in user:", teacherId);
+        redirect("../staff/assessment/")
+        } else {
         // console.log("No matching student record found");
         redirect("/")
     }
@@ -82,11 +69,6 @@ export default async function ByteMarkStudent() {
         .select('assessmentid')
         .eq('created_by', user.id);
 
-    // // Handle any errors
-    // if (createdByError) {
-    //     console.error('Error fetching assessments created by user:', createdByError);
-    //     // Handle error
-    // }
 
     // 2. Fetch assessments that are associated with student's answers 
     // but are not created by the logged-in user
