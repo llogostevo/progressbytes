@@ -120,21 +120,22 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     return (
         <>
-            <div className="space-y-4">  {/* Adjust vertical space between each topic section */}
+        <div className="space-y-4">
             <AssessmentModal />
-                {topics?.map((topic) => (
-                    <section key={topic.topicid} className="">  {/* Adjust vertical space between heading and table */}
-                        <h2 className="text-2xl font-bold mb-2">  {/* Optionally, additional bottom margin from heading to table */}
-                            {topic.topicnumber} - {topic.topictitle}
-                        </h2>
-                        <table className="min-w-full table-auto border border-gray-900">
+            {topics?.map((topic) => (
+                <section key={topic.topicid} className="">
+                    <h2 className="text-2xl font-bold mb-2">
+                        {topic.topicnumber} - {topic.topictitle}
+                    </h2>
+                    <div className="flex flex-col"> {/* Wrapping div */}
+                        <table className="ml-10 min-w-full table-auto border border-gray-900">
                             <thead>
                                 <tr className="bg-gray-400 text-black border border-gray-900">
-                                    <th className="px-4 py-2 border-r border border-gray-900">Subtopic Number</th>
-                                    <th className="px-4 py-2 border-r border border-gray-900">Subtopic Title</th>
-                                    <th className="px-4 py-2 border-r border-gray-900">Judgment</th>
+                                    <th className="px-4 py-2 border-r border border-gray-900">#</th>
+                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
+                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
+                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgment</th>
                                 </tr>
-
                             </thead>
                             <tbody>
                                 {topic.subtopictable.sort((a: Subtopic, b: Subtopic) => {
@@ -152,9 +153,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
                                     return (
                                         <tr key={subtopic.subtopicid} className={`${judgmentColor}`}>
-                                            <td className="px-4 py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
-                                            <td className="px-4 py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
-                                            <td className="px-4 py-2 border-r border border-gray-900">
+                                            <td className="px-4 text-xs text-center py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
+                                            <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
+                                            <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopicdescription}</td>
+                                            <td className="px-4 py-2 text-center border-r border border-gray-900">
                                                 <JudgmentComponent
                                                     studentId={studentId}
                                                     subtopic={subtopic}
@@ -166,12 +168,11 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                 })}
 
                             </tbody>
-                        </table>
-
+                            </table>
+                        </div>
                     </section>
                 ))}
             </div>
-
         </>
     )
 }

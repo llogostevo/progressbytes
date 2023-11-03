@@ -15,7 +15,7 @@ function AssessmentModal() {
 
     return (
         <div>
-            <button onClick={handleOpen}>Open Judgment Guidance</button>
+            <button className="border border-primaryColor hover:bg-secondaryColor hover:border-secondaryColor hover:text-white text-primaryColor font-bold py-2 px-4 rounded" onClick={handleOpen}>Open Judgment Guidance</button>
             {isOpen && (
                 <div>
                     {isOpen && (
