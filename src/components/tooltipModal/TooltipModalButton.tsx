@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import ToolTipModalDetails from './toolTipModalDetails';
+import ToolTipModalDetails from './ToolTipModalDetails';
 
 function ToolTipModalButton({ toolTitle, toolDetails }: { toolTitle: string; toolDetails: string }) {
     const [isOpen, setIsOpen] = useState(false);

@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { useTransition } from "react";
 
-import { useState, FC, ChangeEvent, FormEvent } from 'react';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { useState, ChangeEvent } from 'react';
 import TooltipModalButton from "@/components/tooltipModal/TooltipModalButton";
 
 type AddAssessmentData = {
