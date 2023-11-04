@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import JudgmentComponent from './JudgementComponent'
 import AssessmentModal from '@/components/assessmentModal/AssesmentModal'
+import TooltipModalButton from '@/components/tooltipModal/tooltipModalButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -121,7 +122,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     return (
         <>
         <div className="space-y-4">
+
             <AssessmentModal />
+            <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />
+
             {topics?.map((topic) => (
                 <section key={topic.topicid} className="">
                     <h2 className="text-2xl font-bold mb-2">
@@ -134,7 +138,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                     <th className="px-4 py-2 border-r border border-gray-900">#</th>
                                     <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
                                     <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
-                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgment</th>
+                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgement</th>
                                 </tr>
                             </thead>
                             <tbody>

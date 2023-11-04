@@ -1,3 +1,4 @@
+import TooltipModalButton from '@/components/tooltipModal/tooltipModalButton';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from 'next/link';
@@ -50,6 +51,7 @@ export default async function coursejudgements() {
         profileid, 
         studenttable(
             profileid,
+            firstname,
             studentid
             )
     `)
@@ -57,9 +59,13 @@ export default async function coursejudgements() {
 
 
     let studentId: number;
+    let studentFirstName: string;
+
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
+        studentFirstName = profilesData[0].studenttable[0].firstname;
+
         // console.log("Student ID for logged in user:", studentId);
     } else {
         console.log("No matching student record found");
@@ -86,7 +92,7 @@ export default async function coursejudgements() {
 
     if (enrollments && enrollments.length > 0) {
         const courseIds = enrollments.map(enrollment => enrollment.courseid);
-        
+
         if (courseIds && courseIds.length > 0) {
             const { data: courses } = await supabase
                 .from('coursetable')
@@ -106,42 +112,45 @@ export default async function coursejudgements() {
 
 
 
-    return (
-        <div className="p-">
-            {/* <div className="bg-white p-4 rounded-md shadow-sm mb-4">
-                <h2 className="text-xl mb-4 font-semibold">Learning Checklists</h2>
-            </div> */}
-
-            {/* Iterate over each course-group */}
-            {groupedData?.map((group: CourseGroup) => (
-                <div key={group.courseid} >
-                    <div className="bg-white p-4 mb-4">
-                        <h2 className="text-3xl mb-4 font-bold text-gray-800">{group.subjectname}</h2>
-                        <h3 className="text-lg mb-4 text-gray-700">{group.level} {group.examboard}</h3>
+            return (
+                <div className="p-">
+                    {/* <h2 className="text-4xl mb-4 font-bold text-gray-800">Personalised Learning Checklists</h2> */}
+                    <div className="bg-white p-4 mb-4 flex gap-3">
+                        <h2 className="text-xl mb-4 font-semibold">Learning Checklists for {studentFirstName}</h2>
+                        <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Click on the corresponding unit below to access the learning checklists for your courses" />
                     </div>
-                    <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                        {group.units.map((unit: Unit) => (
-                            <Link href={`/learningchecklist/${unit.unitid}`} key={unit.unitid}>
-                                <div className="bg-white ml-10 flex flex-col gap-1 p-5 rounded-lg shadow-lg mb-2 min-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer border border-gray-300">
-                                    <h4 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
-                                        {unit.unitnumber} {group.subjectname} {group.level} ({group.examboard})
-                                    </h4>
-                                    <h5 className="sm:text-base md:text-md lg:text-lg mb-2">
-                                        {unit.unittitle}
-                                    </h5>
-                                </div>
-                            </Link>
-                        ))}
-                    </section>
-                </div>
-            ))}
 
-        </div>
-    )
-}  
-}  else {
-    console.log("No enrollments found for this student.");
-    <p>No enrollments found: Please contact your teacher to enroll you to a course</p>
-    // Optionally, you could redirect to another page or render an empty state
-}
+                
+
+                    {/* Iterate over each course-group */}
+                    {groupedData?.map((group: CourseGroup) => (
+                        <div key={group.courseid} >
+                            <div className="bg-white p-4 mb-4">
+                                <h2 className="text-3xl mb-4 font-bold text-gray-800">{group.subjectname}</h2>
+                                <h3 className="text-lg mb-4 text-gray-700">{group.level} {group.examboard}</h3>
+                            </div>
+                            <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                {group.units.map((unit: Unit) => (
+                                    <Link href={`/learningchecklist/${unit.unitid}`} key={unit.unitid}>
+                                        <div className="bg-white ml-10 flex flex-col gap-1 p-5 rounded-lg shadow-lg mb-2 min-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer border border-gray-300">
+                                            <h4 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
+                                                {unit.unitnumber} {group.subjectname} {group.level} ({group.examboard})
+                                            </h4>
+                                            <h5 className="sm:text-base md:text-md lg:text-lg mb-2">
+                                                {unit.unittitle}
+                                            </h5>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </section>
+                        </div>
+                    ))}
+
+                </div>
+            )
+        }
+    } else {
+        console.log("No enrollments found for this student.");
+        <p>No enrollments found: Please contact your teacher to enroll you to a course</p>
+    }
 }

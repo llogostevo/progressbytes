@@ -24,7 +24,7 @@ export default async function Header() {
           {user ? (
             <>
               {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyDashboard</Link> */}
-              {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link> */}
+              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
               <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
               {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/admin/school">School Admin</Link> */}
             </>

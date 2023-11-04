@@ -244,7 +244,7 @@ const supabase = createClientComponentClient()
 
                 </div>
 
-                <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md mt-6">Add Question</button>
+                <button type="submit" className="inline-block border px-4 py-2 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200">Add Question</button>
             </form>
         </div>
     )

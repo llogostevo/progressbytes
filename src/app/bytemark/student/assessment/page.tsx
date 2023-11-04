@@ -2,6 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Assessments from "./Assessments";
+import TooltipModalButton from "@/components/tooltipModal/tooltipModalButton";
 
 
 export default async function ByteMarkStudent() {
@@ -39,20 +40,20 @@ export default async function ByteMarkStudent() {
 
     console.log(profilesData)
 
-    if (profilesData && profilesData.length > 0 
-        && profilesData[0].studenttable 
-        && profilesData[0].studenttable.length > 0 
+    if (profilesData && profilesData.length > 0
+        && profilesData[0].studenttable
+        && profilesData[0].studenttable.length > 0
         && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
         // console.log("Student ID for logged in user:", studentId);
-    } else if (profilesData && profilesData.length > 0 
+    } else if (profilesData && profilesData.length > 0
         && profilesData[0].teachertable
-        && profilesData[0].teachertable.length > 0 
+        && profilesData[0].teachertable.length > 0
         && profilesData[0].teachertable[0].teacherid) {
         teacherId = profilesData[0].teachertable[0].teacherid;
         console.log("Teacer ID for logged in user:", teacherId);
         redirect("../staff/assessment/")
-        } else {
+    } else {
         // console.log("No matching student record found");
         redirect("/")
     }
@@ -123,9 +124,12 @@ export default async function ByteMarkStudent() {
     // }
 
     return (
-        <Assessments
-        // @ts-ignore
-            studentAssessment={assessments}
-            user={user}
-        />);
+        <>
+            <Assessments
+                // @ts-ignore
+                studentAssessment={assessments}
+                user={user}
+            />
+        </>
+    );
 }

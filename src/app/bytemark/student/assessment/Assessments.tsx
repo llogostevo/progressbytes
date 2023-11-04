@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import formatDateToCustom from "@/lib/dates";
 import Link from "next/link";
 import AddAssessmentForm from "./AddAssessementForm";
+import TooltipModalButton from '@/components/tooltipModal/tooltipModalButton';
 
 type Answer = {
     answerid: string;
@@ -61,77 +62,88 @@ export default function Assessments({ studentAssessment, user }: AssessmentProps
 
 
     return (
-        <div className="p-4 bg-gray-100"> {/* Added a light gray background for contrast */}
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4"> {/* Container for sorting controls */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                        {/* Actual hidden radio inputs */}
-                        <input
-                            type="radio"
-                            id="sortByDate"
-                            name="sortOrder"
-                            value="assessmentdate"
-                            className="hidden"
-                            checked={sortOrder === 'assessmentdate'}
-                            onChange={() => setSortOrder('assessmentdate')} // update state on change
-                        />
-
-                        <input
-                            type="radio"
-                            id="sortByName"
-                            name="sortOrder"
-                            value="assessmentname"
-                            className="hidden"
-                            checked={sortOrder === 'assessmentname'}
-                            onChange={() => setSortOrder('assessmentname')} // update state on change
-                        />
-
-                        {/* Labels styled as buttons */}
-                        <label
-                            htmlFor="sortByDate"
-                            className={`
-        px-2 py-1 text-xs rounded cursor-pointer 
-        ${sortOrder === 'assessmentdate' ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-secondaryColor hover:text-white'}
-    `}
-                            onClick={() => setSortOrder('assessmentdate')}
-                        >
-                            Sort by Date
-                        </label>
-
-                        <label
-                            htmlFor="sortByName"
-                            className={`
-        px-2 py-1 text-xs rounded cursor-pointer 
-        ${sortOrder === 'assessmentname' ? 'bg-secondaryColor text-white' : 'bg-white border border-secondaryColor hover:bg-secondaryColor hover:text-white'}
-    `}
-                            onClick={() => setSortOrder('assessmentname')}
-                        >
-                            Sort by Name
-                        </label>
-
-                    </div>
-                </div>
-            </div>
-
-
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4"> {/* Container for the form */}
-                <h2 className="text-xl mb-4 font-semibold">Add Assessment</h2>
+        <div className="p-4">
+            <h1 className="text-3xl mb-4 font-semibold">Student Assessments</h1>
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the form */}
+                <h2 className="text-xl mb-4 font-semibold">Create Assessment</h2>
                 <AddAssessmentForm userId={user.id} />
             </div>
 
             {/* <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/bytemark/assessment`}>Create New Assessment</Link> */}
 
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                {sortedAssessments.map((assessment) => (
-                    <div key={assessment.assessmentid} className="bg-white flex flex-col gap-1 p-3 justify-between rounded-lg shadow-lg mb-2 max-h-[140px]">
-                        <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
-                            {assessment.assessmentname}
-                        </h2>
-                        <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
-                        <Link className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200" href={`./assessment/${assessment.assessmentid}`}>Edit Assessment</Link>
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
+                <h2 className="text-xl mb-4 font-semibold">Assessments</h2>
+
+                <TooltipModalButton toolTitle="Add Questions:" toolDetails="Click Edit Assessments to add and edit the results of your questions" />
+                <div className="bg-white p-4 mb-4"> {/* Container for sorting controls */}
+                    <div className="flex mt-5 items-center justify-between ">
+                        <div className="flex items-center space-x-4">
+                            {/* Actual hidden radio inputs */}
+                            <input
+                                type="radio"
+                                id="sortByDate"
+                                name="sortOrder"
+                                value="assessmentdate"
+                                className="hidden"
+                                checked={sortOrder === 'assessmentdate'}
+                                onChange={() => setSortOrder('assessmentdate')} // update state on change
+                            />
+
+                            <input
+                                type="radio"
+                                id="sortByName"
+                                name="sortOrder"
+                                value="assessmentname"
+                                className="hidden"
+                                checked={sortOrder === 'assessmentname'}
+                                onChange={() => setSortOrder('assessmentname')} // update state on change
+                            />
+
+                            {/* Labels styled as buttons */}
+                            <label
+                                htmlFor="sortByDate"
+                                className={`
+        px-2 py-1 text-xs rounded cursor-pointer 
+        ${sortOrder === 'assessmentdate' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}
+    `}
+                                onClick={() => setSortOrder('assessmentdate')}
+                            >
+                                Sort by Date
+                            </label>
+
+                            <label
+                                htmlFor="sortByName"
+                                className={`
+        px-2 py-1 text-xs rounded cursor-pointer 
+        ${sortOrder === 'assessmentname' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}
+    `}
+                                onClick={() => setSortOrder('assessmentname')}
+                            >
+                                Sort by Name
+                            </label>
+
+                        </div>
                     </div>
-                ))}
-            </section>
+                </div>
+                <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+
+                    {sortedAssessments.map((assessment) => (
+
+                        <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300">
+                            <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
+                                {assessment.assessmentname}
+                            </h2>
+                            <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
+                            <div className="mt-auto text-right">
+                                <Link href={`./assessment/${assessment.assessmentid}`} key={assessment.assessmentid}>
+                                    <span className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">Edit Assessment</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                    ))}
+                </section>
+            </div>
         </div>
     );
 }

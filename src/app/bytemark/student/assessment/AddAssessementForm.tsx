@@ -8,6 +8,7 @@ import { useTransition } from "react";
 
 import { useState, FC, ChangeEvent, FormEvent } from 'react';
 import { SupabaseClient } from '@supabase/supabase-js';
+import TooltipModalButton from "@/components/tooltipModal/TooltipModalButton";
 
 type AddAssessmentData = {
     assessmentdate: string;
@@ -20,34 +21,40 @@ function formatDateToUKFormat(dateString: string): string {
 }
 
 
-export default function AddAssessementForm({ userId }: {userId: string}) {
+export default function AddAssessementForm({ userId }: { userId: string }) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
 
     // create the transition hook to manage the transition of the page refresh
     const [isPending, startTransition] = useTransition()
 
+
+    const [selectedPrefix, setSelectedPrefix] = useState('Classwork');
+
     const [assessmentData, setAssessmentData] = useState<AddAssessmentData>({
         assessmentdate: new Date().toISOString().slice(0, 10),
-        assessmentname: "Assessment: " + formatDateToUKFormat(new Date().toISOString().slice(0, 10))
+        assessmentname: `${selectedPrefix}: ` + formatDateToUKFormat(new Date().toISOString().slice(0, 10))
     });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {  // Updated to handle select element as well
         const { id, value } = e.target;
-        setAssessmentData(prev => {
-            // If the field being changed is 'assessmentdate', update 'assessmentname' as well
-            if (id === 'assessmentdate') {
-                return {
-                    ...prev,
-                    assessmentdate: value,
-                    assessmentname: "Assessment: " + formatDateToUKFormat(value)
-                };
-            }
-            // Otherwise, update the field that was changed
-            return { ...prev, [id]: value };
-        });
+        if (id === 'prefixSelect') {  // New condition for handling prefix selection
+            setSelectedPrefix(value);
+            setAssessmentData(prev => ({
+                ...prev,
+                assessmentname: `${value}: ` + formatDateToUKFormat(prev.assessmentdate),
+            }));
+        } else if (id === 'assessmentdate') {
+            setAssessmentData(prev => ({
+                ...prev,
+                assessmentdate: value,
+                assessmentname: `${selectedPrefix}: ` + formatDateToUKFormat(value),
+            }));
+        } else {
+            setAssessmentData(prev => ({ ...prev, [id]: value }));
+        }
     };
-    
+
 
     // async function to handle the form submission
     async function handleCreateAssessment(event: React.FormEvent<HTMLFormElement>) {
@@ -60,7 +67,7 @@ export default function AddAssessementForm({ userId }: {userId: string}) {
         //  @ts-ignore
         const assessmentname = assessmentData.assessmentname;
 
-    
+
 
         // Create a Supabase client configured to use cookies
         const supabase = createClientComponentClient()
@@ -94,16 +101,35 @@ export default function AddAssessementForm({ userId }: {userId: string}) {
     return (
         <div className="mb-6">
             <form onSubmit={handleCreateAssessment}>
-                <div className="mb-4">
-                    <label htmlFor="assessmentdate" className="block text-sm font-medium text-gray-700">Assessment Date</label>
-                    <input
-                        type="date"
-                        id="assessmentdate"
-                        value={assessmentData.assessmentdate}
-                        onChange={handleInputChange}
-                        className="mt-1 p-2 border rounded"
-                    />
+            <TooltipModalButton toolTitle="Assessment Date and Prefix:" toolDetails="Select the assessment date and a prefix for the assessment name, if you want a custom name you can edit this in the Assessment Name field instead - make sure you select the date of the assessment first though" />
+                <div className="flex mb-6 flex-col mt-5 md:flex-row">
+                    <div className="md:mr-2 mb-4 md:flex-1">
+                        <label htmlFor="assessmentdate" className="block text-sm font-medium text-gray-700">Assessment Date</label>
+                        <input
+                            type="date"
+                            id="assessmentdate"
+                            value={assessmentData.assessmentdate}
+                            onChange={handleInputChange}
+                            className="mt-1 py-2 px-4 border rounded w-full h-10"
+                        />
+                    </div>
+                    <div className="md:ml-2 mb-4 md:flex-1">
+                        <label htmlFor="prefixSelect" className="block text-sm font-medium text-gray-700">
+                            Prefix
+                        </label>
+                        <select
+                            id="prefixSelect"
+                            onChange={handleInputChange}
+                            className="mt-1 py-2 px-4 border rounded w-full h-10"
+                        >
+                            <option value="Classwork">Classwork</option>
+                            <option value="Homework">Homework</option>
+                            <option value="Revision">Revision</option>
+                            <option value="Assessment">Assessment</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div className="mb-4">
                     <label htmlFor="assessmentname" className="block text-sm font-medium text-gray-700">Assessment Name</label>
                     <input
@@ -114,6 +140,7 @@ export default function AddAssessementForm({ userId }: {userId: string}) {
                         className="mt-1 p-2 border rounded w-full"
                     />
                 </div>
+
                 <button type="submit" className="inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200">Create Assessment</button>
             </form>
         </div>
