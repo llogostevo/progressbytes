@@ -82,9 +82,8 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
-        // console.log("Student ID for logged in user:", studentId);
     } else {
-        // console.log("No matching student record found");
+        console.log("No matching student record found");
         redirect("./login")
     }
 
@@ -94,8 +93,33 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         redirect("/unauthorised")
     }
 
+    const { data: courses } = await supabase
+        .from('unittable')
+        .select('*')
+        .eq('unitid', params.unitid)
 
-  
+    let courseId: String;
+
+    if (courses && courses.length > 0) {
+        courseId = courses[0].courseid;
+    } else {
+        // console.log("No matching course record found");
+        redirect("/learningchecklist")
+    }
+
+
+    const { data: enrollments } = await supabase
+        .from('enrollmenttable')
+        .select('courseid')
+        .eq('courseid', courseId)
+        .eq('studentid', studentId)
+        .eq('offroll', false);
+
+    if (!(enrollments && enrollments.length > 0)) {
+        console.log("Student not enrolled");
+        redirect("/learningchecklist")
+    }
+
     const { data: topics } = await supabase
         .from('topictable')
         .select(`*,
@@ -109,57 +133,57 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     return (
         <>
-        <div className="space-y-4">
+            <div className="space-y-4">
 
-            <AssessmentModal />
-            <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />
+                <AssessmentModal />
+                <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />
 
-            {topics?.map((topic) => (
-                <section key={topic.topicid} className="">
-                    <h2 className="text-2xl font-bold mb-2">
-                        {topic.topicnumber} - {topic.topictitle}
-                    </h2>
-                    <div className="flex flex-col"> {/* Wrapping div */}
-                        <table className="ml-10 min-w-full table-auto border border-gray-900">
-                            <thead>
-                                <tr className="bg-gray-400 text-black border border-gray-900">
-                                    <th className="px-4 py-2 border-r border border-gray-900">#</th>
-                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
-                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
-                                    <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgement</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(topic.subtopictable || []).sort((a: Subtopic, b: Subtopic) => {
-                                    if (!isNaN(Number(a.subtopicnumber)) && !isNaN(Number(b.subtopicnumber))) {
-                                        return Number(a.subtopicnumber) - Number(b.subtopicnumber);
-                                    }
-                                    return a.subtopicnumber.localeCompare(b.subtopicnumber);
-                                }).map((subtopic: Subtopic) => {
-                                    // Get judgement THIS IS WHAT IS CAUSING THE ERROR
-                                    const judgment: string = subtopic.judgementtable?.find(j => j.studentid === studentId)?.judgment ?? "";
-                                    console.log("Retrieved judgment:", judgment);
-                                    console.log("studentId:", studentId);
+                {topics?.map((topic) => (
+                    <section key={topic.topicid} className="">
+                        <h2 className="text-2xl font-bold mb-2">
+                            {topic.topicnumber} - {topic.topictitle}
+                        </h2>
+                        <div className="flex flex-col"> {/* Wrapping div */}
+                            <table className="ml-10 min-w-full table-auto border border-gray-900">
+                                <thead>
+                                    <tr className="bg-gray-400 text-black border border-gray-900">
+                                        <th className="px-4 py-2 border-r border border-gray-900">#</th>
+                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
+                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
+                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(topic.subtopictable || []).sort((a: Subtopic, b: Subtopic) => {
+                                        if (!isNaN(Number(a.subtopicnumber)) && !isNaN(Number(b.subtopicnumber))) {
+                                            return Number(a.subtopicnumber) - Number(b.subtopicnumber);
+                                        }
+                                        return a.subtopicnumber.localeCompare(b.subtopicnumber);
+                                    }).map((subtopic: Subtopic) => {
+                                        // Get judgement THIS IS WHAT IS CAUSING THE ERROR
+                                        const judgment: string = subtopic.judgementtable?.find(j => j.studentid === studentId)?.judgment ?? "";
+                                        console.log("Retrieved judgment:", judgment);
+                                        console.log("studentId:", studentId);
 
-                                    const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
+                                        const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
 
-                                    return (
-                                        <tr key={subtopic.subtopicid} className={`${judgmentColor}`}>
-                                            <td className="px-4 text-xs text-center py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
-                                            <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
-                                            <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopicdescription}</td>
-                                            <td className="px-4 py-2 text-center border-r border border-gray-900">
-                                                <JudgmentComponent
-                                                    studentId={studentId}
-                                                    subtopic={subtopic}
-                                                    confidenceLevels={confidenceLevels}
-                                                />
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                        return (
+                                            <tr key={subtopic.subtopicid} className={`${judgmentColor}`}>
+                                                <td className="px-4 text-xs text-center py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
+                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
+                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopicdescription}</td>
+                                                <td className="px-4 py-2 text-center border-r border border-gray-900">
+                                                    <JudgmentComponent
+                                                        studentId={studentId}
+                                                        subtopic={subtopic}
+                                                        confidenceLevels={confidenceLevels}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
 
-                            </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </section>
