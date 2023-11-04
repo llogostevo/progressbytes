@@ -1,4 +1,4 @@
-import TooltipModalButton from '@/components/tooltipModal/tooltipModalButton';
+import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from 'next/link';

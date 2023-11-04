@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import JudgmentComponent from './JudgementComponent'
 import AssessmentModal from '@/components/assessmentModal/AssesmentModal'
-import TooltipModalButton from '@/components/tooltipModal/tooltipModalButton'
+import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton'
 
 export const dynamic = 'force-dynamic'
 
