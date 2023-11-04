@@ -113,20 +113,17 @@ export default async function coursejudgements() {
 
 
             return (
-                <div className="p-">
-                    {/* <h2 className="text-4xl mb-4 font-bold text-gray-800">Personalised Learning Checklists</h2> */}
-                    <div className="bg-white p-4 mb-4 flex gap-3">
-                        <h2 className="text-xl mb-4 font-semibold">Learning Checklists for {studentFirstName}</h2>
+                <div className="">
+
+                    <h2 className="text-4xl mb-4 font-bold text-gray-800">Personalised Learning Checklists</h2>
+                    <div className="bg-white p-4 mb-4 gap-3 border border-gray-300 mt-2 rounded-lg">
+                        <h2 className="text-3xl mb-4 font-semibold">{studentFirstName}</h2>
                         <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Click on the corresponding unit below to access the learning checklists for your courses" />
-                    </div>
-
-                
-
                     {/* Iterate over each course-group */}
                     {groupedData?.map((group: CourseGroup) => (
                         <div key={group.courseid} >
                             <div className="bg-white p-4 mb-4">
-                                <h2 className="text-3xl mb-4 font-bold text-gray-800">{group.subjectname}</h2>
+                                <h2 className="text-2xl mb-4 font-bold text-gray-800">{group.subjectname}</h2>
                                 <h3 className="text-lg mb-4 text-gray-700">{group.level} {group.examboard}</h3>
                             </div>
                             <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
@@ -145,6 +142,7 @@ export default async function coursejudgements() {
                             </section>
                         </div>
                     ))}
+                </div>
 
                 </div>
             )

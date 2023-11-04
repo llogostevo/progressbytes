@@ -63,16 +63,16 @@ export default function Assessments({ studentAssessment, user }: AssessmentProps
 
     return (
         <div className="p-4">
-            <h1 className="text-3xl mb-4 font-semibold">Student Assessments</h1>
+            <h1 className="text-4xl mb-4 font-semibold">Student Assessments</h1>
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the form */}
-                <h2 className="text-xl mb-4 font-semibold">Create Assessment</h2>
+                <h2 className="text-2xl mb-4 font-semibold">Create Assessment</h2>
                 <AddAssessmentForm userId={user.id} />
             </div>
 
             {/* <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/bytemark/assessment`}>Create New Assessment</Link> */}
 
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
-                <h2 className="text-xl mb-4 font-semibold">Assessments</h2>
+                <h2 className="text-2xl mb-4 font-semibold">Personal Assessments</h2>
 
                 <TooltipModalButton toolTitle="Add Questions:" toolDetails="Click Edit Assessments to add and edit the results of your questions" />
                 <div className="bg-white p-4 mb-4"> {/* Container for sorting controls */}
