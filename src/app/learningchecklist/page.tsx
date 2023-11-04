@@ -72,20 +72,42 @@ export default async function coursejudgements() {
         redirect("/unauthorised")
     }
 
-    // This assumes you have a `todos` table in Supabase. Check out
-    // the `Create Table and seed with data` section of the README 👇
-    // https://github.com/vercel/next.js/blob/canary/examples/with-supabase/README.md
-    const { data: units } = await supabase.from('unittable').select()
-    const { data: course } = await supabase.from('coursetable').select()
+    // Fetch the enrollments for that studentid from the enrollmenttable:
 
-    const groupedData = course?.map(c => ({
-        ...c,
-        units: units?.filter(u => u.courseid === c.courseid)
-    }));
+    const { data: enrollments } = await supabase
+        .from('enrollmenttable')
+        .select('courseid')
+        .eq('studentid', studentId)
+        .eq('offroll', false);
+
+
+    // Extract the courseid values from the enrollment data:
+    const courseIds = enrollments?.map(enrollment => enrollment.courseid);
+
+    if (enrollments && enrollments.length > 0) {
+        const courseIds = enrollments.map(enrollment => enrollment.courseid);
+        
+        if (courseIds && courseIds.length > 0) {
+            const { data: courses } = await supabase
+                .from('coursetable')
+                .select()
+                .in('courseid', courseIds);
+
+            const { data: units } = await supabase
+                .from('unittable')
+                .select()
+                .in('courseid', courseIds);
+
+            const groupedData = courses?.map(course => ({
+                ...course,
+                units: units?.filter(unit => unit.courseid === course.courseid)
+            }));
+
+
 
 
     return (
-        <div className="p-4 bg-gray-100">
+        <div className="p-">
             {/* <div className="bg-white p-4 rounded-md shadow-sm mb-4">
                 <h2 className="text-xl mb-4 font-semibold">Learning Checklists</h2>
             </div> */}
@@ -93,20 +115,20 @@ export default async function coursejudgements() {
             {/* Iterate over each course-group */}
             {groupedData?.map((group: CourseGroup) => (
                 <div key={group.courseid} >
-                    <div className="bg-white p-4 rounded-md shadow-sm mb-4">
-                        <h2 className="text-2xl mb-4 font-semibold">{group.subjectname}</h2>
-                        <h2 className="text-2sm mb-4 ">{group.level} {group.examboard}</h2>
+                    <div className="bg-white p-4 mb-4">
+                        <h2 className="text-3xl mb-4 font-bold text-gray-800">{group.subjectname}</h2>
+                        <h3 className="text-lg mb-4 text-gray-700">{group.level} {group.examboard}</h3>
                     </div>
                     <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                         {group.units.map((unit: Unit) => (
                             <Link href={`/learningchecklist/${unit.unitid}`} key={unit.unitid}>
-                                <div className="bg-white flex flex-col gap-1 p-3 rounded-lg shadow-lg mb-2 min-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                                    <h3 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
-                                        {unit.courseid}: {unit.unitnumber}
-                                    </h3>
-                                    <h4 className="sm:text-base md:text-md lg:text-lg mb-2">
-                                        {unit.unittitle}
+                                <div className="bg-white ml-10 flex flex-col gap-1 p-5 rounded-lg shadow-lg mb-2 min-h-[200px] overflow-y-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer border border-gray-300">
+                                    <h4 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
+                                        {unit.unitnumber} {group.subjectname} {group.level} ({group.examboard})
                                     </h4>
+                                    <h5 className="sm:text-base md:text-md lg:text-lg mb-2">
+                                        {unit.unittitle}
+                                    </h5>
                                 </div>
                             </Link>
                         ))}
@@ -116,4 +138,10 @@ export default async function coursejudgements() {
 
         </div>
     )
-}    
+}  
+}  else {
+    console.log("No enrollments found for this student.");
+    <p>No enrollments found: Please contact your teacher to enroll you to a course</p>
+    // Optionally, you could redirect to another page or render an empty state
+}
+}
