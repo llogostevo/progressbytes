@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import 'server-only'
-
+// used to create a new user within the DB
 export default async function createSchoolUser({
       userEmail,
         password,
