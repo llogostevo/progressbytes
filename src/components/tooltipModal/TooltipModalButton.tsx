@@ -15,7 +15,7 @@ function ToolTipModalButton({ toolTitle, toolDetails }: { toolTitle: string; too
 
     return (
         <div>
-            <button className="bg-white border border-primaryColor rounded-full w-7 h-7 flex items-center justify-center text-primaryColor hover:bg-primaryColor hover:text-white" onClick={handleOpen}>i</button>
+            <button className="bg-white border border-primaryColor rounded-full w-7 h-7 flex items-center justify-center text-primaryColor hover:bg-primaryColor hover:text-white" onClick={handleOpen}>?</button>
             {isOpen && (
                 <div>
                     {isOpen && (

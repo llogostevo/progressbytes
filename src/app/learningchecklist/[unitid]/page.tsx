@@ -94,20 +94,8 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         redirect("/unauthorised")
     }
 
-    const { data: unittopics, error } = await supabase
-        .from('unittable')
-        .select(`
-        *,
-        topictable:topictable ( 
-            *,
-            subtopictable:subtopictable (
-                *,
-                judgementtable:judgementtable (*)
-            )
-        )
-    `)
-        .eq('unitid', params.unitid);
 
+  
     const { data: topics } = await supabase
         .from('topictable')
         .select(`*,
@@ -142,7 +130,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                 </tr>
                             </thead>
                             <tbody>
-                                {topic.subtopictable.sort((a: Subtopic, b: Subtopic) => {
+                                {(topic.subtopictable || []).sort((a: Subtopic, b: Subtopic) => {
                                     if (!isNaN(Number(a.subtopicnumber)) && !isNaN(Number(b.subtopicnumber))) {
                                         return Number(a.subtopicnumber) - Number(b.subtopicnumber);
                                     }
