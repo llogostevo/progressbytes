@@ -2,7 +2,6 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Assessments from "./Assessments";
-import TooltipModalButton from "@/components/tooltipModal/tooltipModalButton";
 
 
 export default async function ByteMarkStudent() {
