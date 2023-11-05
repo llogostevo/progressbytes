@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import AddQuestionMark from "./AddQuestionMark";
+import { getAlevelGrade, getGCSEGrade } from "@/lib/gradeBoundaries";
 
 // Type Definitions
 interface Student {
@@ -179,23 +180,37 @@ export default async function StudentAssessmentView({ params }: { params: { asse
     }, 0);
 
     // Calculate Percentage for the student
-    const studentPercentage = `${((studentTotalMarks / maxMarks) * 100).toFixed(2)}%`;
+    const studentRawPercentage = ((studentTotalMarks / maxMarks) * 100).toFixed(2);
+    const studentPercentage = `${studentRawPercentage}%`;
+
+    const gcseGrade = getGCSEGrade(Number(studentRawPercentage))
+    const aLevelGrade = getAlevelGrade(Number(studentRawPercentage))
 
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
 
-            <div className="my-4">
-                <span className="font-bold">Total Marks: </span>{studentTotalMarks}
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the details */}
+                <div className="my-4">
+                    <span className="font-bold">Total Marks: </span>{studentTotalMarks}
+                </div>
+                <div className="my-4">
+                    <span className="font-bold">Max Possible Marks: </span>{maxMarks}
+                </div>
+                <div className="my-4">
+                    <span className="font-bold">Percentage: </span>{studentPercentage}
+                </div>
+                <div className="my-4">
+                    <span className="font-bold">GCSE Grade Equivalent: </span>{gcseGrade}
+                </div>
+                <div className="my-4">
+                    <span className="font-bold">A level Grade Equivalent: </span>{aLevelGrade}
+                </div>
             </div>
-            <div className="my-4">
-                <span className="font-bold">Max Possible Marks: </span>{maxMarks}
-            </div>
-            <div className="my-4">
-                <span className="font-bold">Percentage: </span>{studentPercentage}
-            </div>
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the details */}
 
-            <AddQuestionMark slug={assessment.assessmentid} studentId={studentId}/>
+                <AddQuestionMark slug={assessment.assessmentid} studentId={studentId} />
+            </div>
 
             <h2 className="text-xl font-semibold mt-8 mb-4">Your Questions</h2>
 
@@ -225,7 +240,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                                     <td className="border px-2 py-1">{question.questionnumber}</td>
                                     <td className="border px-2 py-1">{studentAnswerMark}</td>
                                     <td className="border px-2 py-1">{maxMarks}</td>
-                                    <td className="border px-2 py-1">{percentage}%</td>
+                                    <td className="border px-2 py-1">{percentage}% <div className="mt-1">Grade:{getGCSEGrade(Number(percentage))}/{getAlevelGrade(Number(percentage))}</div></td>
                                     <td className="border px-2 py-1">
                                         <Link href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>
                                             Edit Marks
