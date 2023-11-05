@@ -57,19 +57,46 @@ export default async function coursejudgements() {
     `)
         .eq('profileid', user.id);
 
+    
+        const { data: teacherData, error: teacherDataError } = await supabase
+        .from('profilestable')
+        .select(`
+        profileid, 
+        teachertable(
+            profileid,
+            teacherid
+            )
+    `)
+        .eq('profileid', user.id);
+
 
     let studentId: number;
     let studentFirstName: string;
 
 
-    if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
+    if (
+        profilesData &&
+        profilesData.length > 0 &&
+        profilesData[0].studenttable &&
+        profilesData[0].studenttable.length > 0 &&
+        profilesData[0].studenttable[0].studentid
+    ) {
         studentId = profilesData[0].studenttable[0].studentid;
         studentFirstName = profilesData[0].studenttable[0].firstname;
-
+    
         // console.log("Student ID for logged in user:", studentId);
-    } else {
+    } else if (
+        teacherData &&
+        teacherData.length > 0 &&
+        teacherData[0].teachertable &&
+        teacherData[0].teachertable.length > 0 &&
+        teacherData[0].teachertable[0].teacherid
+    ){
+        console.log("teacher")
+        redirect("/bytemark/staff");
+    }  else {
         console.log("No matching student record found");
-        redirect("/")
+        redirect("/admin");
     }
 
     // check if student profile exists in DB, if not redirect to unauthorised

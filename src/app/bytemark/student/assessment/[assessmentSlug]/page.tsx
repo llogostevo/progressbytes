@@ -1,7 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import AddQuestionMark from "./AddQuestionMark";
 import { getAlevelGrade, getGCSEGrade } from "@/lib/gradeBoundaries";
 
@@ -190,7 +190,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
 
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the details */}
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> 
                 <div className="my-4">
                     <span className="font-bold">Total Marks: </span>{studentTotalMarks}
                 </div>
@@ -207,8 +207,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                     <span className="font-bold">A level Grade Equivalent: </span>{aLevelGrade}
                 </div>
             </div>
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the details */}
-
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> 
                 <AddQuestionMark slug={assessment.assessmentid} studentId={studentId} />
             </div>
 

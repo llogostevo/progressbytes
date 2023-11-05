@@ -2,10 +2,9 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import AddClassForm from './AddClassForm'
-import RealTimeClasses from './RealTimeClasses'
+import TeacherRealTimeClasses from './TeacherRealTimeClasses'
 
-export default async function Classes({ params }: { params: { schoolclassesslug: number } }) {
+export default async function TeacherClasses({ params }: { params: { schoolclassesslug: number } }) {
   const supabase = createServerComponentClient({ cookies })
 
   // get the users sessions
@@ -48,10 +47,8 @@ export default async function Classes({ params }: { params: { schoolclassesslug:
 
       <h1 className="text-4xl font-semibold mb-4">Classes</h1>
       <h1 className="text-xl font-semibold mb-4">{schoolName}</h1>
-
-      <AddClassForm slug={params.schoolclassesslug} />
       
-      <RealTimeClasses classes={classtable} />
+      <TeacherRealTimeClasses classes={classtable} />
     </div>
 
   )
