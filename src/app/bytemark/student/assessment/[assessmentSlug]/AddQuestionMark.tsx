@@ -232,6 +232,7 @@ const supabase = createClientComponentClient()
 
                     <div className="mt-4 space-y-2">
                         <SubTopicDropDown
+                            studentId = {studentId}
                             selectedSubtopicId={selectedSubtopic}
                             onSubtopicChange={handleSubtopicChange}
                         />

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import JudgmentComponent from './JudgementComponent'
 import AssessmentModal from '@/components/assessmentModal/AssesmentModal'
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton'
+import HistoricalComponent from './HistoricalComponent'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,6 +40,9 @@ interface Topic {
 interface ConfidenceLevelColors {
     [key: string]: string;
 }
+
+        
+
 
 export default async function UnitChecklist({ params }: { params: { unitid: string } }) {
     // Create a Supabase client configured to use cookies
@@ -78,7 +82,6 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         .eq('profileid', user.id);
 
     let studentId: number;
-    console.log(profilesData)
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
@@ -130,7 +133,6 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
     `)
         .eq('unitid', params.unitid);
 
-
     return (
         <>
             <div className="space-y-4">
@@ -150,6 +152,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                         <th className="px-4 py-2 border-r border border-gray-900">#</th>
                                         <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
                                         <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
+                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Historical Performance</th>
                                         <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgement</th>
                                     </tr>
                                 </thead>
@@ -162,8 +165,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                     }).map((subtopic: Subtopic) => {
                                         // Get judgement THIS IS WHAT IS CAUSING THE ERROR
                                         const judgment: string = subtopic.judgementtable?.find(j => j.studentid === studentId)?.judgment ?? "";
-                                        console.log("Retrieved judgment:", judgment);
-                                        console.log("studentId:", studentId);
+                                       
 
                                         const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
 
@@ -172,6 +174,12 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
                                                 <td className="px-4 text-xs text-center py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
                                                 <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
                                                 <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopicdescription}</td>
+                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">
+                                                <HistoricalComponent 
+                                                        studentId={studentId}
+                                                        subtopicId={subtopic.subtopicid}
+                                                    />
+                                                </td>
                                                 <td className="px-4 py-2 text-center border-r border border-gray-900">
                                                     <JudgmentComponent
                                                         studentId={studentId}

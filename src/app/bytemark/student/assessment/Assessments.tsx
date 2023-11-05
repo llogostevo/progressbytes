@@ -129,13 +129,13 @@ export default function Assessments({ studentAssessment, user }: AssessmentProps
 
                     {sortedAssessments.map((assessment) => (
 
-                        <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300">
+                        <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300" key={assessment.assessmentid}>
                             <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
                                 {assessment.assessmentname}
                             </h2>
                             <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
                             <div className="mt-auto text-right">
-                                <Link href={`./assessment/${assessment.assessmentid}`} key={assessment.assessmentid}>
+                                <Link href={`./assessment/${assessment.assessmentid}`}>
                                     <span className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">Edit Assessment</span>
                                 </Link>
                             </div>
