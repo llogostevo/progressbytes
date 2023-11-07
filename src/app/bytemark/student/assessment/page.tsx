@@ -97,6 +97,7 @@ export default async function ByteMarkStudent() {
         assessmentid,
         assessmentdate, 
         assessmentname,
+        assessmenttype,
         created_by, 
         questiontable (
             questionid, 
