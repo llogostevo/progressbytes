@@ -69,7 +69,7 @@ const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
         getAnswers();
     }, [studentId, supabase]);
 
-    const rounded = Number(percentage.toFixed(2));  // rounded will be 123.46
+    const rounded = Number(percentage.toFixed(2)); 
     
     let grade : String;
     if (courseLevel=="GCSE"){

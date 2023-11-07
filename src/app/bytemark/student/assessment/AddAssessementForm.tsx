@@ -132,6 +132,7 @@ export default function AddAssessementForm({ userId }: { userId: string }) {
                         >
                             <option value="Classwork">Classwork</option>
                             <option value="Homework">Homework</option>
+                            <option value="Classwork">SGL</option>
                             <option value="Revision">Revision</option>
                             <option value="Assessment">Assessment</option>
                         </select>
