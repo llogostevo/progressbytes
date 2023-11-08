@@ -34,11 +34,12 @@ interface AssessmentProps {
     user: {
         id: string;
     };
+    disableAssessment: Boolean;
     // You can add other properties if required.
 }
 
 
-export default function Assessments({ studentAssessment, user }: AssessmentProps) {
+export default function Assessments({ studentAssessment, user, disableAssessment }: AssessmentProps) {
 
 
     // 1. Use useState to manage sortOrder
@@ -66,7 +67,7 @@ export default function Assessments({ studentAssessment, user }: AssessmentProps
             <h1 className="text-4xl mb-4 font-semibold">Student Assessments</h1>
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the form */}
                 <h2 className="text-2xl mb-4 font-semibold">Create Assessment</h2>
-                <AddAssessmentForm userId={user.id} />
+                <AddAssessmentForm userId={user.id} disableAssessment={disableAssessment}/>
             </div>
 
             {/* <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/bytemark/assessment`}>Create New Assessment</Link> */}

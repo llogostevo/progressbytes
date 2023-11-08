@@ -56,6 +56,7 @@ interface Assessment {
     assessmentid: string;
     assessmentdate: string;
     assessmentname: string;
+    assessmenttype: string;
     questiontable: Question[];
 }
 
@@ -83,55 +84,6 @@ export default async function StudentAssessmentView({ params }: { params: { asse
 
     const decodedSlug = decodeURIComponent(params.assessmentSlug)
 
-
-    // THIS ISNT WORKING
-    const { data: assessmentData, error: assessmentDataError } = await supabase
-        .from('assessmenttable')
-        .select(`
-        assessmentid,
-        assessmentdate, 
-        assessmentname, 
-        questiontable (
-            questionid, 
-            assessmentid, 
-            questionnumber, 
-            questionorder, 
-            noofmarks,
-            questionsubtopictable (
-                subtopictable (
-                    subtopictitle, 
-                    subtopicid,
-                    topictable (
-                        topictitle,
-                        topicid,
-                        unittable (
-                            unittitle, 
-                            unitnumber, 
-                            unitid
-                        )
-                    )
-                )
-                ),
-                answertable (
-                    answerid, 
-                    questionid, 
-                    studentid, 
-                    mark,
-                    studenttable (
-                        studentid, 
-                        firstname, 
-                        lastname,
-                        profilestable(
-                            profileid
-                        )
-                    )
-                )
-            )
-        )
-    `)
-        .eq('assessmentid', decodedSlug)
-    // .eq('answertable.studenttable.profiletable.profileid', `${userId}`);
-
     // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
     const { data: profilesData, error: profilesDataError } = await supabase
         .from('profilestable')
@@ -139,21 +91,70 @@ export default async function StudentAssessmentView({ params }: { params: { asse
             profileid, 
             studenttable(
                 profileid,
-                studentid
+                studentid, 
+                assessmentedit
                 )
         `)
         .eq('profileid', userId);
 
     let studentId: number;
-    console.log(profilesData)
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
-        console.log("Student ID for logged in user:", studentId);
+        // console.log("Student ID for logged in user:", studentId);
     } else {
         console.log("No matching student record found");
         redirect("/")
     }
+
+    const { data: assessmentData, error: assessmentDataError } = await supabase
+        .from('assessmenttable')
+        .select(`
+    assessmentid,
+    assessmentdate, 
+    assessmentname,
+    assessmenttype, 
+    questiontable (
+        questionid, 
+        assessmentid, 
+        questionnumber, 
+        questionorder, 
+        noofmarks,
+        questionsubtopictable (
+            subtopictable (
+                subtopictitle, 
+                subtopicid,
+                topictable (
+                    topictitle,
+                    topicid,
+                    unittable (
+                        unittitle, 
+                        unitnumber, 
+                        unitid
+                    )
+                )
+            )
+            ),
+            answertable (
+                answerid, 
+                questionid, 
+                studentid, 
+                mark,
+                studenttable (
+                    studentid, 
+                    firstname, 
+                    lastname,
+                    assessmentedit,
+                    profilestable(
+                        profileid
+                    )
+                )
+            )
+        )
+    )
+`)
+        .eq('assessmentid', decodedSlug)
+    // .eq('answertable.studenttable.profiletable.profileid', `${userId}`);
 
     // Handle the error
     if (assessmentDataError) {
@@ -171,6 +172,8 @@ export default async function StudentAssessmentView({ params }: { params: { asse
     // @ts-ignore
     const assessment: Assessment = assessmentData[0];
 
+    console.log(assessment)
+
     const maxMarks = assessment.questiontable.reduce((acc, question) => acc + question.noofmarks, 0);
     const studentsProfileIDs = assessment.questiontable
     // Calculate the student's total marks
@@ -186,11 +189,16 @@ export default async function StudentAssessmentView({ params }: { params: { asse
     const gcseGrade = getGCSEGrade(Number(studentRawPercentage))
     const aLevelGrade = getAlevelGrade(Number(studentRawPercentage))
 
+    // check if this is an assessment component and whether it should be hidden from edits. 
+    const hideComponents = assessmentData && assessmentData.length > 0 &&
+        assessment.assessmenttype === 'Assessment' &&
+        profilesData[0].studenttable[0].assessmentedit == false       
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
 
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> 
+            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
                 <div className="my-4">
                     <span className="font-bold">Total Marks: </span>{studentTotalMarks}
                 </div>
@@ -207,9 +215,11 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                     <span className="font-bold">A level Grade Equivalent: </span>{aLevelGrade}
                 </div>
             </div>
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> 
-                <AddQuestionMark slug={assessment.assessmentid} studentId={studentId} />
-            </div>
+            {!hideComponents && (
+                <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
+                    <AddQuestionMark slug={assessment.assessmentid} studentId={studentId} />
+                </div>
+            )}
 
             <h2 className="text-xl font-semibold mt-8 mb-4">Your Questions</h2>
 
@@ -240,11 +250,13 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                                     <td className="border px-2 py-1">{studentAnswerMark}</td>
                                     <td className="border px-2 py-1">{maxMarks}</td>
                                     <td className="border px-2 py-1">{percentage}% <div className="mt-1">Grade:{getGCSEGrade(Number(percentage))}/{getAlevelGrade(Number(percentage))}</div></td>
-                                    <td className="border px-2 py-1">
-                                        <Link href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>
-                                            Edit Marks
-                                        </Link>
-                                    </td>
+                                    {!hideComponents && (
+                                        <td className="border px-2 py-1">
+                                            <Link href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>
+                                                Edit Marks
+                                            </Link>
+                                        </td>
+                                    )}
                                 </tr>
                             )
                         })}
