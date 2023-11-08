@@ -25,7 +25,8 @@ export default async function ByteMarkStudent() {
             profileid, 
             studenttable(
                 profileid,
-                studentid
+                studentid, 
+                assessmentedit
                 ), 
             teachertable(
                 profileid,
@@ -123,12 +124,16 @@ export default async function ByteMarkStudent() {
     //     console.error('Error:', assessmentError);
     // }
 
+    // check if this is an assessment component and whether it should be hidden from edits. 
+    const disableAssessment = (profilesData[0].studenttable[0].assessmentedit === false )
+    
     return (
         <>
             <Assessments
                 // @ts-ignore
                 studentAssessment={assessments}
                 user={user}
+                disableAssessment={disableAssessment}
             />
         </>
     );

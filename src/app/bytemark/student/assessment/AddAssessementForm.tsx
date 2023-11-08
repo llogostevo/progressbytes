@@ -21,10 +21,14 @@ function formatDateToUKFormat(dateString: string): string {
 }
 
 
-export default function AddAssessementForm({ userId }: { userId: string }) {
+export default function AddAssessementForm({ userId, disableAssessment }: { userId: string, disableAssessment: Boolean }) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
-
+    console.log(disableAssessment)
+    let primativeDisableAssessment: boolean = false;
+    if (disableAssessment) {
+        primativeDisableAssessment = true; // or some condition that evaluates to a boolean
+    }
     // create the transition hook to manage the transition of the page refresh
     const [isPending, startTransition] = useTransition()
 
@@ -92,8 +96,8 @@ export default function AddAssessementForm({ userId }: { userId: string }) {
         event.target.assessmentdate.value = "";
         //  @ts-ignore
         event.target.assessmentname.value = "";
-       //  @ts-ignore
-       event.target.assessmentname.value = "";
+        //  @ts-ignore
+        event.target.assessmentname.value = "";
 
         // refresh the current route and fetch new data from the server without losing the client side browser or react state
         // takes a callback as a parameter
@@ -103,12 +107,13 @@ export default function AddAssessementForm({ userId }: { userId: string }) {
 
         })
 
+        
 
     }
     return (
         <div className="mb-6">
             <form onSubmit={handleCreateAssessment}>
-            <TooltipModalButton toolTitle="Assessment Date and Prefix:" toolDetails="Select the assessment date and a prefix for the assessment name, if you want a custom name you can edit this in the Assessment Name field instead - make sure you select the date of the assessment first though" />
+                <TooltipModalButton toolTitle="Assessment Date and Prefix:" toolDetails="Select the assessment date and a prefix for the assessment name, if you want a custom name you can edit this in the Assessment Name field instead - make sure you select the date of the assessment first though" />
                 <div className="flex mb-6 flex-col mt-5 md:flex-row">
                     <div className="md:mr-2 mb-4 md:flex-1">
                         <label htmlFor="assessmentdate" className="block text-sm font-medium text-gray-700">Assessment Date</label>
@@ -134,7 +139,7 @@ export default function AddAssessementForm({ userId }: { userId: string }) {
                             <option value="Homework">Homework</option>
                             <option value="Classwork">SGL</option>
                             <option value="Revision">Revision</option>
-                            <option value="Assessment">Assessment</option>
+                            <option value="Assessment" disabled={primativeDisableAssessment ? true : undefined}>Assessment</option>
                         </select>
                     </div>
                 </div>
