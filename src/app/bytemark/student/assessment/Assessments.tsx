@@ -126,8 +126,9 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                         </div>
                     </div>
                 </div>
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div>{JSON.stringify(studentAssessment)}</div>
 
+                <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                     {sortedAssessments.map((assessment) => (
 
                         <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300" key={assessment.assessmentid}>
