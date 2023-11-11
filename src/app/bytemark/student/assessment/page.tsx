@@ -44,16 +44,14 @@ export default async function ByteMarkStudent() {
         && profilesData[0].studenttable.length > 0
         && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
-        // console.log("Student ID for logged in user:", studentId);
     } else if (profilesData && profilesData.length > 0
         && profilesData[0].teachertable
         && profilesData[0].teachertable.length > 0
         && profilesData[0].teachertable[0].teacherid) {
         teacherId = profilesData[0].teachertable[0].teacherid;
-        console.log("Teacer ID for logged in user:", teacherId);
         redirect("../staff/assessment/")
     } else {
-        // console.log("No matching student record found");
+        console.log("No matching student record found");
         redirect("/")
     }
 

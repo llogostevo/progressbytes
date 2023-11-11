@@ -16,6 +16,9 @@ interface Subtopic {
 interface Props {
     studentId: number;
     subtopicId: number;
+    assessmentType: boolean;
+    startDate: string;
+    endDate: string;
 }
 
 interface ConfidenceLevelColors {
@@ -23,7 +26,7 @@ interface ConfidenceLevelColors {
 }
 
 
-const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
+const HistoricalComponent = ({ studentId, subtopicId, assessmentType, startDate, endDate }: Props) => {
 
     const [totalMarks, setTotalMarks] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -36,13 +39,30 @@ const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
 
     useEffect(() => {
         const getAnswers = async () => {
-            let { data: historicalperformance, error: historicalerror } = await supabase
-                .from('historicalperformance')
-                .select('*')
+            // let { data: historicalperformance, error: historicalerror } = await supabase
+            //     .from('historicalperformance')
+            //     .select('*')
+            //     .eq('subtopic_id', subtopicId)
+            //     .eq('student_id', studentId)
+
+            let query = supabase.from('historicalperformance').select('*')
                 .eq('subtopic_id', subtopicId)
                 .eq('student_id', studentId)
 
+            // Add conditional filter for assessment type
+            if (assessmentType) {
+                query = query.eq('assessment_type', 'Assessment');
+            }
 
+
+            const start = new Date(startDate).toISOString();
+            const end = new Date(endDate).toISOString();
+            
+
+            let query2 = query.gte('assessment_date', start)
+                       .lte('assessment_date', end);
+
+            let { data: historicalperformance, error: historicalerror } = await query2;
 
 
             if (historicalerror) {
@@ -50,10 +70,16 @@ const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
                 return;
             }
 
-
+            if (!historicalperformance || historicalperformance.length === 0) {
+                // Reset state or handle empty data scenario
+                setTotalStudentMarks(0);
+                setTotalMarks(0);
+                setPercentage(0);
+                setCourseLevel('');
+                return;
+            }
 
             if (historicalperformance && historicalperformance.length > 0) {
-                console.log(historicalperformance)
                 const total = historicalperformance.reduce((sum, answer) => sum + Number(answer.mark || 0), 0);
                 const totalMarks = historicalperformance.reduce((sum, answer) => sum + Number(answer.questionmarks || 0), 0);
                 const percentage = (total / totalMarks) * 100
@@ -61,18 +87,19 @@ const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
                 setTotalMarks(totalMarks);
                 setPercentage(percentage);
                 setCourseLevel(historicalperformance[0].course_level)
-
+                
             }
 
         };
 
         getAnswers();
-    }, [studentId, supabase]);
 
-    const rounded = Number(percentage.toFixed(2)); 
-    
-    let grade : String;
-    if (courseLevel=="GCSE"){
+    }, [studentId, subtopicId, assessmentType, startDate, endDate, supabase]);
+
+    const rounded = Number(percentage.toFixed(2));
+
+    let grade: String;
+    if (courseLevel == "GCSE") {
         grade = getGCSEGrade(rounded)
     } else {
         grade = getAlevelGrade(rounded)
@@ -97,3 +124,5 @@ const HistoricalComponent = ({ studentId, subtopicId }: Props) => {
 }
 
 export default HistoricalComponent;
+
+
