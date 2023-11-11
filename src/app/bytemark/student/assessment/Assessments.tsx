@@ -89,9 +89,10 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                 <h2 className="text-2xl mb-4 font-semibold">Personal Assessments</h2>
 
                 <TooltipModalButton toolTitle="Add Questions:" toolDetails="Click View Assessments to view, add and edit the results of your questions" />
-                <div className="bg-white p-4 mb-4"> {/* Container for sorting controls */}
-                    <div className="flex mt-5 items-center justify-between ">
-                        <div className="flex items-center space-x-4">
+                <div className="bg-white sm:p-4 mb-4"> {/* Container for sorting controls */}
+                    <div className="flex flex-wrap justify-center mt-5 items-center sm:justify-between ">
+                        <div className="flex flex-wrap justify-center gap-2 items-center space-x-4 text-center">
+
                             {/* Actual hidden radio inputs */}
                             <input
                                 type="radio"
@@ -160,7 +161,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                             <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
                             <div className="mt-auto text-right">
                                 <Link href={`./assessment/${assessment.assessmentid}`}>
-                                    <span className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">View Assessment</span>
+                                    <span className="text-xs inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">View Assessment</span>
                                 </Link>
                             </div>
                         </div>
