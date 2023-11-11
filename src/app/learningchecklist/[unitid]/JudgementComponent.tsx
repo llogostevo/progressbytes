@@ -22,6 +22,9 @@ interface ConfidenceLevelColors {
     [key: string]: string;
 }
 
+interface ShortenedConfidenceLevels {
+    [key: string]: string;
+}
 const confidenceLevelColors: ConfidenceLevelColors = {
     "Needs Significant Study": "bg-red-300",
     "Requires Revision": "bg-yellow-300",
@@ -29,16 +32,23 @@ const confidenceLevelColors: ConfidenceLevelColors = {
     "Fully Secure": "bg-green-500"
 };
 
+const shortenedConfidenceLevels: ShortenedConfidenceLevels = {
+    "Needs Significant Study": "Sig.Study",
+    "Requires Revision": "Need Rev",
+    "Almost Secure": "Almost",
+    "Fully Secure": "Secure"
+};
+
+
 const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => {
     const [selectedJudgment, setSelectedJudgment] = useState<string | null>(null);
-
 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
 
     useEffect(() => {
         const getSelectedJudgment = async () => {
-            
+
             let { data: judgementtable, error } = await supabase
                 .from('judgementtable')
                 .select('judgment')
@@ -51,7 +61,6 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
             }
 
         }
-
         getSelectedJudgment()
     }, [supabase, setSelectedJudgment])
 
@@ -61,9 +70,11 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
         return confidenceLevelColors[judgment] || "text-gray-400";
     }
 
+
+
     const handleJudgmentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newJudgment = e.target.value;
-        setSelectedJudgment(newJudgment); // Optimistic UI update.
+        setSelectedJudgment(newJudgment);
         try {
             const { data, error } = await supabase
                 .from('judgementtable')
@@ -86,23 +97,38 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
         }
     };
 
-    return (
-      
-        <select
-            className={`${getColorClass(selectedJudgment)} border  border-black rounded p-1`} // Use the function to set the class
-            value={selectedJudgment || ""}
-            onChange={handleJudgmentChange}
-        >
-            <option disabled value="">
-                No Judgement
-            </option>
-            {confidenceLevels.map((level) => (
-                <option key={level} value={level}>
-                    {level}
-                </option>
-            ))}
-        </select>
 
+    return (
+
+        <div>
+            {/* Dropdown for larger screens */}
+            <select
+                className={`${getColorClass(selectedJudgment)} border border-black rounded p-1 hidden sm:block`}
+                value={selectedJudgment || ""}
+                onChange={handleJudgmentChange}
+            >
+                <option disabled value="">No Judgement</option>
+                {confidenceLevels.map((level) => (
+                    <option key={level} value={level}>
+                        {level}
+                    </option>
+                ))}
+            </select>
+
+            {/* Dropdown for smaller screens */}
+            <select
+                className={`${getColorClass(selectedJudgment)} border border-black rounded p-1 sm:hidden`}
+                value={selectedJudgment || ""}
+                onChange={handleJudgmentChange}
+            >
+                <option disabled value="">N/A</option>
+                {confidenceLevels.map((level) => (
+                    <option key={level + "-short"} value={level}>
+                        {shortenedConfidenceLevels[level]}
+                    </option>
+                ))}
+            </select>
+        </div>
     );
 }
 
