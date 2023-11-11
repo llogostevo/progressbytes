@@ -33,8 +33,8 @@ const confidenceLevelColors: ConfidenceLevelColors = {
 };
 
 const shortenedConfidenceLevels: ShortenedConfidenceLevels = {
-    "Needs Significant Study": "Sig.Stud",
-    "Requires Revision": "Need Rev",
+    "Needs Significant Study": "SigStud",
+    "Requires Revision": "NeedRev",
     "Almost Secure": "Almost",
     "Fully Secure": "Secure"
 };

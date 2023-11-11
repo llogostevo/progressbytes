@@ -192,8 +192,15 @@ export default function LearningChecklist(props: LearningChecklistProps) {
         setActiveButton('');
     };
 
-    console.log(startDate)
-    console.log(endDate)
+    const sortedTopics = topics?.sort((a, b) => {
+        // Compare by topic number first
+        const numComparison = a.topicnumber.localeCompare(b.topicnumber, undefined, { numeric: true });
+        if (numComparison !== 0) {
+            return numComparison;
+        }
+        // If topic numbers are the same, compare by title
+        return a.topictitle.localeCompare(b.topictitle);
+    });
 
     return (
         <>
@@ -234,7 +241,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                 </div>
 
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
-                    {topics?.map((topic) => (
+                    {sortedTopics?.map((topic) => (
                         <section key={topic.topicid} className="">
                             <h2 className="px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
                                 {topic.topicnumber} - {topic.topictitle}
@@ -268,7 +275,6 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                                             }
                                             return a.subtopicnumber.localeCompare(b.subtopicnumber);
                                         }).map((subtopic: Subtopic) => {
-                                            // Get judgement THIS IS WHAT IS CAUSING THE ERROR
                                             const judgment: string = subtopic.judgementtable?.find(j => j.studentid === studentId)?.judgment ?? "";
 
 
