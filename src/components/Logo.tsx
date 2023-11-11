@@ -10,6 +10,6 @@ type LogoProps = {
 export default function Logo({logoClasses} : LogoProps) {
   return (
     
-    <Link href="/" className={`${logoFont.className} ${logoClasses} text-primaryColor`}><span className="text-secondaryColor">{`{`}</span>ProgressBytes<span className="text-secondaryColor">{`}`}</span></Link>
+    <Link href="/learningchecklist" className={`${logoFont.className} ${logoClasses} text-primaryColor`}><span className="text-secondaryColor">{`{`}</span>ProgressBytes<span className="text-secondaryColor">{`}`}</span></Link>
   )
 }

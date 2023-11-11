@@ -239,15 +239,26 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                             <h2 className="px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
                                 {topic.topicnumber} - {topic.topictitle}
                             </h2>
-                            <div className="flex flex-col my-10"> {/* Wrapping div */}
-                                <table className=" m-0 md:ml-1 lg:ml-10 border border-gray-900">
+                            <div className="flex flex-col my-10 overflow-x-auto"> {/* Wrapping div */}
+                                <table className=" m-0 md:ml-1 lg:ml-10 table-auto overflow-x-auto border border-gray-900">
                                     <thead>
                                         <tr className="bg-gray-400 text-black border border-gray-900">
                                             <th className="px-1 text-xs lg:px-4 py-2 hidden sm:table-cell border-r border border-gray-900">#</th>
-                                            <th className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900 sm:text-sm">Subtopic Title</th>
-                                            <th className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900 sm:text-sm">Description</th>
-                                            <th className="px-1 text-xs lg:px-4 py-2  border-r border border-gray-900  sm:text-sm">Historical Performance</th>
-                                            <th className="px-1 text-xs lg:px-4 py-2 w-1 text-center   border-r border border-gray-900 sm:text-sm">Judgement</th>
+                                            <th className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900 sm:text-sm">
+                                                <span className="lg:hidden">Subtopic</span>
+                                                <span className="hidden lg:inline">Subtopic Title</span>
+                                            </th>
+                                            <th className="px-1 text-xs lg:px-4 py-2 hidden sm:table-cell border-r border border-gray-900 sm:text-sm">
+                                                <span className="lg:hidden">Desc...</span>
+                                                <span className="hidden lg:inline">Description</span>
+                                            </th>
+                                            <th className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900 sm:text-sm">
+                                                <span className="lg:hidden">Grade</span>
+                                                <span className="hidden lg:inline">Historical Performance</span>
+                                            </th>
+                                            <th className="px-1 text-xs lg:px-4 py-2 w-1 text-center border-r border border-gray-900 sm:text-sm">
+                                                <span className="inline">Judgement</span>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -267,7 +278,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                                                 <tr key={subtopic.subtopicid} className={`${judgmentColor} text-xs sm:text-sm`}>
                                                     <td className="p-1 sm:p-2 w-1  hidden sm:table-cell text-xs text-center border-r border border-gray-900">{subtopic.subtopicnumber}</td>
                                                     <td className="p-1 sm:p-2 w-2/4 md:w-7/12 text-xs border-r border border-gray-900">{subtopic.subtopictitle}</td>
-                                                    <td className="p-1 sm:p-2 w-1/3 text-xs border-r border border-gray-900">{subtopic.subtopicdescription}</td>
+                                                    <td className="p-1 sm:p-2 w-1/3 hidden sm:table-cell text-xs border-r border border-gray-900">{subtopic.subtopicdescription}</td>
                                                     <td className="p-1 sm:p-2 w-1/5 text-xs border-r border border-gray-900">
                                                         <HistoricalComponent
                                                             studentId={studentId}

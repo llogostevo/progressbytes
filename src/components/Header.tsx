@@ -9,55 +9,48 @@ import BlogBytes from "./BlogBytes";
 
 
 export default async function Header() {
-
   const user = await usersCheck();
 
-
   return (
-    <div className="text-mainText mt-5 px-4 md:pl-10 pt-12 pb-11 mb-10 border-t-2 border-b-2 border-primaryColor flex flex-row justify-between">
+    <div className="text-mainText items-center sm:items-start mt-5 px-4 md:pl-10 pt-12 pb-11 mb-10 border-t-2 border-b-2 border-primaryColor flex flex-col md:flex-row justify-between">
       <div>
         <div className="md:ml-4 mx-auto mb-4">
-          <Logo logoClasses="text-mainText text-3xl md:text-5xl lg:text-6xl" />
+          {/* Adjust Logo size for smaller screens */}
+          <Logo logoClasses="text-mainText text-2xl sm:text-3xl md:text-5xl lg:text-6xl" />
         </div>
 
-        <div className="flex items-center mt-10 gap-5">
+        <div className="flex justify-center sm:justify-start items-center mt-4 md:mt-10 gap-3 md:gap-5">
           {user ? (
             <>
-              {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyDashboard</Link> */}
-              <Link className="mx-2 text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
-              <Link className="mx-2 text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
-              {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/admin/school">School Admin</Link> */}
+              {/* Reduce font size for smaller screens */}
+              <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
+              <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
             </>
           ) : (
             <div className="flex items-center gap-3">
-              {/* <JoinNow />
-              <BlogBytes /> */}
+              {/* Hidden elements for smaller screens can go here */}
             </div>
           )}
         </div>
       </div>
 
-
-      <div className="flex flex-row gap-5">
-
-        <div>
+      <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-0">
+        <div className="hidden lg:block">
           <Image
             src="/logo.png"
             width={30}
             height={30}
             alt="Progress Icon"
-            className="hidden md:block"
           />
         </div>
 
         <div>
           {user ? (
-            <div className="flex items-center gap-4">
-              <span className="hidden sm:block truncate w-32"><Link href="/update-profile">{user.email}</Link></span>
-              <span className="block sm:hidden truncate w-20"><Link href="/update-profile">{user.email}</Link></span> {/* This will show truncated email on very small screens */}
+            <div className="flex items-center gap-3 md:gap-4">
+              {/* Truncate email for smaller screens */}
+              <span className="hidden md:block truncate w-24 md:w-32"><Link href="/learningchecklist">{user.email}</Link></span>
               <LogoutButton />
             </div>
-
           ) : (
             <Link
               href="/login"
@@ -68,8 +61,6 @@ export default async function Header() {
           )}
         </div>
       </div>
-
     </div>
-
   )
 }
