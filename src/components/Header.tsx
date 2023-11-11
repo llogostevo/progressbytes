@@ -16,7 +16,7 @@ export default async function Header() {
       <div>
         <div className="md:ml-4 mx-auto mb-4">
           {/* Adjust Logo size for smaller screens */}
-          <Logo logoClasses="text-mainText text-2xl sm:text-3xl md:text-5xl lg:text-6xl" />
+          <Logo logoClasses="text-mainText text-3xl sm:text-3xl md:text-5xl lg:text-6xl" />
         </div>
 
         <div className="flex justify-center sm:justify-start items-center mt-4 md:mt-10 gap-3 md:gap-5">
