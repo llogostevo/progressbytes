@@ -192,7 +192,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
     // check if this is an assessment component and whether it should be hidden from edits. 
     const hideComponents = assessmentData && assessmentData.length > 0 &&
         assessment.assessmenttype === 'Assessment' &&
-        profilesData[0].studenttable[0].assessmentedit == false       
+        profilesData[0].studenttable[0].assessmentedit == false
 
     return (
         <div className="container mx-auto p-4">
@@ -238,8 +238,10 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                     </thead>
                     <tbody>
                         {assessment.questiontable.sort((a, b) => a.questionorder - b.questionorder).map(question => {
-                            const studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark || NaN;
-                            const maxMarks = question.noofmarks;
+                            let studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark;
+                            if (studentAnswerMark === undefined || studentAnswerMark === null) {
+                                studentAnswerMark = NaN;
+                            } const maxMarks = question.noofmarks;
                             const percentage = ((studentAnswerMark / maxMarks) * 100).toFixed(2);
                             const topicTitle = question.questionsubtopictable[0].subtopictable?.subtopictitle;
                             return (

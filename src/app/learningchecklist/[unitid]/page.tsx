@@ -1,10 +1,7 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import JudgmentComponent from './JudgementComponent'
-import AssessmentModal from '@/components/assessmentModal/AssesmentModal'
-import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton'
-import HistoricalComponent from './HistoricalComponent'
+import LearningChecklist from './LearningChecklist'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,8 +37,6 @@ interface Topic {
 interface ConfidenceLevelColors {
     [key: string]: string;
 }
-
-        
 
 
 export default async function UnitChecklist({ params }: { params: { unitid: string } }) {
@@ -135,67 +130,15 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
 
     return (
         <>
-            <div className="space-y-4">
-
-                <AssessmentModal />
-                <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />
-
-                {topics?.map((topic) => (
-                    <section key={topic.topicid} className="">
-                        <h2 className="text-2xl font-bold mb-2">
-                            {topic.topicnumber} - {topic.topictitle}
-                        </h2>
-                        <div className="flex flex-col"> {/* Wrapping div */}
-                            <table className="ml-10 min-w-full table-auto border border-gray-900">
-                                <thead>
-                                    <tr className="bg-gray-400 text-black border border-gray-900">
-                                        <th className="px-4 py-2 border-r border border-gray-900">#</th>
-                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Subtopic Title</th>
-                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow w-1/3">Description</th>
-                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Historical Performance</th>
-                                        <th className="px-4 py-2 border-r border border-gray-900 flex-grow">Judgement</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(topic.subtopictable || []).sort((a: Subtopic, b: Subtopic) => {
-                                        if (!isNaN(Number(a.subtopicnumber)) && !isNaN(Number(b.subtopicnumber))) {
-                                            return Number(a.subtopicnumber) - Number(b.subtopicnumber);
-                                        }
-                                        return a.subtopicnumber.localeCompare(b.subtopicnumber);
-                                    }).map((subtopic: Subtopic) => {
-                                        // Get judgement THIS IS WHAT IS CAUSING THE ERROR
-                                        const judgment: string = subtopic.judgementtable?.find(j => j.studentid === studentId)?.judgment ?? "";
-                                       
-
-                                        const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
-
-                                        return (
-                                            <tr key={subtopic.subtopicid} className={`${judgmentColor}`}>
-                                                <td className="px-4 text-xs text-center py-2 border-r border border-gray-900">{subtopic.subtopicnumber}</td>
-                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopictitle}</td>
-                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">{subtopic.subtopicdescription}</td>
-                                                <td className="px-4 text-xs py-2 border-r border border-gray-900">
-                                                <HistoricalComponent 
-                                                        studentId={studentId}
-                                                        subtopicId={subtopic.subtopicid}
-                                                    />
-                                                </td>
-                                                <td className="px-4 py-2 text-center border-r border border-gray-900">
-                                                    <JudgmentComponent
-                                                        studentId={studentId}
-                                                        subtopic={subtopic}
-                                                        confidenceLevels={confidenceLevels}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                ))}
+            <div className="space-y-6">
+                <h1 className="text-4xl mb-4 font-semibold">Personalised Learning</h1>
+                
+                <LearningChecklist
+                    topics={topics as Topic[]}
+                    studentId={studentId}
+                    confidenceLevelColors={confidenceLevelColors}
+                    confidenceLevels={confidenceLevels}
+                />
             </div>
         </>
     )
