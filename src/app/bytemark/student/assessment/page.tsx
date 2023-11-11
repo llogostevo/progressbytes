@@ -38,7 +38,6 @@ export default async function ByteMarkStudent() {
     let studentId: number;
     let teacherId: number;
 
-    console.log(profilesData)
 
     if (profilesData && profilesData.length > 0
         && profilesData[0].studenttable

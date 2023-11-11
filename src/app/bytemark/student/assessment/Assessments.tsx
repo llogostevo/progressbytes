@@ -21,6 +21,7 @@ type Assessment = {
     assessmentid: number;  // Changed from string to number
     assessmentdate: string;
     assessmentname: string;
+    assessmenttype: string;
     created_by: string;
     questiontable: Question[];
 };
@@ -60,6 +61,18 @@ export default function Assessments({ studentAssessment, user, disableAssessment
         setSortedAssessments(sortedData); // Update the sortedAssessments state
     }, [sortOrder, studentAssessment]);
 
+    // New state for toggling filtered assessments
+    const [filterAssessmentType, setFilterAssessmentType] = useState(false);
+
+    // Filter the assessments based on the filterAssessmentType toggle
+    const filteredAssessments = filterAssessmentType
+        ? sortedAssessments.filter(assessment => assessment.assessmenttype === 'Assessment')
+        : sortedAssessments;
+
+    // Toggle the state for filterAssessmentType
+    const toggleAssessmentTypeFilter = () => {
+        setFilterAssessmentType(!filterAssessmentType);
+    };
 
 
     return (
@@ -67,7 +80,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
             <h1 className="text-4xl mb-4 font-semibold">Student Assessments</h1>
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the form */}
                 <h2 className="text-2xl mb-4 font-semibold">Create Assessment</h2>
-                <AddAssessmentForm userId={user.id} disableAssessment={disableAssessment}/>
+                <AddAssessmentForm userId={user.id} disableAssessment={disableAssessment} />
             </div>
 
             {/* <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/bytemark/assessment`}>Create New Assessment</Link> */}
@@ -75,7 +88,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
                 <h2 className="text-2xl mb-4 font-semibold">Personal Assessments</h2>
 
-                <TooltipModalButton toolTitle="Add Questions:" toolDetails="Click Edit Assessments to add and edit the results of your questions" />
+                <TooltipModalButton toolTitle="Add Questions:" toolDetails="Click View Assessments to view, add and edit the results of your questions" />
                 <div className="bg-white p-4 mb-4"> {/* Container for sorting controls */}
                     <div className="flex mt-5 items-center justify-between ">
                         <div className="flex items-center space-x-4">
@@ -123,13 +136,22 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                                 Sort by Name
                             </label>
 
+                            {/* Button for Assessment Type Toggle */}
+                            <button
+                                onClick={toggleAssessmentTypeFilter}
+                                className={`
+                                    px-2 py-1 text-xs rounded cursor-pointer 
+                                    ${filterAssessmentType ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}
+                                `}
+                            >
+                                {filterAssessmentType ? 'Hide' : 'Show'} Exam Assessments
+                            </button>
                         </div>
+
                     </div>
                 </div>
-                <div>{JSON.stringify(studentAssessment)}</div>
-
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                    {sortedAssessments.map((assessment) => (
+                    {filteredAssessments.map((assessment) => (
 
                         <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300" key={assessment.assessmentid}>
                             <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
@@ -138,7 +160,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                             <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
                             <div className="mt-auto text-right">
                                 <Link href={`./assessment/${assessment.assessmentid}`}>
-                                    <span className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">Edit Assessment</span>
+                                    <span className="text-xs inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">View Assessment</span>
                                 </Link>
                             </div>
                         </div>
