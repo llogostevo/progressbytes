@@ -20,7 +20,7 @@ export const logoFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Progress Bytes',
+  title: 'ProgressBytes',
   description: "Elevate your learning experience with ByteGrade's progress tracking, ByteTrack's topic monitoring, and ByteNow's spaced repetition exercises. Dive into a comprehensive platform tailored for the modern Computer Science student.",
 }
 
