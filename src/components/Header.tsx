@@ -20,12 +20,12 @@ export default async function Header() {
           <Logo logoClasses="text-mainText text-3xl md:text-5xl lg:text-6xl" />
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center mt-10 gap-5">
           {user ? (
             <>
               {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/questions">MyDashboard</Link> */}
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
-              <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
+              <Link className="mx-2 text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
+              <Link className="mx-2 text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
               {/* <Link className="mx-2 border-b-2 border-transparent hover:border-secondaryColor" href="/admin/school">School Admin</Link> */}
             </>
           ) : (
