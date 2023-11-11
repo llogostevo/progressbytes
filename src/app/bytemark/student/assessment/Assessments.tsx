@@ -145,7 +145,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                                     ${filterAssessmentType ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}
                                 `}
                             >
-                                {filterAssessmentType ? 'Hide' : 'Show'} Exam Assessments
+                                {filterAssessmentType ? '' : ''} Exam Assessments
                             </button>
                         </div>
 
@@ -155,7 +155,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                     {filteredAssessments.map((assessment) => (
 
                         <div className="bg-white p-5 rounded-lg shadow-lg mb-2 min-h-[140px] border border-gray-300" key={assessment.assessmentid}>
-                            <h2 className="sm:text-base md:text-md lg:text-lg font-semibold mb-2">
+                            <h2 className=" text-lg md:text-lg lg:text-lg font-semibold mb-2">
                                 {assessment.assessmentname}
                             </h2>
                             <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
@@ -165,7 +165,6 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                                 </Link>
                             </div>
                         </div>
-
                     ))}
                 </section>
             </div>
