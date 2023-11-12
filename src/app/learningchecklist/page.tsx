@@ -33,7 +33,6 @@ interface CourseGroup {
 
 export default async function coursejudgements() {
     // Create a Supabase client configured to use cookies
-    // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
     // get the users sessions
