@@ -41,10 +41,18 @@ export default function TeacherRealTimeClasses({ classes }: { classes: any }) {
               </div>
               <div className="flex">
                 <Link
+                  href={`${schoolclass.schoolid}/assessdashboard/${decodeURIComponent(schoolclass.classid)}`}
+                  className="flex-grow inline-block border border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
+                >
+                  Assessment Dash v2
+                </Link>
+              </div>
+              <div className="flex">
+                <Link
                   href={`${schoolclass.schoolid}/assessmentdashboard/${decodeURIComponent(schoolclass.classid)}`}
                   className="flex-grow inline-block border border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
                 >
-                  Assessment Dashboard
+                  Assessment Dash v1
                 </Link>
               </div>
               <div className="flex">
