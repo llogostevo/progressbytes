@@ -41,20 +41,21 @@ export default async function StaffPage() {
         {schools?.map((school) => (
           <div key={school.schoolname} className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
             <h3 className="text-2xl font-semibold mb-4">{school.schoolname}</h3>
-      
-              <Link
-                href={`/admin/school/courses/${school.schoolid}`}
-                className="inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
-              >
-                View Course Data
-              </Link>
+            <Link
+              href={`/bytemark/staff/classes/${school.schoolid}`}
+              className="inline-block border mt-10 border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
+            >
+              Class Dashboards
+            </Link>
 
-              <Link
-                href={`/bytemark/staff/classes/${school.schoolid}`}
-                className="inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
-              >
-                View Classes
-              </Link>
+            <Link
+              href={`/admin/school/courses/${school.schoolid}`}
+              className="inline-block border mt-10 border-tertiaryColor hover:bg-tertiaryColor hover:text-white hover:border-white text-tertiaryColor rounded px-4 py-2 transition duration-200"
+            >
+              Admin
+            </Link>
+
+
           </div>
         ))}
       </div>
