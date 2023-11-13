@@ -109,8 +109,7 @@ const HistoricalComponent = ({ studentId, subtopicId, assessmentType, startDate,
         <>
             {totalMarks === 0 ? (
                 <>
-                    <p>N/A</p>
-                    <p className="mt-2">Grade: N/A</p>
+                    <p>No Data Available</p>
                 </>
             ) : (
                 <>
