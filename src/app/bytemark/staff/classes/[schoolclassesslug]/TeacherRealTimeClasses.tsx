@@ -57,7 +57,7 @@ export default function TeacherRealTimeClasses({ classes }: { classes: any }) {
               </div>
               <div className="flex">
                 <Link
-                  href={`#`}
+                  href={`../learningchecklist/${decodeURIComponent(schoolclass.classid)}`}
                   className="flex-grow inline-block border border-primaryColor hover:bg-primaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200"
                 >
                   PLC Dashboard
