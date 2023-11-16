@@ -211,17 +211,16 @@ export default async function classid({ params }: { params: { classid: string } 
 
     return (
         <>
-            <div className="block overflow-x-auto">
-
-                <table className="m-0 md:ml-1 lg:ml-10 table-auto border border-gray-900 overflow-x-auto">
-                    <thead className="sticky top-0 bg-gray-400 z-10">
-                        <tr className="text-black border border-gray-900">
-                            <th className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" colSpan={2}>Units / Topics / Subtopics</th>
-                            {students?.map(student => (
-                                <th key={student.studentid} className="px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" title={`${student.firstname} ${student.lastname}`}>
-                                    {getInitials(student.firstname, student.lastname)}
-                                </th>
-                            ))}
+            <div className="relative overflow-x-auto">
+                <table className="m-0 md:ml-1 lg:ml-10 table-auto border border-gray-900">
+                    <thead className="bg-gray-400 z-10">
+                        <tr>
+                        <th className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" colSpan={2}>Topics</th>
+                        {students?.map(student => (
+                            <th key={student.studentid} className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" title={`${student.firstname} ${student.lastname}`}>
+                                {getInitials(student.firstname, student.lastname)}
+                            </th>
+                        ))}
                         </tr>
                     </thead>
 
@@ -230,7 +229,7 @@ export default async function classid({ params }: { params: { classid: string } 
                         {unitsWithTopics?.map(unit => (
                             <>
                                 <tr className="border border-gray-900">
-                                    <td colSpan={students.length + 2} className="bg-gray-200 px-1 text-xs lg:px-4 py-2 border-r border sticky left-0 border-gray-900 sm:text-sm">{unit.unitnumber}</td>
+                                    <td colSpan={students.length + 2} className="bg-gray-200 px-1 text-xs lg:px-4 py-2 border-r border-gray-900 sm:text-sm">{unit.unitnumber}</td>
                                 </tr>
                                 {unit.topics?.map(topic => (
                                     <>
@@ -250,7 +249,7 @@ export default async function classid({ params }: { params: { classid: string } 
                                                     return (
                                                         <td key={`${subtopic.subtopicid}-${student.studentid}`} className={`${bgColorClass} px-1 text-xs lg:px-4 py-2 border-r border border-gray-900 sm:text-sm`} title={`${student.firstname} ${student.lastname}`}>
                                                             {/* Judgement Value can be displayed here if needed */}
-                                                            
+
                                                         </td>
                                                     );
                                                 })}

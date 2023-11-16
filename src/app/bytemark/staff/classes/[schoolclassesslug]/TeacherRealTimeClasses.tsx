@@ -65,7 +65,7 @@ export default function TeacherRealTimeClasses({ classes }: { classes: any }) {
               </div>
               <div className="flex">
                 <Link
-                  href="#"
+                  href={`../assessment/${decodeURIComponent(schoolclass.classid)}`}
                   className="flex-grow inline-block border border-tertiaryColor text-center hover:bg-tertiaryColor hover:text-white hover:border-white text-tertiaryColor rounded px-4 py-2 transition duration-200"
                 >
                   Edit Assessments

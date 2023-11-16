@@ -211,18 +211,18 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                             <td className="border px-2 py-1 text-center">{question.questionorder}</td>
                             <td className="border px-2 py-1 text-center">{question.questionnumber}</td>
                             <td className="border px-2 py-1 text-center">{question.noofmarks}</td>
-                            <td title={question.questionsubtopictable[0].subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0].subtopictable.topictable.topictitle} className="border px-2 py-1 truncate">
+                            <td title={question.questionsubtopictable[0]?.subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0]?.subtopictable.topictable.topictitle} className="border px-2 py-1 truncate">
                                 {
-                                    (question.questionsubtopictable[0].subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0].subtopictable.topictable.topictitle).length > 10
-                                        ? (question.questionsubtopictable[0].subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0].subtopictable.topictable.topictitle).substring(0, 10) + "..."
-                                        : question.questionsubtopictable[0].subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0].subtopictable.topictable.topictitle
+                                    (question.questionsubtopictable[0]?.subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0]?.subtopictable.topictable.topictitle).length > 10
+                                        ? (question.questionsubtopictable[0]?.subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0]?.subtopictable.topictable.topictitle).substring(0, 10) + "..."
+                                        : question.questionsubtopictable[0]?.subtopictable.topictable.unittable.unitnumber + " " + question.questionsubtopictable[0]?.subtopictable.topictable.topictitle
                                 }
                             </td>
-                            <td title={question.questionsubtopictable[0].subtopictable.subtopictitle} className="border px-2 py-1 truncate">
+                            <td title={question.questionsubtopictable[0]?.subtopictable.subtopictitle} className="border px-2 py-1 truncate">
                                 {
-                                    question.questionsubtopictable[0].subtopictable.subtopictitle.length > 10
-                                        ? question.questionsubtopictable[0].subtopictable.subtopictitle.substring(0, 10) + "..."
-                                        : question.questionsubtopictable[0].subtopictable.subtopictitle
+                                    question.questionsubtopictable[0]?.subtopictable.subtopictitle.length > 10
+                                        ? question.questionsubtopictable[0]?.subtopictable.subtopictitle.substring(0, 10) + "..."
+                                        : question.questionsubtopictable[0]?.subtopictable.subtopictitle
                                 }
                             </td>
                         
@@ -240,7 +240,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                                 return (
                                     <td
                                         key={student.id}
-                                        title={`${percentage}% - ${question.questionsubtopictable[0].subtopictable.subtopictitle}`}
+                                        title={`${percentage}% - ${question.questionsubtopictable[0]?.subtopictable.subtopictitle}`}
                                         className={`border px-2 py-1 text-center ${bgColor}`}>
                                         {studentAnswer ? studentAnswer.mark : '-'}
                                     </td>
