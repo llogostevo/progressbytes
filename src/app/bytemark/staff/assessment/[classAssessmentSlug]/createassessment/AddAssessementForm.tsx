@@ -21,14 +21,10 @@ function formatDateToUKFormat(dateString: string): string {
 }
 
 
-export default function AddAssessementForm({ userId, disableAssessment }: { userId: string, disableAssessment: Boolean }) {
+export default function AddAssessementForm({ classId }: { classId: string }) {
     // create the router hook to trigger a page refresh
     const router = useRouter()
-    console.log(disableAssessment)
-    let primativeDisableAssessment: boolean = false;
-    if (disableAssessment) {
-        primativeDisableAssessment = true; // or some condition that evaluates to a boolean
-    }
+    
     // create the transition hook to manage the transition of the page refresh
     const [isPending, startTransition] = useTransition()
 
@@ -139,7 +135,7 @@ export default function AddAssessementForm({ userId, disableAssessment }: { user
                             <option value="Homework">Homework</option>
                             <option value="Classwork">SGL</option>
                             <option value="Revision">Revision</option>
-                            <option value="Assessment" disabled={primativeDisableAssessment ? true : undefined}>Assessment</option>
+                            <option value="Assessment">Assessment</option>
                         </select>
                     </div>
                 </div>

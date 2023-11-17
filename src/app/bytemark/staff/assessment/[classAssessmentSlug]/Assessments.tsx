@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import AddAssessmentForm from "./AddAssessementForm";
+import AddAssessmentForm from "./createassessment/AddAssessementForm";
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 
 type Answer = {
@@ -73,12 +73,9 @@ export default function Assessments({ studentAssessment, classId }: AssessmentPr
     return (
         <div className="p-4">
             <h1 className="text-4xl mb-4 font-semibold">{classId}: Assessments</h1>
-            <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300"> {/* Container for the form */}
-                <h2 className="text-2xl mb-4 font-semibold">Create Assessment</h2>
-                {/* <AddAssessmentForm userId={user.id} disableAssessment={disableAssessment} /> */}
-            </div>
+            <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`./${classId}/createassessment`}>Create New Assessment</Link>
 
-            {/* <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`/bytemark/assessment`}>Create New Assessment</Link> */}
+
 
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
                 <h2 className="text-2xl mb-4 font-semibold">Assessments</h2>
