@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import AddAssessmentForm from "./createassessment/AddAssessementForm";
+import AddAssessmentForm from "./createassessment/[slug]/AddAssessementForm";
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 
 type Answer = {
@@ -73,7 +73,7 @@ export default function Assessments({ studentAssessment, classId }: AssessmentPr
     return (
         <div className="p-4">
             <h1 className="text-4xl mb-4 font-semibold">{classId}: Assessments</h1>
-            <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`./${classId}/createassessment`}>Create New Assessment</Link>
+            <Link className="inline-block border mt-10 mb-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-4 py-2 transition duration-200" href={`./${classId}/createassessment/${classId}`}>Create New Assessment</Link>
 
 
 
