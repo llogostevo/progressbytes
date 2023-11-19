@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { useTransition } from "react";
 
-export default function CommentForm({ slug, studentId }: { slug: string; studentId: number }) {
+export default function AddQuestionMark({ slug, studentId }: { slug: string; studentId: number }) {
 
 // Create a Supabase client configured to use cookies
 const supabase = createClientComponentClient()

@@ -43,6 +43,7 @@ export default async function CreateAssessment({ params }: { params: {slug: stri
     const { data: students, error: studentserror } = await supabase
         .from('enrollmenttable')
         .select(`studentid, 
+                courseid, 
                 studenttable(
                     studentid, 
                     firstname, 
