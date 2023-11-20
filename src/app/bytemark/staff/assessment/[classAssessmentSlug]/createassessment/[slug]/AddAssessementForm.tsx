@@ -327,9 +327,17 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
             ])
             .select('assessmentid')
 
-        // Call insertSingleQuestionData for each question and wait for all to complete
+        // Filter out only checked students
+        const checkedStudentIds = Object.entries(checkedStudents)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([studentId, _]) => parseInt(studentId));
+
+        const checkedStudentsList = students.filter(student =>
+            checkedStudentIds.includes(student.studentid));
+
+        // Call insertSingleQuestionData for each question with filtered students
         const insertPromises = questions.map(question =>
-            insertSingleQuestionData(question, students, newassessmentdata?.[0].assessmentid, supabase)
+            insertSingleQuestionData(question, checkedStudentsList, newassessmentdata?.[0].assessmentid, supabase)
         );
 
         Promise.all(insertPromises).then(() => {

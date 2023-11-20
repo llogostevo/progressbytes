@@ -68,25 +68,30 @@ export default async function ByteMarkStudent() {
         .eq('created_by', user.id);
 
 
-    // 2. Fetch assessments that are associated with student's answers 
-    // but are not created by the logged-in user
-    const { data: answeredByStudent, error: answeredByError } = await supabase
-        .from('assessmenttable')
-        .select('assessmentid')
-        .not('created_by', 'eq', user.id) // not created by the user
-        .in('questiontable.answertable.studentid', [studentId]);  // but have answers by the student
 
-    // // Handle any errors
-    // if (answeredByError) {
-    //     console.error('Error fetching assessments answered by student:', answeredByError);
-    //     // Handle error
-    // }
+    const { data: answers, error: answersError } = await supabase
+        .from('answertable')
+        .select('questionid') // Select all fields or specify the fields you need
+        .eq('studentid', studentId); // Filter to match the studentid
 
-    // Combine and deduplicate ids
-    const combinedIds = Array.from(new Set([
-        ...(createdByUser?.map(a => a.assessmentid) || []),
-        ...(answeredByStudent?.map(a => a.assessmentid) || [])
-    ]));
+    if (answersError) {
+        console.error('Error fetching answers:', answersError);
+        // Handle the error accordingly
+    }
+
+    const questionIds = answers?.map(answer => answer.questionid);
+
+    console.log("questionids", questionIds)
+
+    const { data: questions, error: questionsError } = await supabase
+        .from('questiontable')
+        .select('assessmentid') // Select all fields or specify the fields you need
+        .in('questionid', questionIds as any[]); // Filter to match the studentid
+
+console.log(questions)
+
+    const assessmentIds = questions?.map(question => question.assessmentid);
+console.log(assessmentIds)
 
     // Fetch all the relevant assessment details using the combined IDs
     const { data: assessments, error: assessmentError } = await supabase
@@ -107,23 +112,14 @@ export default async function ByteMarkStudent() {
             )
         )
     `)
-        .in('assessmentid', combinedIds)
+        .in('assessmentid', assessmentIds as any[])
         .order('assessmentdate', { ascending: false });
 
-    // // Handle any errors
-    // if (assessmentError) {
-    //     console.error('Error fetching assessments:', assessmentError);
-    //     // Handle error
-    // }
-
-
-    // if (assessmentError) {
-    //     console.error('Error:', assessmentError);
-    // }
+    console.log(assessments)
 
     // check if this is an assessment component and whether it should be hidden from edits. 
-    const disableAssessment = (profilesData[0].studenttable[0].assessmentedit === false )
-    
+    const disableAssessment = (profilesData[0].studenttable[0].assessmentedit === false)
+
     return (
         <>
             <Assessments
