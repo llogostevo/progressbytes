@@ -31,15 +31,15 @@ type PropsStudents = {
 
 interface Question {
     questionNumber: string;
-    questionOrder: string;
-    numberOfMarks: string;
+    questionOrder: number | null;
+    numberOfMarks: number | null;
     subtopic: number | null;
 }
 
 interface Question {
     questionNumber: string;
-    questionOrder: string;
-    numberOfMarks: string;
+    questionOrder: number | null;
+    numberOfMarks: number | null;
     subtopic: number | null;
 }
 
@@ -99,13 +99,13 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
     const [isPending, startTransition] = useTransition()
 
     const [questions, setQuestions] = useState<Question[]>([
-        { questionNumber: '', questionOrder: '', numberOfMarks: '', subtopic: null }
+        { questionNumber: '', questionOrder: null, numberOfMarks: null, subtopic: null }
     ]);
 
 
     // Function to handle adding a new question
     const addQuestion = () => {
-        setQuestions([...questions, { questionNumber: '', questionOrder: '', numberOfMarks: '', subtopic: null }]);
+        setQuestions([...questions, { questionNumber: '', questionOrder: null, numberOfMarks: null, subtopic: null }]);
     };
 
     // Function to handle removing a question
@@ -120,6 +120,9 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
         if (field === 'subtopic') {
             // Convert value to number or null for 'subtopic'
             newQuestions[index][field] = value ? Number(value) : null;
+        } else if (field === 'questionOrder' || field === 'numberOfMarks') {
+            // Convert value to number for 'questionOrder' and 'numberOfMarks', using null for empty strings
+            newQuestions[index][field] = value === '' ? null : Number(value);
         } else {
             // For other fields, keep them as strings
             newQuestions[index][field] = value;
