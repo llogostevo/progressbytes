@@ -88,10 +88,12 @@ export default async function ByteMarkStudent() {
         .select('assessmentid') // Select all fields or specify the fields you need
         .in('questionid', questionIds as any[]); // Filter to match the studentid
 
-console.log(questions)
 
-    const assessmentIds = questions?.map(question => question.assessmentid);
-console.log(assessmentIds)
+    const assessmentIds = questions?.map(question => question.assessmentid) ?? [];
+    const createdByAssessmentIds = createdByUser?.map(assessment => assessment.assessmentid) ?? [];
+
+    const combinedAssessmentIds = [...createdByAssessmentIds, ...assessmentIds]
+        .filter((value, index, self) => self.indexOf(value) === index);
 
     // Fetch all the relevant assessment details using the combined IDs
     const { data: assessments, error: assessmentError } = await supabase
@@ -112,10 +114,8 @@ console.log(assessmentIds)
             )
         )
     `)
-        .in('assessmentid', assessmentIds as any[])
+        .in('assessmentid', combinedAssessmentIds as any[])
         .order('assessmentdate', { ascending: false });
-
-    console.log(assessments)
 
     // check if this is an assessment component and whether it should be hidden from edits. 
     const disableAssessment = (profilesData[0].studenttable[0].assessmentedit === false)

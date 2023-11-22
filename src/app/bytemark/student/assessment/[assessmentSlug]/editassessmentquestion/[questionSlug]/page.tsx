@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import EditQuestion from "./EditQuestion";
 
 
-export default function AssessmentQuestion({ params }: { params: { questionSlug: number } }) {
+export default function EditAssessmentQuestion({ params }: { params: { questionSlug: number } }) {
 
     const [question, setQuestion] = useState<any[]>([])
     const [allQuestions, setAllQuestions] = useState<any[]>([]);

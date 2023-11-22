@@ -1,7 +1,5 @@
 'use client'
 
-// TODO: Duplicate or move this file outside the `_examples` folder to make it a route
-
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState, useCallback } from 'react'
 
@@ -160,7 +158,7 @@ export default function EditQuestion({ questionData }: Props) {
                             <span className="text-gray-700">Question Number:</span>
                             <input
                                 type="text"
-                                value={editableQuestionData.questionnumber}
+                                value={editableQuestionData.questionnumber || ""}
                                 onChange={(e) => handleQuestionDataChange(e, 'questionnumber')}
                                 className="mt-1 p-2 w-full rounded-md"
                             />
@@ -169,7 +167,7 @@ export default function EditQuestion({ questionData }: Props) {
                             <span className="text-gray-700">Question Order:</span>
                             <input
                                 type="text"
-                                value={editableQuestionData.questionorder}
+                                value={editableQuestionData.questionorder || ""}
                                 onChange={(e) => handleQuestionDataChange(e, 'questionorder')}
                                 className="mt-1 p-2 w-full rounded-md"
                             />
@@ -178,7 +176,7 @@ export default function EditQuestion({ questionData }: Props) {
                             <span className="text-gray-700">No of Marks:</span>
                             <input
                                 type="text"
-                                value={editableQuestionData.noofmarks}
+                                value={editableQuestionData.noofmarks || ""}
                                 onChange={(e) => handleQuestionDataChange(e, 'noofmarks')}
                                 className="mt-1 p-2 w-full rounded-md"
                             />
@@ -226,10 +224,10 @@ export default function EditQuestion({ questionData }: Props) {
                 {/* CUSTOM FORM VALIDATION ERRORS WILL DISPLAY HERE */}
                 {submissionMessage.text && (
                     <p className={`text-center mt-4 border p-3 
-        ${submissionMessage.type === 'error' ? 'bg-red-500' : 'bg-green-500'} 
-        transition-opacity ease-in-out delay-1000
-        ${submissionMessage.text ? 'opacity-100' : 'opacity-0'} 
-        rounded-md`}
+                        ${submissionMessage.type === 'error' ? 'bg-red-500' : 'bg-green-500'} 
+                        transition-opacity ease-in-out delay-1000
+                        ${submissionMessage.text ? 'opacity-100' : 'opacity-0'} 
+                        rounded-md`}
                     >
                         {submissionMessage.text}
                     </p>

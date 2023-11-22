@@ -161,23 +161,23 @@ export default async function StudentAssessmentView({ params }: { params: { asse
         console.log(assessmentDataError)
     }
 
-    if (!assessmentData) {
-        return (
+    if ((!assessmentData)|| (assessmentData && assessmentData.length === 0)) {
+         return (
             <div>
                 <p>No Assessment Found for this user</p>
             </div>
         )
-    }
+    } 
 
     // @ts-ignore
     const assessment: Assessment = assessmentData[0];
 
-    console.log(assessment)
+    console.log(assessmentData)
 
-    const maxMarks = assessment.questiontable.reduce((acc, question) => acc + question.noofmarks, 0);
-    const studentsProfileIDs = assessment.questiontable
+    const maxMarks = assessment?.questiontable.reduce((acc, question) => acc + question.noofmarks, 0);
+    const studentsProfileIDs = assessment?.questiontable
     // Calculate the student's total marks
-    const studentTotalMarks = assessment.questiontable.reduce((acc, question) => {
+    const studentTotalMarks = assessment?.questiontable.reduce((acc, question) => {
         const studentAnswer = question.answertable.find(ans => ans.studentid === studentId);
         return acc + (studentAnswer ? studentAnswer.mark : 0);
     }, 0);
@@ -196,7 +196,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
+            <h1 className="text-2xl font-bold mb-4">{assessment?.assessmentname}</h1>
 
             <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
                 <div className="my-4">
@@ -217,7 +217,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
             </div>
             {!hideComponents && (
                 <div className="bg-white p-4 rounded-md shadow-sm mb-4 border border-gray-300">
-                    <AddQuestionMark slug={assessment.assessmentid} studentId={studentId} />
+                    <AddQuestionMark slug={assessment?.assessmentid} studentId={studentId} />
                 </div>
             )}
 
@@ -237,7 +237,7 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                         </tr>
                     </thead>
                     <tbody>
-                        {assessment.questiontable.sort((a, b) => a.questionorder - b.questionorder).map(question => {
+                        {assessment?.questiontable.sort((a, b) => a.questionorder - b.questionorder).map(question => {
                             let studentAnswerMark = question.answertable.find(ans => ans.studentid === studentId)?.mark;
                             if (studentAnswerMark === undefined || studentAnswerMark === null) {
                                 studentAnswerMark = NaN;
