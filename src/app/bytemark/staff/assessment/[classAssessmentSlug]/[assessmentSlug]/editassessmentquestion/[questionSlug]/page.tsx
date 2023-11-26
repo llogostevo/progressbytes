@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from 'react'
-import EditQuestion from "./EditQuestion";
+import EditQuestion from "./EditQuestionStaff";
 
 
 export default function AssessmentQuestion({ params }: { params: { questionSlug: number } }) {
@@ -17,7 +17,7 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
     const router = useRouter();
 
     // Assuming you have a state called allQuestions which is an array of all questions.
-// And a state called currentIndex which is the index of the current question in the allQuestions array.
+    // And a state called currentIndex which is the index of the current question in the allQuestions array.
 
     useEffect(() => {
         // if (!params.questionID) {
@@ -60,13 +60,13 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
                 )
             `).eq('questionid', `${params.questionSlug}`)
 
-        
 
-                if (assessmentData) {
-                    setQuestion(assessmentData)
-                } else {
-                    console.log(assessmentDataError);
-                }
+
+            if (assessmentData) {
+                setQuestion(assessmentData)
+            } else {
+                console.log(assessmentDataError);
+            }
         }
 
         const getAllQuestions = async () => {
@@ -74,7 +74,7 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
                 .from('questiontable')
                 .select('questionid, questionorder')
                 .order('questionorder', { ascending: true });
-    
+
             if (data) {
                 setAllQuestions(data);
                 const index = data.findIndex(q => q.questionid === params.questionSlug);
@@ -91,10 +91,10 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
     const redirectToPreviousQuestion = () => {
         // @ts-ignore
         if (currentIndex > 0) { // If there's a previous question
-        // @ts-ignore
-    
+            // @ts-ignore
+
             const previousQuestionId = allQuestions[currentIndex - 1].questionid;
-            
+
             // Assuming your route structure is /questions/[questionSlug] or similar
             router.push(`/questions/${previousQuestionId}`);
         } else {
@@ -119,23 +119,23 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
             }
         }
     };
-    
+
     return (
         <div className="container mx-auto px-4 overflow-x-auto">
-    <div className="flex justify-between items-center my-4">
-        {/* Previous button */}
-        <button onClick={() => handleNavigate("prev")}>
-            <span className="mr-1">&lt;</span> Previous
-        </button>
+            <div className="flex justify-between items-center my-4">
+                {/* Previous button */}
+                <button onClick={() => handleNavigate("prev")}>
+                    <span className="mr-1">&lt;</span> Previous
+                </button>
 
-        {/* Next button */}
-        <button onClick={() => handleNavigate("next")}>
-            Next <span className="ml-1">&gt;</span>
-        </button>
-    </div>
-    
-    {question.length > 0 && <EditQuestion questionData={question[0]} />}
-</div>
+                {/* Next button */}
+                <button onClick={() => handleNavigate("next")}>
+                    Next <span className="ml-1">&gt;</span>
+                </button>
+            </div>
+
+            {question.length > 0 && <EditQuestion questionData={question[0]} />}
+        </div>
 
 
 

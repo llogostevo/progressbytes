@@ -152,7 +152,7 @@ export default function Assessments({ studentAssessment, classId }: AssessmentPr
                             </h2>
                             <p className="text-sm">{new Date(assessment.assessmentdate).toLocaleDateString('en-GB')}</p>
                             <div className="mt-auto text-right">
-                                <Link href={`./assessment/${assessment.assessmentid}`}>
+                                <Link href={`./${classId}/${assessment.assessmentid}`}>
                                     <span className="text-xs inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">View Assessment</span>
                                 </Link>
                             </div>
