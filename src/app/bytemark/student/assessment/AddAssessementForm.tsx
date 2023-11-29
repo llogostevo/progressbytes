@@ -137,9 +137,9 @@ export default function AddAssessementForm({ userId, disableAssessment }: { user
                         >
                             <option value="Classwork">Classwork</option>
                             <option value="Homework">Homework</option>
-                            <option value="Classwork">SGL</option>
+                            <option value="SGL">SGL</option>
                             <option value="Revision">Revision</option>
-                            <option value="Assessment" disabled={primativeDisableAssessment ? true : undefined}>Assessment</option>
+                            {/* <option value="Assessment" disabled={primativeDisableAssessment ? true : undefined}>Assessment</option> */}
                         </select>
                     </div>
                 </div>
