@@ -273,6 +273,11 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                 </div>
             )}
 
+<p>
+                {JSON.stringify(assessmentCSV)
+                    .split('[')
+                    .join('[\n')}
+            </p>   
 
         </>
     )
