@@ -215,6 +215,7 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                     }
                     const studentData = studentDataMap.get(answer.studentid);
                     const questionIndex = questionOrderToIndexMap.get(question.questionorder);
+
                     if (questionIndex !== undefined) { // Check to make sure questionIndex is not undefined
                         studentData.marks[questionIndex] = answer.mark;
                     }
@@ -273,11 +274,8 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                 </div>
             )}
 
-<p>
-                {JSON.stringify(assessmentCSV)
-                    .split('[')
-                    .join('[\n')}
-            </p>   
+
+  
 
         </>
     )
