@@ -3,6 +3,7 @@ import TopicCard from "../TopicCard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+ 
 
 export default async function TeacherDashboard() {
     // check logged in as teacher

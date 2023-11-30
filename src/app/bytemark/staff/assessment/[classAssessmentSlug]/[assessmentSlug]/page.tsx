@@ -2,6 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
+import FileUploadComponent from "./FileUploadComponent";
 /*
 
 amins data update
@@ -138,6 +139,27 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
             )
         `).eq('assessmentid', decodedSlug)
 
+        const { data: assessmentCSV, error: assessmentCSVError } = await supabase
+        .from('assessmenttable')
+        .select(`
+            assessmentid,
+            questiontable (
+                questionid,
+                questionnumber,
+                questionorder,
+                noofmarks,
+                answertable (
+                    answerid, 
+                    questionid, 
+                    studentid, 
+                    mark,
+                    studenttable(studentid, firstname, lastname)
+                )
+            )
+        `).eq('assessmentid', decodedSlug)
+
+        console.log(assessmentCSV)
+
     if (assessmentDataError) {
         console.log(assessmentDataError)
     }
@@ -188,6 +210,8 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
     return (
         <div className="container mx-auto overflow-x-auto">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
+            <FileUploadComponent assessmentCSV={assessmentCSV} />
+
             <table className="min-w-full bg-white text-sm">
                 <thead className="text-center text-white">
                     {/* Add a row for main headings */}

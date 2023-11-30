@@ -2,6 +2,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Assessments from "./Assessments";
+import React from 'react';
+
 
 interface AnswerEntry {
     questionid: number;
@@ -120,7 +122,7 @@ export default async function ClassAssessments({ params }: { params: { classAsse
         .order('assessmentdate', { ascending: false })
 
 
-    console.log('assessments:', assessments)
+   
     return (
         <>
             <Assessments
