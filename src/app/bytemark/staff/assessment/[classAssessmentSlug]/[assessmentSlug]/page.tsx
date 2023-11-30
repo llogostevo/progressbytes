@@ -3,11 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import FileUploadComponent from "./FileUploadComponent";
-/*
 
-amins data update
-
-*/
 // Type Definitions
 interface Student {
     studentid: number;
@@ -67,7 +63,26 @@ interface StudentEntry {
     name: string;
 }
 
-
+interface AssessmentCSVItem {
+    assessmentid: number;
+    questiontable: {
+        questionid: number;
+        questionnumber: string;
+        questionorder: number;
+        noofmarks: number;
+        answertable: {
+            answerid: number;
+            questionid: number;
+            studentid: number;
+            mark: number;
+            studenttable: {
+                studentid: number;
+                firstname: string;
+                lastname: string;
+            };
+        }[];
+    }[];
+}
 function extractInitials(name: string): string {
     const splitName = name.split(' ');
     return splitName.map(n => n.charAt(0)).join('');
@@ -139,7 +154,7 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
             )
         `).eq('assessmentid', decodedSlug)
 
-        const { data: assessmentCSV, error: assessmentCSVError } = await supabase
+    const { data: assessmentCSV, error: assessmentCSVError } = await supabase
         .from('assessmenttable')
         .select(`
             assessmentid,
@@ -157,8 +172,6 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
                 )
             )
         `).eq('assessmentid', decodedSlug)
-
-        console.log(assessmentCSV)
 
     if (assessmentDataError) {
         console.log(assessmentDataError)
@@ -207,10 +220,14 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
         // @ts-ignore
         studentPercentages[id] = `${((studentTotalMarks[id] / maxMarks) * 100).toFixed(2)}%`;
     }
+
     return (
         <div className="container mx-auto overflow-x-auto">
             <h1 className="text-2xl font-bold mb-4">{assessment.assessmentname}</h1>
+            
+            {/* @ts-ignore */}
             <FileUploadComponent assessmentCSV={assessmentCSV} />
+
 
             <table className="min-w-full bg-white text-sm">
                 <thead className="text-center text-white">

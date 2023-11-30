@@ -10,25 +10,31 @@ interface Answer {
     studentid: number;
     mark: number;
 }
+interface Student {
+    studentid: number;
+    firstname: string;
+    lastname: string;
+}
+
+interface Answer {
+    answerid: number;
+    questionid: number;
+    studentid: number;
+    mark: number;
+    studenttable: Student;
+}
+
+interface Question {
+    questionid: number;
+    questionnumber: string;
+    questionorder: number;
+    noofmarks: number;
+    answertable: Answer[];
+}
+
 interface AssessmentCSVItem {
     assessmentid: number;
-    questiontable: {
-        questionid: number;
-        questionnumber: string;
-        questionorder: number;
-        noofmarks: number;
-        answertable: {
-            answerid: number;
-            questionid: number;
-            studentid: number;
-            mark: number;
-            studenttable: {
-                studentid: number;
-                firstname: string;
-                lastname: string;
-            };
-        }[];
-    }[];
+    questiontable: Question[];
 }
 
 
@@ -72,8 +78,7 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
 
 
     const [parsedData, setParsedData] = useState<Record<string, any>[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [isLoading, setIsLoading] = useState(false);
     const supabase = createClientComponentClient();
 
     const [submissionMessage, setSubmissionMessage] = useState({ text: "", type: "" });
@@ -83,7 +88,7 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
     useEffect(() => {
         const updateDatabase = async () => {
             if (parsedData.length > 0) {
-                setIsLoading(true);
+                // setIsLoading(true);
                 setSubmissionMessage({ text: "Updating...", type: "info" }); // Informational message
 
                 try {
@@ -121,7 +126,6 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                                         .select();
 
                                     if (error) {
-                                        setError(error.message);
                                         errorsOccurred = true;
                                         // Construct an error message string
                                         const errorMessage = `Student ${row.firstname} ${row.lastname}, Question: ${questionNumber}, Reason: ${error.message}`;
@@ -155,11 +159,10 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                 } catch (err) {
                     setSubmissionMessage({ text: "An error occurred. Please try again.", type: "error" });
                 } finally {
-                    setIsLoading(false);
+                    // can be used for a loading action or message
+                    // setIsLoading(false);                
                 }
             }
-
-
         };
 
         updateDatabase();
@@ -177,7 +180,7 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                 complete: (result) => {
                     const parsedCsvData = result.data as Record<string, any>[];
                     console.log("Parsed Data:", parsedCsvData);
-                    setParsedData(parsedCsvData); 
+                    setParsedData(parsedCsvData);
                 },
                 header: true,
             });
@@ -228,9 +231,6 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
         return csvData;
     };
 
-
-    
-
     const handleDownloadCSV = () => {
         if (assessmentCSV) {
             const csvData = createCSVData(assessmentCSV);
@@ -240,7 +240,7 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
             setSubmissionMessage({ text: "An error occurred. Please try again.", type: "error" });
         }
     };
-    
+
     return (
         <>
             <p>Upload File Results</p>
@@ -272,6 +272,12 @@ const FileUploadComponent = ({ assessmentCSV }: FileUploadComponentProps) => {
                     </ul>
                 </div>
             )}
+
+<p>
+                {JSON.stringify(assessmentCSV)
+                    .split('[')
+                    .join('[\n')}
+            </p>   
 
         </>
     )
