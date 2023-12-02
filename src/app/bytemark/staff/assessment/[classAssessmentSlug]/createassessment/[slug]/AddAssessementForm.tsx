@@ -184,69 +184,6 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
         }
     };
 
-
-    // // Insert Data function 
-    // async function insertData(questions, students) {
-
-    //     // when create assessment is clicked 
-
-
-
-    //     for (const question of questions) {
-    //         // Insert question and get questionid
-    //         const { data: questionData, error: questionError } = await supabase
-    //             .from('questiontable')
-    //             .insert([{
-    //                 assessmentid: newassessmentdata?.[0].assessmentid,
-    //                 questionnumber: question.questionNumber,
-    //                 questionorder: question.questionOrder,
-    //                 noofmarks: question.numberOfMarks,
-    //                 studentaccess: 'read_only',
-    //             }])
-    //             .select('questionid');
-
-    //         if (questionError) {
-    //             console.error("Error inserting question:", questionError);
-    //             continue; // Skip this iteration on error
-    //         }
-
-    //         const questionId = questionData?.[0].questionid;
-
-    //         // Insert subtopic record
-    //         const { error: subtopicError } = await supabase
-    //             .from('questionsubtopictable')
-    //             .insert([{
-    //                 questionid: questionId,
-    //                 subtopicid: question.subtopic,
-    //             }]);
-
-    //         if (subtopicError) {
-    //             console.error("Error inserting subtopic:", subtopicError);
-    //             // Handle error as necessary
-    //         }
-
-    //         // Create answer records for each student
-    //         const answerPromises = students.map(async (student) => {
-    //             const { error: answerError } = await supabase
-    //                 .from('answertable')
-    //                 .insert([{
-    //                     questionid: questionId,
-    //                     studentid: student.studentid,
-    //                     mark: 0, // Assuming default mark is 0
-    //                     // Include other necessary fields
-    //                 }]);
-
-    //             if (answerError) {
-    //                 console.error(`Error inserting answer for student ${student.studentid}:`, answerError);
-    //                 // Handle error as necessary
-    //             }
-    //         });
-
-    //         // Wait for all answer records to be inserted for the current question
-    //         await Promise.all(answerPromises);
-    //     }
-    // }
-
     // Function to insert data for a single question
     async function insertSingleQuestionData(question: Question,
         students: Student[],
@@ -446,18 +383,17 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
                         </div>
                     </fieldset>
                 </div>
-
                 <h2 className="questions-title text-2xl mb-4">Questions</h2>
                 <div className="ml-10">
                     <div className="question-fields-header flex flex-row gap-3 mb-2">
                         {/* Header labels */}
-                        <div className="flex-1">
+                        <div className="w-24 text-center">
                             <label className="block text-sm font-medium text-gray-700">Question Number</label>
                         </div>
-                        <div className="flex-1">
+                        <div className="w-24 text-center">
                             <label className="block text-sm font-medium text-gray-700">Question Order</label>
                         </div>
-                        <div className="flex-1">
+                        <div className="w-24 text-center">
                             <label className="block text-sm font-medium text-gray-700">No. Of Marks</label>
                         </div>
                         <div className="flex-1">
@@ -468,38 +404,42 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
                     </div>
 
                     {questions.map((question, index) => (
+
                         <div key={index} className="question-fields flex items-center mb-4">
                             {/* Question Fields */}
                             <div className="flex-grow flex flex-row gap-3">
                                 {/* Question Number */}
-                                <div className="flex flex-col flex-1">
+                                <div className="flex flex-col w-24">
                                     <input
                                         type="text"
                                         id={`question-number-${index}`}
-                                        className="mt-1 py-2 px-4 border rounded w-full"
+                                        className="mt-1 py-2 px-4 border rounded"
                                         onChange={(e) => handleQuestionChange(index, 'questionNumber', e.target.value)}
+                                        // tabIndex={1}
                                     />
 
                                 </div>
 
                                 {/* Question Order */}
-                                <div className="flex flex-col flex-1">
+                                <div className="flex flex-col w-24">
                                     <input
                                         type="text"
                                         id={`question-order-${index}`}
                                         className="mt-1 py-2 px-4 border rounded w-full"
                                         onChange={(e) => handleQuestionChange(index, 'questionOrder', e.target.value)}
+                                        // tabIndex={2}
                                     />
 
                                 </div>
 
                                 {/* No. Of Marks */}
-                                <div className="flex flex-col flex-1">
+                                <div className="flex flex-col w-24">
                                     <input
                                         type="text"
                                         id={`question-marks-${index}`}
                                         className="mt-1 py-2 px-4 border rounded w-full"
                                         onChange={(e) => handleQuestionChange(index, 'numberOfMarks', e.target.value)}
+                                        // tabIndex={3}
                                     />
                                 </div>
 
@@ -512,6 +452,7 @@ export default function AddAssessmentForm({ students }: { students: PropsStudent
                                     />
                                 </div>
                             </div>
+
                             {/* Remove Button */}
                             <div className="ml-4">
                                 <button
