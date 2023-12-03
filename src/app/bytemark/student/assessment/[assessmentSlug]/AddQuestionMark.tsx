@@ -1,7 +1,8 @@
 "use client";
 
-// import the set website url so that it can be used in vercel
-import SubTopicDropDown from "@/components/SubTopicDropDown";
+// import SubTopicDropDown from "@/components/SubTopicDropDown";
+import SubTopicDropDownSearch from "@/components/SubTopicDropDownSearch";
+
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // import use router, make sure it is from next/navigation
@@ -231,7 +232,13 @@ const supabase = createClientComponentClient()
                     </div>
 
                     <div className="mt-4 space-y-2">
-                        <SubTopicDropDown
+                        {/* origingal dropdown without search above */}
+                        {/* <SubTopicDropDown
+                            studentId = {studentId}
+                            selectedSubtopicId={selectedSubtopic}
+                            onSubtopicChange={handleSubtopicChange}
+                        /> */}
+                        <SubTopicDropDownSearch
                             studentId = {studentId}
                             selectedSubtopicId={selectedSubtopic}
                             onSubtopicChange={handleSubtopicChange}

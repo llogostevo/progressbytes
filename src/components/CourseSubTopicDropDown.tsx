@@ -48,10 +48,7 @@ const CourseSubTopicDropDown: React.FC<CourseSubTopicDropDownProps> = ({ courseI
             if (!units) return;
             const unitIds = units.map(unit => unit.unitid);
 
-            // const { data: units } = await supabase.from('unittable').select('*').order('unitnumber', { ascending: true });
-            // const { data: topics } = await supabase.from('topictable').select('*').order('topicnumber', { ascending: true });
-            // const { data: subtopics } = await supabase.from('subtopictable').select('*').order('subtopicnumber', { ascending: true });
-            // if (!units || !topics || !subtopics) return;
+
 
             // Fetch topics based on the fetched units
             const { data: topics } = await supabase

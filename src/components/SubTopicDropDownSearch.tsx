@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -29,11 +30,10 @@ interface SubTopicDropDownProps {
     onSubtopicChange: (id: number) => void;
 }
 
-const SubTopicDropDown: React.FC<SubTopicDropDownProps> = ({ studentId, selectedSubtopicId, onSubtopicChange }) => {
+const SubTopicDropDownSearch: React.FC<SubTopicDropDownProps> = ({ studentId, selectedSubtopicId, onSubtopicChange }) => {
     const [data, setData] = useState<Unit[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const supabase = createClientComponentClient();
-
-
 
     useEffect(() => {
         async function fetchData(studentId: number) {
@@ -92,39 +92,49 @@ const SubTopicDropDown: React.FC<SubTopicDropDownProps> = ({ studentId, selected
         fetchData(studentId);
     }, [studentId]);
 
+    // Function to check if a subtopic matches the search term
+    const isSubtopicMatch = (subtopic: Subtopic) => {
+        return subtopic.subtopictitle.toLowerCase().includes(searchTerm.toLowerCase());
+    };
+
     return (
         <div className="mt-4 space-y-2">
-            <label className="block">
-                <span className="text-gray-700">Subtopic:</span>
-                <select
-                    name="subtopic"
-                    className="w-full py-2 px-4 border rounded"
-                    value={selectedSubtopicId || ''}
-                    onChange={(e) => onSubtopicChange(Number(e.target.value))}
-                    style={{ whiteSpace: 'normal' }}
+            {/* Search Input */}
+            <input
+                type="text"
+                className="py-2 px-4 border rounded w-full"
+                placeholder="Search subtopics..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
 
-                >
-                    <option value=''>Select Subtopic</option>
-                    {data.flatMap(unit => (
-                        [
-                            <option key={`unit-${unit.unitid}`} disabled>{`${unit.unitnumber}. ${unit.unittitle}`}</option>,
-                            ...unit.topics?.map(topic => (
-                                [
-                                    <option key={`topic-${topic.topicid}`} disabled>{` ${topic.topicnumber} - ${topic.topictitle}`}</option>,
-                                    ...topic.subtopics?.map(subtopic => (
-                                        <option key={subtopic.subtopicid} value={subtopic.subtopicid}>
-                                            {`  ${subtopic.subtopicnumber} - ${subtopic.subtopictitle}`}
-                                        </option>
-                                    )) || []
-                                ]
-                            )) || []
-                        ]
-                    ))}
-                </select>
-            </label>
+            />
+
+            {/* Subtopics Dropdown */}
+            <select
+                name="subtopic"
+                className="py-2 px-4 border rounded w-full"
+                value={selectedSubtopicId || ''}
+                onChange={(e) => onSubtopicChange(Number(e.target.value))}
+            >
+                <option value=''>Select Subtopic</option>
+                {data.flatMap(unit => (
+                    [
+                        <option key={`unit-${unit.unitid}`} disabled>{`${unit.unitnumber}. ${unit.unittitle}`}</option>,
+                        ...unit.topics?.flatMap(topic => (
+                            [
+                                <option key={`topic-${topic.topicid}`} disabled>{` ${topic.topicnumber} - ${topic.topictitle}`}</option>,
+                                ...topic.subtopics?.filter(isSubtopicMatch).map(subtopic => (
+                                    <option key={subtopic.subtopicid} value={subtopic.subtopicid}>
+                                        {`  ${subtopic.subtopicnumber} - ${subtopic.subtopictitle}`}
+                                    </option>
+                                )) || []
+                            ]
+                        )) || []
+                    ]
+                ))}
+            </select>
         </div>
-
     );
 }
 
-export default SubTopicDropDown;
+export default SubTopicDropDownSearch;
