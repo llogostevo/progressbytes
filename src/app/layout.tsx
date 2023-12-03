@@ -13,8 +13,8 @@ import Footer from '../components/Footer'
 // const siteFont = Inter({ subsets: ['latin']})
 // export const headingFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
 
-export const siteFont = Roboto_Mono({ subsets: ['latin'], weight: ['400'] })
-export const logoFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
+const siteFont = Roboto_Mono({ subsets: ['latin'], weight: ['400'] })
+const logoFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
 
 // THIS IS NEEDED DUE TO AN ISSUE WITH VERCEL UPLOAD AND COOKIES
 export const dynamic = 'force-dynamic'
