@@ -1,13 +1,15 @@
 import Link from "next/link";
 import Logo from "./Logo";
 import Image from "next/image";
-import { logoFont, siteFont } from "@/app/layout";
+// import { logoFont, siteFont } from "@/app/layout";
 import { studentCheck, usersCheck } from '../lib/users';
 import LogoutButton from "./LogoutButton";
 import JoinNow from "./JoinNow";
 import BlogBytes from "./BlogBytes";
+import { Inter, Roboto_Mono, Fira_Mono } from 'next/font/google'
 
-
+const siteFont = Roboto_Mono({ subsets: ['latin'], weight: ['400'] })
+const logoFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
 export default async function Header() {
   const user = await usersCheck();
 
