@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import AddAssessmentForm from "./AddAssessementForm";
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 type Answer = {
     answerid: string;
@@ -40,14 +41,36 @@ interface AssessmentProps {
 
 
 export default function Assessments({ studentAssessment, user, disableAssessment }: AssessmentProps) {
+    const supabase = createClientComponentClient()
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [assessmentToDelete, setAssessmentToDelete] = useState<number | null>(null);
 
-    // 1. Use useState to manage sortOrder
+    const openDeleteModal = (assessmentId: number) => {
+        setAssessmentToDelete(assessmentId);
+        setShowDeleteModal(true);
+    };
+
+    const closeDeleteModal = () => {
+        setAssessmentToDelete(null);
+        setShowDeleteModal(false);
+    };
+
+    // useState to manage sortOrder
     const [sortOrder, setSortOrder] = useState('assessmentdate');
     const [sortedAssessments, setSortedAssessments] = useState([...studentAssessment]);
 
-
-    // 2. Sort the assessments based on the sortOrder    
+   
+     // Define the handleDelete function
+     const handleDelete = async () => {
+        // Your deletion logic here
+        const { error } = await supabase
+            .from('assessmenttable')
+            .delete()
+            .eq('assessmentid', assessmentToDelete)
+        closeDeleteModal(); // Close the modal whether deletion succeeded or not
+    };
+    
     useEffect(() => {
         let sortedData = [...studentAssessment];  // Use a copy of the original data
 
@@ -58,6 +81,8 @@ export default function Assessments({ studentAssessment, user, disableAssessment
         }
 
         setSortedAssessments(sortedData); // Update the sortedAssessments state
+
+ 
     }, [sortOrder, studentAssessment]);
 
     // New state for toggling filtered assessments
@@ -163,9 +188,43 @@ export default function Assessments({ studentAssessment, user, disableAssessment
                                     <span className="text-xs inline-block border mt-10 border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded px-3 py-1 transition duration-200">View Assessment</span>
                                 </Link>
                             </div>
+                            <div className="mt-auto text-right">
+                                {assessment.created_by === user.id && (
+                                    <button
+                                        onClick={() => openDeleteModal(assessment.assessmentid)} // Open the delete modal with the assessment ID
+                                        className="text-xs inline-block border mt-10 border-secondaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-secondaryColor rounded px-3 py-1 transition duration-200"
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </section>
+
+                {showDeleteModal && (
+                    <div className="fixed inset-0 flex items-center backdrop-blur-sm justify-center z-50">
+                        <div className="bg-white border border-secondaryColor p-4 rounded-lg shadow-lg">
+                            <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+                            <p>Are you sure you want to delete this assessment?</p>
+                            <p className="text-secondaryColor my-2">This cannot be undone! All questions and answers data will be deleted</p>
+                            <div className="mt-4 text-right">
+                                <button
+                                    onClick={handleDelete} // Call the delete function
+                                    className="px-3 mx-10 py-1 border border-secondaryColor text-secondaryColor hover:text-white rounded-md hover:bg-secondaryColor"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    onClick={closeDeleteModal} // Close the modal without deleting
+                                    className="px-3 py-1 ml-10 border text-gray-400 border-gray-100 bg-gray-100 rounded-md hover:text-gray-700 hover:bg-gray-300"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

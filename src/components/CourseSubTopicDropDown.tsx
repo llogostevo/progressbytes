@@ -129,32 +129,6 @@ const CourseSubTopicDropDown: React.FC<CourseSubTopicDropDownProps> = ({ courseI
                 </select>
             </div>
 
-        // <div className="mt-1 space-y-2">
-        //         <select
-        //             name="subtopic"
-        //             className="py-2 px-4 border rounded w-full"
-        //             value={selectedSubtopicId || ''}
-        //             onChange={(e) => onSubtopicChange(Number(e.target.value))}
-        //         >
-        //             <option value=''>Select Subtopic</option>
-        //             {data.flatMap(unit => (
-        //                 [
-        //                     <option key={`unit-${unit.unitid}`} disabled>{`${unit.unitnumber}. ${unit.unittitle}`}</option>,
-        //                     ...unit.topics?.map(topic => (
-        //                         [
-        //                             <option key={`topic-${topic.topicid}`} disabled>{` ${topic.topicnumber} - ${topic.topictitle}`}</option>,
-        //                             ...topic.subtopics?.map(subtopic => (
-        //                                 <option key={subtopic.subtopicid} value={subtopic.subtopicid}>
-        //                                     {`  ${subtopic.subtopicnumber} - ${subtopic.subtopictitle}`}
-        //                                 </option>
-        //                             )) || []
-        //                         ]
-        //                     )) || []
-        //                 ]
-        //             ))}
-        //         </select>
-        // </div>
-
     );
 }
 

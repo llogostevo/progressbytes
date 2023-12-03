@@ -81,8 +81,6 @@ export default async function ByteMarkStudent() {
 
     const questionIds = answers?.map(answer => answer.questionid);
 
-    console.log("questionids", questionIds)
-
     const { data: questions, error: questionsError } = await supabase
         .from('questiontable')
         .select('assessmentid') // Select all fields or specify the fields you need
