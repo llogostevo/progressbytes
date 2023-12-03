@@ -65,7 +65,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
 
     // Define the handleDelete function
     const handleDelete = async () => {
-        // Your deletion logic here
+        // assessmentToDelete is taken from the state, this is updated when a delete button is clicked
         const { error } = await supabase
             .from('assessmenttable')
             .delete()
@@ -84,7 +84,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
 
         setSortedAssessments(sortedData); // Update the sortedAssessments state
 
-        // realtime changes
+        // tracking and updating realtime changes to assessments on the page
         const channel = supabase.channel('realtime assessments').on('postgres_changes', {
             event: '*',
             schema: 'public',
