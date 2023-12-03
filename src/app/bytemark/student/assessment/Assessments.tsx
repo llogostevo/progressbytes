@@ -4,6 +4,7 @@ import Link from "next/link";
 import AddAssessmentForm from "./AddAssessementForm";
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from "next/navigation"
 
 type Answer = {
     answerid: string;
@@ -42,6 +43,7 @@ interface AssessmentProps {
 
 export default function Assessments({ studentAssessment, user, disableAssessment }: AssessmentProps) {
     const supabase = createClientComponentClient()
+    const router = useRouter()
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [assessmentToDelete, setAssessmentToDelete] = useState<number | null>(null);
@@ -60,9 +62,9 @@ export default function Assessments({ studentAssessment, user, disableAssessment
     const [sortOrder, setSortOrder] = useState('assessmentdate');
     const [sortedAssessments, setSortedAssessments] = useState([...studentAssessment]);
 
-   
-     // Define the handleDelete function
-     const handleDelete = async () => {
+
+    // Define the handleDelete function
+    const handleDelete = async () => {
         // Your deletion logic here
         const { error } = await supabase
             .from('assessmenttable')
@@ -70,7 +72,7 @@ export default function Assessments({ studentAssessment, user, disableAssessment
             .eq('assessmentid', assessmentToDelete)
         closeDeleteModal(); // Close the modal whether deletion succeeded or not
     };
-    
+
     useEffect(() => {
         let sortedData = [...studentAssessment];  // Use a copy of the original data
 
@@ -82,8 +84,23 @@ export default function Assessments({ studentAssessment, user, disableAssessment
 
         setSortedAssessments(sortedData); // Update the sortedAssessments state
 
- 
-    }, [sortOrder, studentAssessment]);
+        // realtime changes
+        const channel = supabase.channel('realtime assessments').on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'assessmenttable'
+        }, () => {
+            router.refresh()
+        }
+        )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        };
+
+
+    }, [sortOrder, studentAssessment, supabase, router]);
 
     // New state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
