@@ -1,8 +1,9 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import LastActivity from "../dashboardComponents/LastActivity"
+// import LastActivity from "../dashboardComponents/LastLogin"
 import GradeActivity from "../dashboardComponents/GradeActivity"
+import LastLogin from "../dashboardComponents/LastLogin"
 
 const TeacherDashboardPage = async () => {
 
@@ -32,7 +33,7 @@ const TeacherDashboardPage = async () => {
 
     return (
         <div>
-            <h1>Teacher Dashboard</h1>
+            <h1 className = "text-6xl font-semibold">Teacher Dashboard</h1>
             <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                     <div className="flex-1">
@@ -42,7 +43,7 @@ const TeacherDashboardPage = async () => {
                         <GradeActivity course="A level" />
                     </div>
                     <div className="mt-4">
-                        <LastActivity />
+                        <LastLogin />
                     </div>
                 </div>
 

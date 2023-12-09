@@ -46,7 +46,7 @@ function formatDateAndDetermineColor(lastSignIn: string | Date | null): { friend
 }
 
 
-export default function LastActivity() {
+export default function LastLogin() {
     const ITEMS_PER_PAGE = 5;
 
     const [logins, setLogins] = useState<any[]>([])
@@ -96,32 +96,32 @@ export default function LastActivity() {
 
 
     return (
-        // <div>
-        //     <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
-        //         <h1 className="text-2xl font-semibold mb-4">Recent Logins</h1>
+        <div>
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
+                <h1 className="text-2xl font-semibold mb-4">Recent Logins</h1>
 
-        //         {logins?.map((user) => {
-        //             const { actualDate, friendlyDate, color } = formatDateAndDetermineColor(user.lastsignin);
+                {logins?.map((user) => {
+                    const { actualDate, friendlyDate, color } = formatDateAndDetermineColor(user.lastsignin);
 
-        //             return (
-        //                 <div key={user.profileid} className="bg-white p-1">
-        //                     <p className="text-sm text-gray-700">
-        //                         {user.studenttable[0].firstname} {user.studenttable[0].lastname}
-        //                         <span className={`ml-2 px-2 py-1 text-xs text-white rounded bg-${color}`}>
-        //                             {friendlyDate}
-        //                         </span>
-        //                     </p>
-        //                     <p className="text-gray-500 text-sm mt-1">{actualDate}</p>
-        //                 </div>
-        //             );
-        //         })}
-        //         <div className='mt-5'>
-        //             <button className="hover:underline" onClick={goToPreviousPage} hidden={currentPage === 1} disabled={currentPage === 1}> {`<<`} Previous</button>
-        //             <span> Page {currentPage} of {totalPages} </span>
-        //             <button className="hover:underline" onClick={goToNextPage} hidden={currentPage === totalPages} disabled={currentPage === totalPages}>Next {`>>`}</button>
-        //         </div>
-        //     </div>
+                    return (
+                        <div key={user.profileid} className="bg-white p-1">
+                            <p className="text-sm text-gray-700">
+                                {user.studenttable[0].firstname} {user.studenttable[0].lastname}
+                                <span className={`ml-2 px-2 py-1 text-xs text-white rounded bg-${color}`}>
+                                    {friendlyDate}
+                                </span>
+                            </p>
+                            <p className="text-gray-500 text-sm mt-1">{actualDate}</p>
+                        </div>
+                    );
+                })}
+                <div className='mt-5'>
+                    <button className="hover:underline" onClick={goToPreviousPage} hidden={currentPage === 1} disabled={currentPage === 1}> {`<<`} Previous</button>
+                    <span> Page {currentPage} of {totalPages} </span>
+                    <button className="hover:underline" onClick={goToNextPage} hidden={currentPage === totalPages} disabled={currentPage === totalPages}>Next {`>>`}</button>
+                </div>
+            </div>
 
-        // </div>
+        </div>
     )
 }

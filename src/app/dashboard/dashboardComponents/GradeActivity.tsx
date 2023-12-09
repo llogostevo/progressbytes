@@ -3,6 +3,8 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+
 
 // Define a type for the grade items
 type GradeItem = {
@@ -40,15 +42,144 @@ const TargetGradeCheckbox = ({ grade, onChange, checked }: { grade: string; onCh
     </label>
 );
 
+// Helper functions to calculate dates
+const getPreviousSeptemberStartDate = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    let yearOfPreviousSeptember;
+    if (currentMonth >= 8) { // September is month 8 (0-indexed)
+        yearOfPreviousSeptember = currentYear;
+    } else {
+        yearOfPreviousSeptember = currentYear - 1;
+    }
+
+    return `${yearOfPreviousSeptember}-09-01`;
+};
+
+
+const getLastYearStartDate = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    // Determine the start year based on the current month
+    const startYear = currentMonth >= 8 ? currentYear - 1 : currentYear - 2;
+
+    return `${startYear}-09-01`;
+};
+
+const getLastYearEndDate = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    // Determine the end year based on the current month
+    const endYear = currentMonth >= 8 ? currentYear : currentYear - 1;
+
+    return `${endYear}-08-31`;
+};
+
+const getThisWeekRange = () => {
+    const now = new Date();
+    const startDate = startOfWeek(now).toISOString().split('T')[0];
+    const endDate = endOfWeek(now).toISOString().split('T')[0];
+    return { startDate, endDate };
+};
+
+const getThisMonthRange = () => {
+    const now = new Date();
+    const startDate = startOfMonth(now).toISOString().split('T')[0];
+    const endDate = endOfMonth(now).toISOString().split('T')[0];
+    return { startDate, endDate };
+};
+
+
 export default function GradeActivity({ course }: GradeActivityProps) {
     const ITEMS_PER_PAGE = 5;
 
     const [grades, setGrades] = useState<GradeItem[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalItems, setTotalItems] = useState(0);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [totalItems, setTotalItems] = useState(0);
     const [targetGrades, setTargetGrades] = useState<string[]>([]);
     const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
 
+    // Add state for active button and date range
+    const [activeButton, setActiveButton] = useState('');
+
+    // Set the default start date to January 1, 2010
+    const defaultStartDate = new Date('2020-09-01').toISOString().split('T')[0];
+    // Set the default end date to today's date
+    const defaultEndDate = new Date().toISOString().split('T')[0];
+
+    const [startDate, setStartDate] = useState(defaultStartDate);
+    const [endDate, setEndDate] = useState(defaultEndDate);
+
+
+    const setToday = () => {
+        if (activeButton === 'today') {
+            setStartDate(defaultStartDate);
+            setEndDate(defaultEndDate);
+            setActiveButton('');
+        } else {
+            const today = new Date().toISOString().split('T')[0];
+            setStartDate(today);
+            setEndDate(today);
+            setActiveButton('today');
+        }
+    };
+
+    const setThisYear = () => {
+        if (activeButton === 'thisYear') {
+            setStartDate(defaultStartDate);
+            setEndDate(defaultEndDate);
+            setActiveButton('');
+        } else {
+            setStartDate(getPreviousSeptemberStartDate());
+            setEndDate(new Date().toISOString().split('T')[0]);
+            setActiveButton('thisYear');
+        }
+    };
+
+    const setLastYear = () => {
+        if (activeButton === 'lastYear') {
+            setStartDate(defaultStartDate);
+            setEndDate(defaultEndDate);
+            setActiveButton('');
+        } else {
+            setStartDate(getLastYearStartDate());
+            setEndDate(getLastYearEndDate());
+            setActiveButton('lastYear');
+        }
+    };
+
+    const setThisWeek = () => {
+        const { startDate, endDate } = getThisWeekRange();
+        if (activeButton === 'thisWeek') {
+            setStartDate(defaultStartDate);
+            setEndDate(defaultEndDate);
+            setActiveButton('');
+        } else {
+            setStartDate(startDate);
+            setEndDate(endDate);
+            setActiveButton('thisWeek');
+        }
+
+    };
+
+    const setThisMonth = () => {
+        const { startDate, endDate } = getThisMonthRange();
+        if (activeButton === 'thisMonth') {
+            setStartDate(defaultStartDate);
+            setEndDate(defaultEndDate);
+            setActiveButton('');
+        } else {
+            setStartDate(startDate);
+            setEndDate(endDate);
+            setActiveButton('thisMonth');
+        }
+    };
 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
@@ -65,7 +196,6 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         return gradesArray.sort((a, b) => {
             const indexA = order.indexOf(a);
             const indexB = order.indexOf(b);
-            console.log(`Comparing ${a} (${indexA}) with ${b} (${indexB})`);
 
             if (indexA === -1 && indexB === -1) {
                 return 0; // Both grades are not in the order array
@@ -111,14 +241,12 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                         .filter(Boolean) as string[]
                 );
 
-                console.log("Unique Grades before sorting:", Array.from(uniqueGrades));
 
 
                 const sortedGrades = course === 'GCSE'
                     ? sortGrades(uniqueGrades, orderForGCSE)
                     : sortGrades(uniqueGrades, orderForALevel);
 
-                console.log("sorted grades:", sortedGrades);
                 setTargetGrades(sortedGrades);
             }
         };
@@ -126,8 +254,8 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         fetchTargetGrades();
         const getGrades = async () => {
 
-            const start = (currentPage - 1) * ITEMS_PER_PAGE;
-            const end = start + ITEMS_PER_PAGE;
+            // const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            // const end = start + ITEMS_PER_PAGE;
 
 
             let { data: historicalperformance, error, count } = await supabase
@@ -143,18 +271,20 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     assessment_date
                 `)
                 .eq('course_level', course)
+                .gte('assessment_date', startDate) // Greater than or equal to startDate
+                .lte('assessment_date', endDate)
 
             if (historicalperformance) {
                 setGrades(historicalperformance);
-                setTotalItems(count !== null ? count : 0);
+                // setTotalItems(count !== null ? count : 0);
             } else (
-                console.log(historicalperformance)
+                console.log(error)
             )
 
         }
 
         getGrades()
-    }, [supabase, currentPage, course])
+    }, [supabase, course, startDate, endDate])
 
     // New state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
@@ -237,6 +367,10 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         }
     };
 
+    const handleDateChange = () => {
+        setActiveButton('');
+    };
+
     return (
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg flex flex-col space-y-4">
             <h1 className="text-xl md:text-2xl text-center font-semibold mb-2">{course} Performance</h1>
@@ -247,8 +381,20 @@ export default function GradeActivity({ course }: GradeActivityProps) {
             >
                 Toggle Exam Assessments
             </button>
-            <div>
-                TOGGLE DATES
+            <div className="my-2 md:my-4 border p-4 rounded-lg">
+                <div className="flex flex-row flex-wrap gap-4 items-center mt-4">
+                    {/* Buttons */}
+                    <button onClick={setToday} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'today' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Today</button>
+                    <button onClick={setThisYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Year</button>
+                    <button onClick={setLastYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'lastYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Last Year</button>
+                    <button onClick={setThisWeek} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisWeek' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Week</button>
+                    <button onClick={setThisMonth} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisMonth' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Month</button>
+                </div>
+                <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
+                    {/* Date inputs */}
+                    <input type="date" id="startDate" name="startDate" value={startDate} onChange={(e) => { setStartDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
+                    <input type="date" id="endDate" name="endDate" value={endDate} onChange={(e) => { setEndDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
+                </div>
             </div>
             <div>
                 <h1>Filter Target:</h1>
