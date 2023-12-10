@@ -54,10 +54,10 @@ export default async function Login() {
       teacherData[0].teachertable.length > 0 &&
       teacherData[0].teachertable[0].teacherid
     ) {
-      console.log("teacher")
-      redirect("/bytemark/staff");
+
+      redirect("/dashboard");
     } else {
-      console.log("admin")
+
       redirect("/admin");
     }
   }
