@@ -107,18 +107,32 @@ export default function LastLogin() {
                         <div key={user.profileid} className="bg-white p-1">
                             <p className="text-sm text-gray-700">
                                 {user.studenttable[0].firstname} {user.studenttable[0].lastname}
-                                <span className={`ml-2 px-2 py-1 text-xs text-white rounded bg-${color}`}>
+                            </p>
+                            <p className="">
+                                <span className={`px-1 py-1 text-xs text-white rounded bg-${color}`}>
                                     {friendlyDate}
                                 </span>
                             </p>
-                            <p className="text-gray-500 text-sm mt-1">{actualDate}</p>
+                            <p className="ml-2 text-gray-500 text-sm mt-1">{actualDate}</p>
                         </div>
                     );
                 })}
                 <div className='mt-5'>
-                    <button className="hover:underline" onClick={goToPreviousPage} hidden={currentPage === 1} disabled={currentPage === 1}> {`<<`} Previous</button>
+                    <button
+                        className={`${currentPage === 1 ? 'text-gray-100' : 'hover:underline text-gray-700'}`}
+                        onClick={goToPreviousPage}
+                        disabled={currentPage === 1}
+                    >
+                        {`<<`} Previous
+                    </button> 
                     <span> Page {currentPage} of {totalPages} </span>
-                    <button className="hover:underline" onClick={goToNextPage} hidden={currentPage === totalPages} disabled={currentPage === totalPages}>Next {`>>`}</button>
+                    <button
+                        className={`${currentPage === totalPages ? 'text-gray-100' : 'hover:underline text-gray-700'}`}
+                        onClick={goToNextPage}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next {`>>`}
+                    </button>
                 </div>
             </div>
 

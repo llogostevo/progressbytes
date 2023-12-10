@@ -8,13 +8,13 @@ import { useEffect, useState } from 'react'
 
 function formatDateAndDetermineColor(lastSignIn: string | Date | null): { friendlyDate: string, actualDate: string, color: string } {
     if (!lastSignIn) {
-        return { friendlyDate: 'never', actualDate: '', color: 'text-gray-500' };
+        return { friendlyDate: 'never', actualDate: '', color: 'gray-500' };
     }
 
     const lastSignInDate = new Date(lastSignIn);
     if (isNaN(lastSignInDate.getTime())) {
         // Invalid date
-        return { friendlyDate: 'invalid date', actualDate: '', color: 'text-gray-500' };
+        return { friendlyDate: 'invalid date', actualDate: '', color: 'gray-500' };
     }
 
     const now = new Date();
@@ -51,76 +51,105 @@ function formatDateAndDetermineColor(lastSignIn: string | Date | null): { friend
 export default function LastActivity() {
     const ITEMS_PER_PAGE = 5;
 
-    const [logins, setLogins] = useState<any[]>([])
+    const [questionCreated, setQuestionCreated] = useState<any[]>([])
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalItems, setTotalItems] = useState(0); // Update this if you know the total number of items
+    const [totalItems, setTotalItems] = useState(0);
 
-
-    // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
 
     useEffect(() => {
         const getLogins = async () => {
+            // const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            // const end = start + ITEMS_PER_PAGE;
 
-            const start = (currentPage - 1) * ITEMS_PER_PAGE;
-            const end = start + ITEMS_PER_PAGE;
-
-
-            let { data: profilestable, error, count } = await supabase
+            // Fetch profiles with pagination
+            let { data: profilesData, error, count } = await supabase
                 .from('profilestable')
                 .select(`
                     profileid,
                     lastsignin,
-                    studenttable(
-                        firstname,
-                        lastname
-                    )
+                    studenttable(firstname, lastname)
                 `, { count: 'exact' }) // Requesting the count
                 .eq('schoolid', 1)
                 .eq('profiletype', 'Student')
                 .not('lastsignin', 'is', null)
-                .order('lastsignin', { ascending: false })
-                .range(start, end - 1);
 
-            if (profilestable) {
-                setLogins(profilestable);
-                setTotalItems(count !== null ? count : 0);
-            }
+            // Fetch questions data
+            let { data: questionsData, error: questionsError } = await supabase
+                .from('questiontable')
+                .select(`created_by, created_at`)
+                .order('created_at', { ascending: false });
+
+            // Merge and sort data
+            let mergedData = profilesData?.map(profile => {
+                let relatedQuestions = questionsData?.filter(question => question.created_by === profile.profileid) || [];
+                relatedQuestions?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+                return { ...profile, questions: relatedQuestions };
+            });
+
+            mergedData?.sort((a, b) => {
+                let lastDateA = (a.questions && a.questions.length > 0) ? new Date(a.questions[0].created_at).getTime() : 0;
+                let lastDateB = (b.questions && b.questions.length > 0) ? new Date(b.questions[0].created_at).getTime() : 0;
+                return lastDateB - lastDateA;
+            });
+
+            // Manually paginate the sorted data
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const paginatedData = mergedData?.slice(start, start + ITEMS_PER_PAGE);
+
+            setQuestionCreated(paginatedData || []);
+
+            // setQuestionCreated(mergedData || []);
+            setTotalItems(count !== null ? count : 0);
         }
 
-        getLogins()
-    }, [supabase, currentPage])
+        getLogins();
+    }, [supabase, currentPage]);
 
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
     const goToNextPage = () => setCurrentPage((page) => Math.min(page + 1, totalPages));
     const goToPreviousPage = () => setCurrentPage((page) => Math.max(page - 1, 1));
 
 
     return (
         <div>
-            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
-                <h1 className="text-2xl font-semibold mb-4">Recent Logins</h1>
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between mt-10">
+                <h1 className="text-2xl font-semibold mb-4">Question Created</h1>
 
-                {logins?.map((user) => {
-                    const { actualDate, friendlyDate, color } = formatDateAndDetermineColor(user.lastsignin);
-
+                {questionCreated?.map((user) => {
+                    const createdAt = user.questions && user.questions.length > 0 ? user.questions[0].created_at : null;
+                    const { actualDate, friendlyDate, color } = formatDateAndDetermineColor(createdAt);
                     return (
                         <div key={user.profileid} className="bg-white p-1">
                             <p className="text-sm text-gray-700">
                                 {user.studenttable[0].firstname} {user.studenttable[0].lastname}
-                                <span className={`ml-2 px-2 py-1 text-xs text-white rounded bg-${color}`}>
+                            </p>
+                            <p className="">
+                                <span className={`px-1 py-1 text-xs text-white rounded bg-${color}`}>
                                     {friendlyDate}
                                 </span>
                             </p>
-                            <p className="text-gray-500 text-sm mt-1">{actualDate}</p>
+                            <p className="ml-2 text-gray-500 text-sm mt-1">{actualDate}</p>
                         </div>
                     );
                 })}
+
                 <div className='mt-5'>
-                    <button className="hover:underline" onClick={goToPreviousPage} hidden={currentPage === 1} disabled={currentPage === 1}> {`<<`} Previous</button>
+                    <button
+                        className={`${currentPage === 1 ? 'text-gray-100' : 'hover:underline text-gray-700'}`}
+                        onClick={goToPreviousPage}
+                        disabled={currentPage === 1}
+                    >
+                        {`<<`} Previous
+                    </button>
                     <span> Page {currentPage} of {totalPages} </span>
-                    <button className="hover:underline" onClick={goToNextPage} hidden={currentPage === totalPages} disabled={currentPage === totalPages}>Next {`>>`}</button>
+                    <button
+                        className={`${currentPage === totalPages ? 'text-gray-100' : 'hover:underline text-gray-700'}`}
+                        onClick={goToNextPage}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next {`>>`}
+                    </button>
                 </div>
             </div>
 

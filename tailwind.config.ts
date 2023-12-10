@@ -40,6 +40,8 @@ const config: Config = {
     'bg-red-500',
     'bg-yellow-500',
     'bg-orange-500',
+    'bg-gray-500',
+
   ],
 }
 export default config

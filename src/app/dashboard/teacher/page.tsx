@@ -1,9 +1,9 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-// import LastActivity from "../dashboardComponents/LastLogin"
 import GradeActivity from "../dashboardComponents/GradeActivity"
 import LastLogin from "../dashboardComponents/LastLogin"
+import LastActivity from "../dashboardComponents/LastActivity"
 
 const TeacherDashboardPage = async () => {
 
@@ -44,6 +44,7 @@ const TeacherDashboardPage = async () => {
                     </div>
                     <div className="mt-4">
                         <LastLogin />
+                        <LastActivity />
                     </div>
                 </div>
 
