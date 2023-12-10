@@ -33,15 +33,24 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ pieChartData }) => {
                     '#F6E05E', // Tailwind yellow-400
                     '#68D391', // Tailwind green-300
                     '#38A169', // Tailwind green-600
-                ],borderColor: [
+                ], borderColor: [
                     'rgba(255, 255, 255, 1)',
-                  ],
+                ],
                 borderWidth: 1,
             },
         ],
     };
 
-    return <Pie data={data}    options={{ maintainAspectRatio: true }} />;
+    const chartOptions = {
+        maintainAspectRatio: true,
+        responsive: true
+    };
+
+    return (
+
+            <Pie data={data} options={chartOptions} />
+
+    )
 };
 
 export default MyPieChart;

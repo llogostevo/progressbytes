@@ -145,7 +145,7 @@ export default function PLC() {
 
     return (
         <div className="mt-10">
-            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between h-full">
                 <h1 className="text-2xl font-semibold mb-4">Learning Checklist Overview</h1>
                 <div className="flex items-center mb-4">
                     <input
@@ -169,10 +169,11 @@ export default function PLC() {
                         </label>
                     ))}
                 </div>
-                <div className="bg-white p-1">
+                <div className="bg-white min-h-fit"> 
                     <MyPieChart pieChartData={pieChartData} />
                 </div>
             </div>
+
         </div>
     )
 }
