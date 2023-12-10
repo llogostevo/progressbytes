@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import GradeActivity from "../dashboardComponents/GradeActivity"
 import LastLogin from "../dashboardComponents/LastLogin"
 import LastActivity from "../dashboardComponents/LastActivity"
+import PLC from "../dashboardComponents/PLC"
 
 const TeacherDashboardPage = async () => {
 
@@ -33,7 +34,7 @@ const TeacherDashboardPage = async () => {
 
     return (
         <div>
-            <h1 className = "text-6xl font-semibold">Teacher Dashboard</h1>
+            <h1 className="text-6xl font-semibold">Teacher Dashboard</h1>
             <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                     <div className="flex-1">
@@ -45,22 +46,17 @@ const TeacherDashboardPage = async () => {
                     <div className="mt-4">
                         <LastLogin />
                         <LastActivity />
+                        <div> Last Updated PLC</div>
                     </div>
+                </div>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <PLC />
+
                 </div>
 
             </div>
 
-
-            <div>Dashboard Card 1 - graph of grades GCSE Groups</div>
-            <div>Dashboard Card 1 - graph of grades A level Groups</div>
-            <div>Dashboard Card 2 - Classes TG Last Teacher Assessment Grade Avg Grade</div>
-            <div>Dashboard Card 4 - Top 5 Topic List GCSE Avg / Bottom 5 Topic List GCSE Avg</div>
-            <div>Dashboard Card 4 - Top 5 Topic List A level Avg / Bottom 5 Topic List A level Avg</div>
-
-
-
-            <div>Dashboard Card 5</div>
-            <div>Dashboard Card 6</div>
+            
 
 
 

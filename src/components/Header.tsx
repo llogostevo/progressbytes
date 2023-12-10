@@ -7,6 +7,8 @@ import LogoutButton from "./LogoutButton";
 import JoinNow from "./JoinNow";
 import BlogBytes from "./BlogBytes";
 import { Inter, Roboto_Mono, Fira_Mono } from 'next/font/google'
+import BackButton from "./BackButton";
+
 
 const siteFont = Roboto_Mono({ subsets: ['latin'], weight: ['400'] })
 const logoFont = Fira_Mono({ subsets: ['latin'], weight: ['400'] })
@@ -25,6 +27,9 @@ export default async function Header() {
           {user ? (
             <>
               {/* Reduce font size for smaller screens */}
+              <BackButton />
+              <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/dashboard">Dashboard</Link>
+
               <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
               <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
             </>
