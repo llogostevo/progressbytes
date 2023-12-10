@@ -215,12 +215,22 @@ export default async function TeacherLearningChecklistOverview({ params }: { par
                 <table className="m-0 md:ml-1 lg:ml-10 table-auto border border-gray-900">
                     <thead className="bg-gray-400 z-10">
                         <tr>
-                        <th className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" colSpan={2}>Topics</th>
-                        {students?.map(student => (
-                            <th key={student.studentid} className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" title={`${student.firstname} ${student.lastname}`}>
-                                {getInitials(student.firstname, student.lastname)}
-                            </th>
-                        ))}
+                            <th className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" colSpan={2}>Topics</th>
+                            {students?.map(student => (
+                                <th key={student.studentid} className="sticky top-0 z-10 px-1 text-xs lg:px-4 py-2 border-r border border-gray-900" title={`${student.firstname} ${student.lastname}`}>
+                                    {/* Initials for md screens and below */}
+                                    <span className="block lg:hidden">
+                                        {getInitials(student.firstname, student.lastname)}
+                                    </span>
+
+                                    {/* Full name for lg screens and above */}
+                                    <span className="hidden lg:block">
+                                        {student.firstname}<br />
+                                        {getInitials( "",student.lastname)}
+                                    </span>
+                                </th>
+
+                            ))}
                         </tr>
                     </thead>
 
