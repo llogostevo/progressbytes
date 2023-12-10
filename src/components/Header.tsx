@@ -29,7 +29,7 @@ export default async function Header() {
                 <BackButton />
               </div>
               <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/dashboard">Dashboard</Link>
-              <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/bytemark/student/assessment">Assessments</Link>
+              <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/assessment">Assessments</Link>
               <Link className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor" href="/learningchecklist">PLC</Link>
             </>
           ) : (
