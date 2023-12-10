@@ -2,7 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-const DashboardPage = async () => {
+const Assessment = async () => {
     const supabase = createServerComponentClient({ cookies })
 
     // get the users sessions
@@ -26,17 +26,16 @@ const DashboardPage = async () => {
     } else if (profile[0].profiletype == "Student") {
         redirect("/bytemark/student/assessment")
     } else if (profile[0].profiletype == "Teacher") {
-        redirect("/bytemark/staff/assessment")
+        redirect(`/assessment/staff/classes/${profile[0].schoolid}`)
     } else if (profile[0].profiletype == "Admin") {
         redirect("/admin")
     } else {
         redirect("/unauthorised")
     }
 
-
     return (
         <div>Loading Dashboard...</div>
     )
 }
 
-export default DashboardPage;
+export default Assessment;
