@@ -8,13 +8,13 @@ export default function BackButton() {
 
   return (
     <>
-      <button
-        className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor text-gray-700"
-        onClick={() => router.back()}
-      >
-        {'<<'} Back
-      </button>
-      <span>|</span>
+        
+        <button
+          className="text-lg sm:text-2xl border-b-2 border-transparent hover:border-secondaryColor text-gray-700"
+          onClick={() => router.back()}
+        >
+          {'<<'} Back
+        </button>
     </>
   );
 }

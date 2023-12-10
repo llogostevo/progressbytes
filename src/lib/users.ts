@@ -13,6 +13,52 @@ export async function usersCheck() {
 }
 
 
+export async function studentTrueCheck() {
+
+  const user = await usersCheck()
+
+  const supabase = createServerComponentClient({ cookies })
+
+  // check if logged in
+  if (!user) {
+    return
+  }
+
+  // check if teacher logged in
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('type, profile_id').eq('profile_id', `${user?.id}`).eq('type', 'Student')
+  if (profiles) {
+    return true
+  } else {
+    return false
+  }
+
+}
+
+export async function adminCheck() {
+
+  const user = await usersCheck()
+
+  const supabase = createServerComponentClient({ cookies })
+
+  // check if logged in
+  if (!user) {
+    return
+  }
+
+  // check if teacher logged in
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('type, profile_id').eq('profile_id', `${user?.id}`).eq('type', 'Admin')
+  if (profiles) {
+    return true
+  } else {
+    return false
+  }
+
+}
+
 export async function teacherCheck() {
 
   const user = await usersCheck()
