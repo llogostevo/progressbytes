@@ -41,7 +41,7 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ pieChartData }) => {
         ],
     };
 
-    return <Pie data={data}    options={{ maintainAspectRatio: false }} />;
+    return <Pie data={data}    options={{ maintainAspectRatio: true }} />;
 };
 
 export default MyPieChart;
