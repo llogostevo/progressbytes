@@ -15,6 +15,13 @@ interface MyPieChartProps {
     pieChartData: PieChartData[];
 }
 
+
+const getFontSizeClass = (chartWidth: number): string => {
+    if (chartWidth < 640) return 'text-xs'; // Tailwind class for small screens
+    if (chartWidth < 768) return 'text-sm'; // Tailwind class for medium screens
+    return 'text-base'; // Default Tailwind class
+};
+
 const MyPieChart: React.FC<MyPieChartProps> = ({ pieChartData }) => {
     const data = {
         labels: pieChartData.map(item => item.name),
@@ -26,13 +33,15 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ pieChartData }) => {
                     '#F6E05E', // Tailwind yellow-400
                     '#68D391', // Tailwind green-300
                     '#38A169', // Tailwind green-600
-                ],
+                ],borderColor: [
+                    'rgba(255, 255, 255, 1)',
+                  ],
                 borderWidth: 1,
             },
         ],
     };
 
-    return <Pie data={data} />;
+    return <Pie data={data}    options={{ maintainAspectRatio: false }} />;
 };
 
 export default MyPieChart;
