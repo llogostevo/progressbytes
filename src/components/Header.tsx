@@ -16,10 +16,10 @@ export default async function Header() {
   const user = await usersCheck();
 
   return (
-    <div className="text-mainText mt-5 px-4 pt-12 pb-11 mb-10 border-t-2 border-b-2 border-primaryColor flex flex-col md:flex-row justify-between">
-      <div className="md:ml-4 mb-4">
+    <div className="text-mainText mt-2 md:mt-5 pt-6 md:pt-12 pb-6 md:pb-11 mb-2 md:mb-10 border-t-2 border-b-2 border-primaryColor flex flex-col md:flex-row justify-between">
+      <div className="md:ml-4 mb-4 text-center md:text-left">
         {/* Adjust Logo size for smaller screens */}
-        <Logo logoClasses="text-mainText text-3xl sm:text-3xl md:text-5xl lg:text-6xl" />
+        <Logo logoClasses="text-mainText text-3xl sm:text-4xl md:text-5xl lg:text-6xl" />
         {/* Main menu links: horizontal layout on larger screens, vertical on smaller screens */}
         <div className="flex flex-col md:flex-row justify-center sm:justify-start items-center mt-4 md:mt-10 gap-3 md:gap-5">
           {user ? (
