@@ -127,6 +127,8 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
                 className={`${getColorClass(selectedJudgment)} border border-black rounded p-1 sm:hidden`}
                 value={selectedJudgment || ""}
                 onChange={(e) => handleJudgmentChange(e.target.value)}
+                style={{ maxWidth: '80px' }}
+
             >
                 <option disabled value="">Select Judgement</option>
                 {confidenceLevels.map((level) => (
