@@ -28,7 +28,7 @@ const config: Config = {
         },
         mutedText: {
           DEFAULT: '#2C3E50',
-        }, 
+        },
         fluroGreen: {
           DEFAULT: '#35cc35',
         }
@@ -41,7 +41,6 @@ const config: Config = {
     'bg-yellow-500',
     'bg-orange-500',
     'bg-gray-500',
-
   ],
 }
 export default config

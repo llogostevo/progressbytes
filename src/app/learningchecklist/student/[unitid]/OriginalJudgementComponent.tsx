@@ -26,10 +26,10 @@ interface ShortenedConfidenceLevels {
     [key: string]: string;
 }
 const confidenceLevelColors: ConfidenceLevelColors = {
-    "Needs Significant Study": "bg-red-100",
-    "Requires Revision": "bg-yellow-100",
-    "Almost Secure": "bg-green-100",
-    "Fully Secure": "bg-green-300"
+    "Needs Significant Study": "bg-red-300",
+    "Requires Revision": "bg-yellow-300",
+    "Almost Secure": "bg-green-200",
+    "Fully Secure": "bg-green-500"
 };
 
 const shortenedConfidenceLevels: ShortenedConfidenceLevels = {
@@ -40,7 +40,7 @@ const shortenedConfidenceLevels: ShortenedConfidenceLevels = {
 };
 
 
-const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => {
+const OriginalJudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => {
     const [selectedJudgment, setSelectedJudgment] = useState<string | null>(null);
 
     // Create a Supabase client configured to use cookies
@@ -72,8 +72,8 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
 
 
 
-    const handleJudgmentChange = async (newJudgment: string) => {
-        // const newJudgment = e.target.value;
+    const handleJudgmentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newJudgment = e.target.value;
         setSelectedJudgment(newJudgment);
         try {
             const { data, error } = await supabase
@@ -97,41 +97,34 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
         }
     };
 
-    
+
     return (
 
         <div>
-            {/* Radio Button Cards for larger screens */}
-            <div className="flex-row justify-around hidden sm:flex">
+            {/* Dropdown for larger screens */}
+            <select
+                className={`${getColorClass(selectedJudgment)} border border-black rounded p-1 hidden sm:block`}
+                value={selectedJudgment || ""}
+                onChange={handleJudgmentChange}
+            >
+                <option disabled value="">No Judgement</option>
                 {confidenceLevels.map((level) => (
-                    <label
-                        key={level}
-                        className={`flex items-center hover:border-4 border-black text-black ${confidenceLevelColors[level]} justify-center p-2 m-1 rounded-md cursor-pointer transition-all ease-in-out duration-300 ${selectedJudgment === level ? `border-4 border-black text-black` : ' text-gray-400'}`}
-                        style={{ minWidth: '100px' }}
-                    >
-                        <input
-                            type="radio"
-                            name="judgment"
-                            value={level}
-                            checked={selectedJudgment === level}
-                            onChange={() => handleJudgmentChange(level)}
-                            className="hidden"
-                        />
-                        <span className="text-xs">{level}</span>
-                    </label>
+                    <option key={level} value={level}>
+                        {level}
+                    </option>
                 ))}
-            </div>
+            </select>
 
-            {/* Dropdowns for smaller screens */}
+            {/* Dropdown for smaller screens */}
             <select
                 className={`${getColorClass(selectedJudgment)} border border-black rounded p-1 sm:hidden`}
                 value={selectedJudgment || ""}
-                onChange={(e) => handleJudgmentChange(e.target.value)}
+                onChange={handleJudgmentChange}
             >
-                <option disabled value="">Select Judgement</option>
+                <option disabled value="">N/A</option>
                 {confidenceLevels.map((level) => (
-                    <option key={level} value={level}>
-                        {shortenedConfidenceLevels[level] || level}
+                    <option key={level + "-short"} value={level}>
+                        {shortenedConfidenceLevels[level]}
                     </option>
                 ))}
             </select>
@@ -139,4 +132,4 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
     );
 }
 
-export default JudgmentComponent;
+export default OriginalJudgmentComponent;
