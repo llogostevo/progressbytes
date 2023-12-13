@@ -39,7 +39,7 @@ interface ConfidenceLevelColors {
 }
 
 
-export default async function UnitChecklist({ params }: { params: { unitid: string } }) {
+export default async function UnitChecklist({ params }: { params: { unitid: number } }) {
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
@@ -96,10 +96,16 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         .select('*')
         .eq('unitid', params.unitid)
 
-    let courseId: String;
+
+    let courseId: string;
+    let unitTitle: string;
+    let unitNumber: string;
 
     if (courses && courses.length > 0) {
         courseId = courses[0].courseid;
+        unitTitle = courses[0].unittitle;
+        unitNumber = courses[0].unitnumber;
+
     } else {
         redirect("/learningchecklist")
     }
@@ -131,9 +137,12 @@ export default async function UnitChecklist({ params }: { params: { unitid: stri
         <>
             <div className="space-y-6">
                 <h1 className="text-4xl mb-4 font-semibold">Personalised Learning</h1>
-                
+
                 <LearningChecklist
                     topics={topics as Topic[]}
+                    unitTitle={unitTitle }
+                    unitNumber={unitNumber}
+                    unitId={params.unitid}
                     studentId={studentId}
                     confidenceLevelColors={confidenceLevelColors}
                     confidenceLevels={confidenceLevels}

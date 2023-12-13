@@ -5,6 +5,7 @@ import HistoricalComponent from './HistoricalComponent';
 import AssessmentModal from '@/components/assessmentModal/AssesmentModal';
 import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import OverallGrade from './OverallGradeComponent';
 
 
 interface Judgment {
@@ -42,6 +43,9 @@ interface ConfidenceLevelColors {
 
 interface LearningChecklistProps {
     topics: Topic[];
+    unitId: number;
+    unitTitle: string;
+    unitNumber: string;
     studentId: number;
     confidenceLevelColors: ConfidenceLevelColors;
     confidenceLevels: string[];
@@ -103,7 +107,7 @@ const getThisMonthRange = () => {
 
 // COMPONENT
 export default function LearningChecklist(props: LearningChecklistProps) {
-    const { topics, studentId, confidenceLevelColors, confidenceLevels } = props;
+    const { unitId, unitTitle, unitNumber, topics, studentId, confidenceLevelColors, confidenceLevels } = props;
     // state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
 
@@ -205,6 +209,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
     return (
         <>
             <div className="space-y-4">
+                <h2 className="text-2xl">{unitNumber} {unitTitle}</h2>
                 <div className="flex items-center gap-3">
                     <AssessmentModal />
                     <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />
@@ -238,6 +243,15 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
+                    <OverallGrade
+                        studentId={studentId}
+                        unitId={unitId}
+                        assessmentType={filterAssessmentType}
+                        startDate={startDate}
+                        endDate={endDate} 
+                    />
                 </div>
 
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
