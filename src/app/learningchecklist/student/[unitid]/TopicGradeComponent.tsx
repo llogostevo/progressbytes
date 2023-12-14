@@ -39,6 +39,7 @@ interface HistoricalPerformance {
 
 }
 
+// THIS NEEDS FIXING
 interface HistoricalPerformanceItem {
     topic_number: string;
     topic_name: string;
@@ -116,7 +117,7 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
             if (historicalperformance && historicalperformance.length > 0) {
                 // Aggregate marks by topic
                 const marksByTopic: MarksByTopicType = {};
-                historicalperformance.forEach(item => {
+                historicalperformance.forEach((item: HistoricalPerformanceItem) => {
                     if (!marksByTopic[item.topic_number]) {
                         marksByTopic[item.topic_number] = {
                             name: item.topic_name,
@@ -145,6 +146,7 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                 // Setting course level
                 setCourseLevel(historicalperformance[0].course_level);
             }
+        }
 
             getAnswers();
 

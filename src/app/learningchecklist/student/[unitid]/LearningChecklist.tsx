@@ -256,13 +256,13 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                         endDate={endDate}
                     />
 
-                    {/* <TopicGradeComponent
+                    <TopicGradeComponent
                         studentId={studentId}
                         unitId={unitId}
                         assessmentType={filterAssessmentType}
                         startDate={startDate}
                         endDate={endDate}
-                    /> */}
+                    />
                 </div>
                 </div>
 
