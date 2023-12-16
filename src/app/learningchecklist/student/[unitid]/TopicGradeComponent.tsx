@@ -1,6 +1,7 @@
 'use client'
 import { getGCSEGrade, getAlevelGrade } from '@/lib/gradeBoundaries';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import Link from 'next/link';
 import { useEffect, useState } from 'react'
 
 interface Subtopic {
@@ -177,7 +178,8 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                                     {item.topic_number}
                                 </td>
                                 <td className="px-5 border-b border-gray-200 bg-white text-sm">
-                                    {item.topic_name}
+                                <Link href={`#${item.topic_name}`}>{item.topic_name}</Link>
+
                                 </td>
                                 <td className="px-5  border-b border-gray-200 bg-white text-sm">
                                     <p>({totalStudentMarks}/{totalMarks}) {rounded}%</p>

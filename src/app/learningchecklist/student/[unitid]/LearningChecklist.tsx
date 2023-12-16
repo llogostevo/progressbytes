@@ -270,7 +270,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
                     {sortedTopics?.map((topic) => (
                         <section key={topic.topicid} className="">
-                            <h2 className="px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
+                            <h2 id={`${topic.topictitle}`} className="px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
                                 {topic.topicnumber} - {topic.topictitle}
                             </h2>
                             <div className="flex flex-col my-10 overflow-x-auto"> {/* Wrapping div */}
@@ -308,7 +308,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                                             const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
 
                                             return (
-                                                <tr key={subtopic.subtopicid} className={`${judgmentColor} text-xs sm:text-sm`}>
+                                                <tr  key={subtopic.subtopicid} className={`${judgmentColor} text-xs sm:text-sm`}>
                                                     <td className="p-1 sm:p-2 w-1  hidden sm:table-cell text-xs text-center border-r border border-gray-900">{subtopic.subtopicnumber}</td>
                                                     <td className="p-1 sm:p-2 w-2/4 md:w-7/12 text-xs border-r border border-gray-900">{subtopic.subtopictitle}</td>
                                                     <td className="p-1 sm:p-2 w-1/3 hidden sm:table-cell text-xs border-r border border-gray-900">{subtopic.subtopicdescription}</td>
