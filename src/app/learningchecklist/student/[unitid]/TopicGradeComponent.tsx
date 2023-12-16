@@ -96,64 +96,56 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                 setCourseLevel('');
                 return;
             }
-
-            // if (historicalperformance && historicalperformance.length > 0) {
-
-            //     const sortedData = historicalperformance.sort((a, b) =>
-            //         a.topic_number.localeCompare(b.topic_number, undefined, { numeric: true })
-            //     );
-
-            //     const total = historicalperformance.reduce((sum, answer) => sum + Number(answer.mark || 0), 0);
-            //     const totalMarks = historicalperformance.reduce((sum, answer) => sum + Number(answer.questionmarks || 0), 0);
-            //     const percentage = (total / totalMarks) * 100
-            //     setTotalStudentMarks(total);
-            //     setTotalMarks(totalMarks);
-            //     setPercentage(percentage);
-            //     setCourseLevel(historicalperformance[0].course_level)
-            //     setHistoricalPerformanceData(historicalperformance || []);
-
-            // }
-
             if (historicalperformance && historicalperformance.length > 0) {
-                // Aggregate marks by topic
                 const marksByTopic: MarksByTopicType = {};
+    
+                let totalStudentMarksAccumulator = 0;
+                let totalMarksAccumulator = 0;
+    
                 historicalperformance.forEach((item: HistoricalPerformanceItem) => {
-                    if (!marksByTopic[item.topic_number]) {
-                        marksByTopic[item.topic_number] = {
+                    const topicKey = item.topic_number;
+                    if (!marksByTopic[topicKey]) {
+                        marksByTopic[topicKey] = {
                             name: item.topic_name,
                             totalStudentMarks: 0,
                             totalMarks: 0
                         };
                     }
-                    marksByTopic[item.topic_number].totalStudentMarks += Number(item.mark || 0);
-                    marksByTopic[item.topic_number].totalMarks += Number(item.questionmarks || 0);
+                    const studentMark = Number(item.mark || 0);
+                    const questionMark = Number(item.questionmarks || 0);
+                    marksByTopic[topicKey].totalStudentMarks += studentMark;
+                    marksByTopic[topicKey].totalMarks += questionMark;
+    
+                    totalStudentMarksAccumulator += studentMark;
+                    totalMarksAccumulator += questionMark;
                 });
+    
+                setTotalStudentMarks(totalStudentMarksAccumulator);
+                setTotalMarks(totalMarksAccumulator);
+                setPercentage((totalStudentMarksAccumulator / totalMarksAccumulator) * 100);
+    
+                const aggregatedData = Object.values(marksByTopic)
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    
+                    const transformedData: HistoricalPerformance[] = Object.keys(marksByTopic).map(topic_number => {
+                        const topicData = marksByTopic[topic_number];
+                        return {
+                            topic_number,
+                            topic_name: topicData.name,
+                        };
+                    });
 
-                // Convert aggregated data into an array and sort it
-                const aggregatedData = Object.keys(marksByTopic).map(topic_number => {
-                    const topic = marksByTopic[topic_number];
-                    return {
-                        topic_number,
-                        topic_name: topic.name,
-                        totalStudentMarks: topic.totalStudentMarks,
-                        totalMarks: topic.totalMarks,
-                        percentage: (topic.totalStudentMarks / topic.totalMarks) * 100
-                    };
-                }).sort((a, b) => a.topic_number.localeCompare(b.topic_number, undefined, { numeric: true }));
-
-                setHistoricalPerformanceData(aggregatedData);
-
-                // Setting course level
-                setCourseLevel(historicalperformance[0].course_level);
+                setHistoricalPerformanceData(transformedData);
             }
-        }
-
-            getAnswers();
-
-        }, [studentId, unitId, assessmentType, startDate, endDate, supabase]);
+        };
+    
+        getAnswers();
+    }, [studentId, unitId, assessmentType, startDate, endDate, supabase]);
+    
 
     const rounded = Number(percentage.toFixed(2));
-
+ // Setting course level
+                // setCourseLevel(historicalperformance[0].course_level);
     let grade: String;
     if (courseLevel == "GCSE") {
         grade = getGCSEGrade(rounded)
@@ -162,10 +154,8 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
     }
 
     return (
-        <div className="flex flex-col">
-
-            {/* Table to display topics */}
-            <div className="bg-white rounded-md shadow-sm p-4 border border-gray-300 flex-1">
+    
+            <div className="bg-white rounded-md shadow-sm p-4 border border-gray-300">
                 <table className="min-w-full leading-normal">
                     <thead>
                         <tr>
@@ -183,13 +173,13 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                     <tbody>
                         {historicalPerformanceData.map((item, index) => (
                             <tr key={index}>
-                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td className="px-5 border-b border-gray-200 bg-white text-sm">
                                     {item.topic_number}
                                 </td>
-                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td className="px-5 border-b border-gray-200 bg-white text-sm">
                                     {item.topic_name}
                                 </td>
-                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td className="px-5  border-b border-gray-200 bg-white text-sm">
                                     <p>({totalStudentMarks}/{totalMarks}) {rounded}%</p>
                                     <p className="mt-2">{courseLevel} Grade: {grade} </p>
                                 </td>
@@ -198,7 +188,7 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                     </tbody>
                 </table>
             </div>
-        </div>
+        
     );
 
 }

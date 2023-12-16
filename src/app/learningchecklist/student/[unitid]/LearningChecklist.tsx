@@ -246,7 +246,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                     </div>
                 </div>
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col gap-4">
 
                     <OverallGrade
                         studentId={studentId}
