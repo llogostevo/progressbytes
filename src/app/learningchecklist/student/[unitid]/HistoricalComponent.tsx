@@ -31,7 +31,7 @@ const HistoricalComponent = ({ studentId, subtopicId, assessmentType, startDate,
     const [totalMarks, setTotalMarks] = useState(0);
     const [percentage, setPercentage] = useState(0);
     const [totalStudentMarks, setTotalStudentMarks] = useState(0);
-    const [courseLevel, setCourseLevel] = useState('GCSE');
+    const [courseLevel, setCourseLevel] = useState('');
 
 
     // Create a Supabase client configured to use cookies
@@ -39,11 +39,7 @@ const HistoricalComponent = ({ studentId, subtopicId, assessmentType, startDate,
 
     useEffect(() => {
         const getAnswers = async () => {
-            // let { data: historicalperformance, error: historicalerror } = await supabase
-            //     .from('historicalperformance')
-            //     .select('*')
-            //     .eq('subtopic_id', subtopicId)
-            //     .eq('student_id', studentId)
+        
 
             let query = supabase.from('historicalperformance').select('*')
                 .eq('subtopic_id', subtopicId)
