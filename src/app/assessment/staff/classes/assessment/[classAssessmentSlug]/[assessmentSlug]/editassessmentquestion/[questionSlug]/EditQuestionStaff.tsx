@@ -1,7 +1,6 @@
 'use client'
 
 import SubTopicDropDownSearch from '@/components/SubTopicDropDownSearch';
-import SubTopicDropDownStaff from '@/components/SubTopicDropDownStaff';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState, useCallback } from 'react'
 
