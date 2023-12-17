@@ -1,5 +1,7 @@
 'use client'
 
+import SubTopicDropDownSearch from '@/components/SubTopicDropDownSearch';
+import SubTopicDropDownStaff from '@/components/SubTopicDropDownStaff';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState, useCallback } from 'react'
 
@@ -58,10 +60,21 @@ type Props = {
 
 export default function EditQuestionStaff({ questionData }: Props) {
 
+    const studentId = questionData.answertable[0].studenttable.studentid
+    const initialSubtopicId = questionData.questionsubtopictable[0].subtopictable.subtopicid
+
     const [editableQuestionData, setEditableQuestionData] = useState(questionData);
     const [answers, setAnswers] = useState(questionData.answertable);
     const [dataChangeFlag, setDataChangeFlag] = useState(false);
+    // State for the selected subtopic
+    const [selectedSubtopic, setSelectedSubtopic] = useState<number | null>(initialSubtopicId);
 
+    const handleSubtopicChange = (subtopicId: number) => {
+        setSelectedSubtopic(subtopicId);
+        if (subtopicId !== initialSubtopicId) {
+            setDataChangeFlag(true); // Set the flag to true if the subtopic has been changed
+        }
+    }
 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
@@ -106,6 +119,20 @@ export default function EditQuestionStaff({ questionData }: Props) {
                 return;  // Exit early if there's an error
             }
 
+            // If the subtopic has changed, update the questionsubtopictable
+            if (selectedSubtopic !== initialSubtopicId) {
+                const { error: subtopicError } = await supabase
+                    .from('questionsubtopictable')
+                    .update({ subtopicid: selectedSubtopic })
+                    .eq('questionid', editableQuestionData.questionid);
+
+                if (subtopicError) {
+                    console.error("Error updating subtopic:", subtopicError);
+                    setSubmissionMessage({ text: "Error updating subtopic. Please try again.", type: "error" });
+                    return;  // Exit early if there's an error
+                }
+            }
+
             // Updating the student data
             const updateStudentPromises = answers.map(answer =>
                 supabase
@@ -119,13 +146,13 @@ export default function EditQuestionStaff({ questionData }: Props) {
             const studentErrors = studentResults.filter(result => result.error);
             if (studentErrors.length > 0) {
                 console.error("Errors updating student data:", studentErrors);
-                setSubmissionMessage({ text: "Error updating student data. Please try again.", type: "error" });  // or "success" as per your requirement
+                setSubmissionMessage({ text: "Error updating student data. Please try again.", type: "error" });  
             } else {
-                setSubmissionMessage({ text: "Data updated succesfully", type: "success" });  // or "success" as per your requirement
-                setDataChangeFlag(false);  // set data change to false after data uploaded
+                setSubmissionMessage({ text: "Data updated succesfully", type: "success" });  
+                setDataChangeFlag(false);  
             }
         },
-        [supabase, editableQuestionData, questionData.questionid, answers]
+        [supabase, editableQuestionData, questionData.questionid, answers, selectedSubtopic, initialSubtopicId]
     );
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -187,6 +214,13 @@ export default function EditQuestionStaff({ questionData }: Props) {
                         <p className="text-gray-700">Unit: {questionData.questionsubtopictable[0].subtopictable.topictable.unittable.unittitle}</p>
                         <p className="text-gray-700">Topic: {questionData.questionsubtopictable[0].subtopictable.topictable.topictitle}</p>
                         <p className="text-gray-700">Subtopic: {questionData.questionsubtopictable[0].subtopictable.subtopictitle}</p>
+                        <p className="text-gray-700">Subtopic: {questionData.questionsubtopictable[0].subtopictable.subtopicid}</p>
+
+                        <SubTopicDropDownSearch
+                            studentId={studentId}
+                            selectedSubtopicId={selectedSubtopic}
+                            onSubtopicChange={handleSubtopicChange}
+                        />
                     </div>
                 </div>
 

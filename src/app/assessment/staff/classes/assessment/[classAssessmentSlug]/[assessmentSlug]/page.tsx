@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import FileUploadComponent from "./FileUploadComponent";
+import AddQuestionComponent from "./AddQuestionComponent";
 
 // Type Definitions
 interface Student {
@@ -227,6 +228,8 @@ export default async function AddAssessmentQuestions({ params }: { params: { ass
             
             {/* @ts-ignore */}
             <FileUploadComponent assessmentCSV={assessmentCSV} />
+
+            <AddQuestionComponent  assessmentId={decodedSlug} uniqueStudents={studentsArray}/>
 
 
             <table className="min-w-full bg-white text-sm">

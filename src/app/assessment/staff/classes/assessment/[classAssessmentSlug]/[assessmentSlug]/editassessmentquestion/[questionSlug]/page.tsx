@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from 'react'
-import EditQuestion from "./EditQuestionStaff";
+import EditQuestionStaff from "./EditQuestionStaff";
 
 
 export default function AssessmentQuestion({ params }: { params: { questionSlug: number } }) {
@@ -93,7 +93,7 @@ export default function AssessmentQuestion({ params }: { params: { questionSlug:
                 </button>
             </div>
 
-            {question.length > 0 && <EditQuestion questionData={question[0]} />}
+            {question.length > 0 && <EditQuestionStaff questionData={question[0]} />}
         </div>
 
 
