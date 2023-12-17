@@ -90,26 +90,6 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                 query = query.eq('assessment_type', 'Assessment');
             }
 
-            // let { data: unTypedTopicData, error } = await supabase
-            //     .from('unittable')
-            //     .select('topictable(topicnumber, topictitle)')
-            //     .eq('unitid', unitId);
-
-            // const topicData: UnittableRow[] = unTypedTopicData as UnittableRow[];
-
-            // const assessedTopicNumbers = new Set(historicalPerformanceData.map(item => item.topic_number));
-
-            // const unassessedTopicsData = topicData.flatMap(row => row.topictable)
-            //     .filter(topic => !assessedTopicNumbers.has(topic.topicnumber))
-            //     .map(topic => ({
-            //         topicnumber: topic.topicnumber,
-            //         topictitle: topic.topictitle
-            //     }))
-            //     .sort((a, b) => a.topicnumber.localeCompare(b.topicnumber, undefined, { numeric: true }));
-
-            // setSortedUnassessedTopics(unassessedTopicsData); 
-
-
             const start = new Date(startDate).toISOString();
             const end = new Date(endDate).toISOString();
 
@@ -161,7 +141,7 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                     // Calculate percentage and grade for each topic
                     const topicPercentage = (marksByTopic[topicKey].totalStudentMarks / marksByTopic[topicKey].totalMarks) * 100;
                     marksByTopic[topicKey].percentage = topicPercentage;
-                    marksByTopic[topicKey].grade = courseLevel === "GCSE" ? getGCSEGrade(topicPercentage) : getAlevelGrade(topicPercentage);
+                    marksByTopic[topicKey].grade = historicalperformance?.[0].course_level === "GCSE" ? getGCSEGrade(topicPercentage) : getAlevelGrade(topicPercentage);
                 });
 
                 setTotalStudentMarks(totalStudentMarksAccumulator);
@@ -177,7 +157,9 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
                         topic_number,
                         topic_name: topicData.name,
                     };
-                });
+                })
+                .sort((a, b) => a.topic_number.localeCompare(b.topic_number, undefined, { numeric: true }));
+
 
                 setHistoricalPerformanceData(transformedData);
             }
@@ -278,5 +260,3 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
 }
 
 export default TopicGrade;
-
-
