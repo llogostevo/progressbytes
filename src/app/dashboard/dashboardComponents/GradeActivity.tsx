@@ -100,6 +100,11 @@ export default function GradeActivity({ course }: GradeActivityProps) {
     const ITEMS_PER_PAGE = 5;
 
     const [grades, setGrades] = useState<GradeItem[]>([]);
+
+    const [classes, setClasses] = useState<any[]>([]);
+    const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
+    const [showOnRoll, setShowOnRoll] = useState(true); // State for checkbox
+
     // const [currentPage, setCurrentPage] = useState(1);
     // const [totalItems, setTotalItems] = useState(0);
     const [targetGrades, setTargetGrades] = useState<string[]>([]);
@@ -210,11 +215,61 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         });
     };
 
-
+    // handle the selected classes
+    const handleClassCheckboxChange = (classId: string) => {
+        setSelectedClasses(prevSelectedClasses =>
+            prevSelectedClasses.includes(classId)
+                ? prevSelectedClasses.filter(id => id !== classId)
+                : [...prevSelectedClasses, classId]
+        );
+    };
 
     useEffect(() => {
 
+        const fetchClasses = async () => {
+            try {
 
+                let { data: courseData, error: courseError } = await supabase
+                    .from('coursetable')
+                    .select('courseid')
+                    .eq('level', course)
+
+                    if (courseData) {
+                        console.log("got course")
+                    } else {
+                        console.log(courseError)
+                    }
+                    
+                const courseId = courseData?.[0].courseid;
+                // console.log(courseData)
+
+                // Build a basic query for enrollmenttable
+                let classQuery = supabase.from('enrollmenttable')
+                .select('classid')
+                .eq("courseid", courseId)
+    
+
+                // If showing only on-roll students, add the 'offroll' filter
+                if (showOnRoll) {
+                    classQuery = classQuery.eq('offroll', false);
+                }
+
+                // Execute the query
+                const { data: classesData, error } = await classQuery;
+
+                if (error) {
+                    throw error;
+                }
+
+                // Extract distinct class IDs
+                const distinctClasses = Array.from(new Set(classesData.map(cls => cls.classid)));
+                setClasses(distinctClasses);
+            } catch (error) {
+                console.error('Error fetching classes:', error);
+            }
+        };
+
+        fetchClasses();
         // Function to sort grades based on the predefined order
         const sortGrades = (grades: Set<string>, order: string[]) => {
             return Array.from(grades).sort((a, b) => order.indexOf(a) - order.indexOf(b));
@@ -254,13 +309,51 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         fetchTargetGrades();
         const getGrades = async () => {
 
-            // const start = (currentPage - 1) * ITEMS_PER_PAGE;
-            // const end = start + ITEMS_PER_PAGE;
+            let studentIds: string[] = [];
+
+            // Fetch all student IDs from the enrollmenttable, optionally filtered by classid
+            let enrollmentQuery = supabase
+                .from('enrollmenttable')
+                .select('studentid');
+
+            if (selectedClasses.length > 0) {
+                enrollmentQuery = enrollmentQuery.in('classid', selectedClasses);
+            }
+
+            let { data: enrolledStudents, error: enrolledError } = await enrollmentQuery;
+
+            if (enrolledError) {
+                console.error('Error fetching enrolled students:', enrolledError);
+                return;
+            }
+
+            studentIds = enrolledStudents ? enrolledStudents.map(student => student.studentid) : [];
+
+            // If showOnRoll is true, further filter the student IDs by on-roll status
+            if (showOnRoll) {
+                let { data: onRollStudents, error: onRollError } = await supabase
+                    .from('enrollmenttable')
+                    .select('studentid')
+                    .eq('offroll', false)
+                    .in('studentid', studentIds); // Filter by already fetched student IDs
+
+                if (onRollError) {
+                    console.error('Error fetching on-roll students:', onRollError);
+                    return;
+                }
+
+                studentIds = onRollStudents ? onRollStudents.map(student => student.studentid) : [];
+
+            }
+            // HERE END
+
+
 
 
             let { data: historicalperformance, error, count } = await supabase
                 .from('historicalperformance')
                 .select(`
+                    student_id,
                     mark, 
                     questionmarks,
                     subtopic_title,
@@ -270,9 +363,11 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     assessment_type, 
                     assessment_date
                 `)
+                .in('student_id', studentIds)
                 .eq('course_level', course)
                 .gte('assessment_date', startDate) // Greater than or equal to startDate
                 .lte('assessment_date', endDate)
+
 
             if (historicalperformance) {
                 setGrades(historicalperformance);
@@ -284,7 +379,7 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         }
 
         getGrades()
-    }, [supabase, course, startDate, endDate])
+    }, [supabase, course, startDate, endDate, showOnRoll, selectedClasses])
 
     // New state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
@@ -395,6 +490,28 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     <input type="date" id="startDate" name="startDate" value={startDate} onChange={(e) => { setStartDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
                     <input type="date" id="endDate" name="endDate" value={endDate} onChange={(e) => { setEndDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
                 </div>
+            </div>
+            <div className="flex items-center mb-4">
+                <input
+                    type="checkbox"
+                    checked={showOnRoll}
+                    onChange={(e) => setShowOnRoll(e.target.checked)}
+                    className="mr-2"
+                />
+                <label>Show Only On Roll Students</label>
+            </div>
+            <div className="flex flex-col mb-4">
+                {classes.map((classId, idx) => (
+                    <label key={idx} className="flex items-center mb-1">
+                        <input
+                            type="checkbox"
+                            checked={selectedClasses.includes(classId)}
+                            onChange={() => handleClassCheckboxChange(classId)}
+                            className="mr-2"
+                        />
+                        <Link href={`../bytemark/staff/learningchecklist/${classId}`}>{classId}</Link>
+                    </label>
+                ))}
             </div>
             <div>
                 <h1>Filter Target:</h1>
