@@ -196,7 +196,6 @@ export default function GradeActivity({ course }: GradeActivityProps) {
 
     const sortGrades = (grades: Set<string>, order: string[]) => {
         const gradesArray = Array.from(grades);
-        console.log("Grades Array:", gradesArray);
 
         return gradesArray.sort((a, b) => {
             const indexA = order.indexOf(a);
@@ -233,15 +232,8 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     .from('coursetable')
                     .select('courseid')
                     .eq('level', course)
-
-                    if (courseData) {
-                        console.log("got course")
-                    } else {
-                        console.log(courseError)
-                    }
                     
                 const courseId = courseData?.[0].courseid;
-                // console.log(courseData)
 
                 // Build a basic query for enrollmenttable
                 let classQuery = supabase.from('enrollmenttable')
