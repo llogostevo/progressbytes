@@ -513,7 +513,7 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                 <input
                     type="checkbox"
                     checked={showEnStudents}
-                    onChange={(e) => setShowOnRoll(e.target.checked)}
+                    onChange={(e) => setShowEnStudents(e.target.checked)}
                     className="mr-2"
                 />
                 <label>Show Only Ed Need Students</label>
