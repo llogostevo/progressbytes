@@ -195,6 +195,21 @@ export default function AddUserForm({ slug }: { slug: number; }) {
                                     ))}
                                 </select>
                             </div>
+                            {/* NEW DROP DOWN FOR SEN */}
+                            <div className="mb-4">
+                                <label htmlFor="sen" className="block text-sm font-medium text-gray-700">A-level Target Grade:</label>
+                                <select
+                                    id="sen"
+                                    name="sen"
+                                    onChange={handleInputChange}
+                                    className="mt-1 p-2 w-full border rounded-md"
+                                >
+                                    <option value="">Educational Need</option>
+                                    {["TRUE", "FALSE"].map(sen => (
+                                        <option key={sen} value={sen}>{sen}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     )}
 
