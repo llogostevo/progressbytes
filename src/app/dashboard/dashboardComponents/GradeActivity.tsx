@@ -388,7 +388,7 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         }
 
         getGrades()
-    }, [supabase, course, startDate, endDate, showOnRoll, selectedClasses])
+    }, [supabase, course, startDate, endDate, showOnRoll, showEnStudents, selectedClasses])
 
     // New state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
