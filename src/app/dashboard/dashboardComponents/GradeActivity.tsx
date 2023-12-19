@@ -105,6 +105,8 @@ export default function GradeActivity({ course }: GradeActivityProps) {
     const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
     const [showOnRoll, setShowOnRoll] = useState(true); // State for checkbox
 
+    const [showEnStudents, setShowEnStudents] = useState(false); // State for checkbox
+
     // const [currentPage, setCurrentPage] = useState(1);
     // const [totalItems, setTotalItems] = useState(0);
     const [targetGrades, setTargetGrades] = useState<string[]>([]);
@@ -232,14 +234,14 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     .from('coursetable')
                     .select('courseid')
                     .eq('level', course)
-                    
+
                 const courseId = courseData?.[0].courseid;
 
                 // Build a basic query for enrollmenttable
                 let classQuery = supabase.from('enrollmenttable')
-                .select('classid')
-                .eq("courseid", courseId)
-    
+                    .select('classid')
+                    .eq("courseid", courseId)
+
 
                 // If showing only on-roll students, add the 'offroll' filter
                 if (showOnRoll) {
@@ -337,7 +339,22 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                 studentIds = onRollStudents ? onRollStudents.map(student => student.studentid) : [];
 
             }
-            // HERE END
+
+            // Additional filter based on 'showEnStudents' checkbox
+            if (showEnStudents) {
+                let { data: enStudents, error: enErrorStudents } = await supabase
+                    .from('studenttable')
+                    .select('studentid')
+                    .eq('en', true)
+                    .in('studentid', studentIds); // Filter by already fetched student IDs
+
+                if (enErrorStudents) {
+                    console.error('Error fetching en students:', enErrorStudents);
+                    return;
+                }
+
+                studentIds = enStudents ? enStudents.map(student => student.studentid) : [];
+            }
 
 
 
@@ -491,6 +508,15 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                     className="mr-2"
                 />
                 <label>Show Only On Roll Students</label>
+            </div>
+            <div className="flex items-center mb-4">
+                <input
+                    type="checkbox"
+                    checked={showEnStudents}
+                    onChange={(e) => setShowOnRoll(e.target.checked)}
+                    className="mr-2"
+                />
+                <label>Show Only Ed Need Students</label>
             </div>
             <div className="flex flex-col mb-4">
                 {classes.map((classId, idx) => (
