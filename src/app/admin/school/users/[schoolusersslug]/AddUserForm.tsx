@@ -197,7 +197,7 @@ export default function AddUserForm({ slug }: { slug: number; }) {
                             </div>
                             {/* NEW DROP DOWN FOR SEN */}
                             <div className="mb-4">
-                                <label htmlFor="sen" className="block text-sm font-medium text-gray-700">A-level Target Grade:</label>
+                                <label htmlFor="sen" className="block text-sm font-medium text-gray-700">Educational Need:</label>
                                 <select
                                     id="sen"
                                     name="sen"
@@ -207,6 +207,20 @@ export default function AddUserForm({ slug }: { slug: number; }) {
                                     <option value="">Educational Need</option>
                                     {["TRUE", "FALSE"].map(sen => (
                                         <option key={sen} value={sen}>{sen}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="assessmentStatus" className="block text-sm font-medium text-gray-700">Assessment Creation Access</label>
+                                <select
+                                    id="assessmentStatus"
+                                    name="assessmentStatus"
+                                    onChange={handleInputChange}
+                                    className="mt-1 p-2 w-full border rounded-md"
+                                >
+                                    <option value="">Allow Student to Create Assessments</option>
+                                    {["TRUE", "FALSE"].map(assessmentStatus => (
+                                        <option key={assessmentStatus} value={assessmentStatus}>{assessmentStatus}</option>
                                     ))}
                                 </select>
                             </div>
