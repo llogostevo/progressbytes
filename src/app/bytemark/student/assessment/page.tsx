@@ -37,14 +37,22 @@ export default async function ByteMarkStudent() {
 
     let studentId: number;
     let teacherId: number;
+    let studentAssessmentAccess: boolean;
 
 
-    if (profilesData && profilesData.length > 0
+
+    if (!profilesData) {
+        redirect("/unauthorised")
+    }
+
+    if (profilesData.length > 0
         && profilesData[0].studenttable
         && profilesData[0].studenttable.length > 0
         && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
-    } else if (profilesData && profilesData.length > 0
+        studentAssessmentAccess = profilesData[0].studenttable[0].assessmentedit;
+
+    } else if (profilesData.length > 0
         && profilesData[0].teachertable
         && profilesData[0].teachertable.length > 0
         && profilesData[0].teachertable[0].teacherid) {
@@ -53,12 +61,6 @@ export default async function ByteMarkStudent() {
     } else {
         console.log("No matching student record found");
         redirect("/")
-    }
-
-    // check if student profile exists in DB, if not redirect to unauthorised
-    // if not at the correct role then redirect to the unauthorised page
-    if (!profilesData) {
-        redirect("/unauthorised")
     }
 
     // 1. Fetch assessments created by the logged-in user
@@ -125,6 +127,7 @@ export default async function ByteMarkStudent() {
                 studentAssessment={assessments}
                 user={user}
                 disableAssessment={disableAssessment}
+                studentCreateAssessmentAccess = {studentAssessmentAccess}
             />
         </>
     );
