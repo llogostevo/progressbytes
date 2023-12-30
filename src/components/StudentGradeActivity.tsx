@@ -17,6 +17,8 @@ type GradeItem = {
     assessment_type: string;
     gcse_target?: string;
     alevel_target?: string;
+    topic_name?: string; // Add this if it's part of the returned data
+    unit_id?: number;
 };
 
 type Units = {
@@ -42,6 +44,8 @@ type SubtopicPerformance = {
     [key: string]: {
         totalMarks: number;
         totalQuestionMarks: number;
+        topicName?: string;
+        unitId?: number;
     };
 };
 
@@ -397,17 +401,20 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
 
         filteredAssessments.forEach(item => {
             const subtopic = item.subtopic_title;
+
             if (!subtopicPerformance[subtopic]) {
-                subtopicPerformance[subtopic] = { totalMarks: 0, totalQuestionMarks: 0 };
+                subtopicPerformance[subtopic] = { unitId: 0, topicName: "", totalMarks: 0, totalQuestionMarks: 0 };
             }
             subtopicPerformance[subtopic].totalMarks += item.mark;
             subtopicPerformance[subtopic].totalQuestionMarks += item.questionmarks;
+            subtopicPerformance[subtopic].topicName = item.topic_name
+            subtopicPerformance[subtopic].unitId = item.unit_id
         });
 
         const subtopicPercentages = Object.keys(subtopicPerformance).map(subtopic => {
-            const { totalMarks, totalQuestionMarks } = subtopicPerformance[subtopic];
+            const { unitId, topicName, totalMarks, totalQuestionMarks } = subtopicPerformance[subtopic];
             const percentage = totalQuestionMarks > 0 ? (totalMarks / totalQuestionMarks) * 100 : 0;
-            return { subtopic, percentage, totalMarks, totalQuestionMarks };
+            return { unitId, topicName, subtopic, percentage, totalMarks, totalQuestionMarks };
         });
 
         subtopicPercentages.sort((a, b) => {
@@ -535,13 +542,13 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
 
                 <h2 className="text-2xl font-semibold my-10">Subtopic KPI's</h2>
                 <div className="mx-5">
-                    <div className="mb-5 bg-gray-300 rounded-lg p-5">
+                    <div className="mb-5 border border-primaryColor rounded-lg p-5">
                         <div className="flex flex-col space-y-4">
-                            <label htmlFor="totalMarksSlider" className=" ">Adjust Minimum Assessed Marks Threshold: <span className="bg-gray-200 rounded-lg p-2">{sliderValue}</span></label>
+                            <label htmlFor="totalMarksSlider" className="border border-primaryColor rounded p-2">Adjust Minimum Assessed Marks Threshold: <span className="p-2">{sliderValue}</span></label>
                             <input
                                 type="range"
                                 id="totalMarksSlider"
-                                className="slider h-2 flex-1 rounded-lg appearance-none cursor-pointer bg-gray-400"
+                                className="slider h-2 flex-1 border border-primaryColor range-lg rounded-2xl appearance-none cursor-pointer bg-green-100"
                                 min="0"
                                 max={maxTotalMarks}
                                 value={sliderValue}
@@ -559,7 +566,8 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                         <h2 className="text-lg font-semibold">Top 5 Subtopics</h2>
                         {top5Subtopics.map((subtopic, index) => (
                             <div className="text-[13px] text-gray-500 py-3" key={index}>
-                                {subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
+                                <Link href={`../learningchecklist/student/${subtopic.unitId}#${subtopic.topicName}`}>{subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span></Link>
+
                             </div>
                         ))}
                     </div>
@@ -570,7 +578,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                         <h2 className="text-lg font-semibold">Bottom 5 Subtopics</h2>
                         {bottom5Subtopics.map((subtopic, index) => (
                             <div className="text-[13px] text-gray-500 py-3" key={index}>
-                                {subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
+                                <Link href={`../learningchecklist/student/${subtopic.unitId}#${subtopic.topicName}`}>{subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span></Link>
                             </div>
                         ))}
                     </div>

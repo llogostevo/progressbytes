@@ -13,3 +13,24 @@ h1, h2, h3, h4, h5, h6 {
 .tooltip:hover {
     opacity: 1;
 }
+
+/* Slider thumb for WebKit browsers */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px; /* Customize size as needed */
+    height: 25px; /* Customize size as needed */
+    border-radius: 50%;
+    background: #14B8A6; /* Tailwind's red-500 */
+    cursor: pointer;
+    border: 0;
+  }
+  
+  /* Slider thumb for Firefox */
+  .slider::-moz-range-thumb {
+    width: 25px; /* Customize size as needed */
+    height: 25px; /* Customize size as needed */
+    border: none;
+    border-radius: 50%;
+    background: #14B8A6; /* Tailwind's red-500 */
+  }
