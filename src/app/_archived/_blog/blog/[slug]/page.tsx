@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usersCheck } from '@/lib/users'
 import Comments from './Comments'
-import CommentForm from '@/app/_blog/blog/[slug]/CommentForm'
+import CommentForm from '@/app/_archived/_blog/blog/[slug]/CommentForm'
 
 export const dynamic = 'force-dynamic'
 

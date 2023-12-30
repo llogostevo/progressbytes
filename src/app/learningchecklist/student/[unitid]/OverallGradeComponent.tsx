@@ -26,7 +26,7 @@ interface ConfidenceLevelColors {
 }
 
 
-const OverallGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: Props) => {
+const OverallGradeComponent = ({ studentId, unitId, assessmentType, startDate, endDate }: Props) => {
 
     const [totalMarks, setTotalMarks] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -104,11 +104,10 @@ const OverallGrade = ({ studentId, unitId, assessmentType, startDate, endDate }:
         <div className="bg-white rounded-md shadow-sm p-4 border border-gray-300">
             <p className="my-10 text-6xl">{courseLevel} Grade: {grade} </p>
             <p className="text-4xl ml-10 mb-10">({totalStudentMarks}/{totalMarks}) {rounded}%</p>
-
         </div >
     );
 }
 
-export default OverallGrade;
+export default OverallGradeComponent;
 
 

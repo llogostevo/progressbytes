@@ -24,7 +24,7 @@ const DashboardPage = async () => {
     if (!profile) {
         redirect("/unauthorised")
     } else if (profile[0].profiletype == "Student") {
-        redirect("/learningchecklist")
+        redirect("/dashboard/student")
     } else if (profile[0].profiletype == "Teacher") {
         redirect("/dashboard/teacher")
     } else if (profile[0].profiletype == "Admin") {

@@ -76,6 +76,10 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
     `)
         .eq('profileid', user.id);
 
+    if (!profilesData) {
+        redirect("/unauthorised")
+    }
+
     let studentId: number;
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
@@ -87,9 +91,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
 
     // check if student profile exists in DB, if not redirect to unauthorised
     // if not at the correct role then redirect to the unauthorised page
-    if (!profilesData) {
-        redirect("/unauthorised")
-    }
+
 
     const { data: courses } = await supabase
         .from('unittable')
@@ -140,7 +142,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
 
                 <LearningChecklist
                     topics={topics as Topic[]}
-                    unitTitle={unitTitle }
+                    unitTitle={unitTitle}
                     unitNumber={unitNumber}
                     unitId={params.unitid}
                     studentId={studentId}
