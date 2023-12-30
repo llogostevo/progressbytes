@@ -459,10 +459,10 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     };
 
     return (
-        
+
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg flex flex-col space-y-4">
             {/* <div className="text-4xl md:text-6xl font-bold text-center">{`${}`}</div> */}
-            
+
             <div className="text-4xl my-10 md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</div>
 
             <button
@@ -527,18 +527,24 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
 
                 <h2 className="text-2xl font-semibold my-10">Subtopic KPI's</h2>
                 <div className="mx-5">
-                    <div className="flex flex-col space-y-2">
-                        <label htmlFor="totalMarksSlider" className="">Adjust Minimum Total Marks Threshold:</label>
-                        <input
-                            type="range"
-                            id="totalMarksSlider"
-                            className="slider h-2 rounded-lg appearance-none cursor-pointer bg-gray-400"
-                            min="0"
-                            max={maxTotalMarks}
-                            value={sliderValue}
-                            onChange={(e) => setSliderValue(Number(e.target.value))}
-                        />
-                        <div className="text-right">{sliderValue}</div>
+                    <div className="mb-5 bg-gray-300 rounded-lg p-5">
+                        <div className="flex flex-col space-y-4">
+                            <label htmlFor="totalMarksSlider" className=" ">Adjust Minimum Assessed Marks Threshold: <span className="bg-gray-200 rounded-lg p-2">{sliderValue}</span></label>
+                            <input
+                                type="range"
+                                id="totalMarksSlider"
+                                className="slider h-2 flex-1 rounded-lg appearance-none cursor-pointer bg-gray-400"
+                                min="0"
+                                max={maxTotalMarks}
+                                value={sliderValue}
+                                onChange={(e) => setSliderValue(Number(e.target.value))}
+                            />
+                            <div className="flex">
+                                <div className="flex-1">0</div>
+                                <div className="flex-1 text-center">{Math.floor(maxTotalMarks / 2)}</div>
+                                <div className="flex-1 text-right">{maxTotalMarks}</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="flex flex-col space-y-2">
@@ -563,6 +569,6 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                 </div>
             </div>
 
-        </div>
+        </div >
     )
 }
