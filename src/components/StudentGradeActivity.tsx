@@ -137,6 +137,10 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     // Add state for active button and date range
     const [activeButton, setActiveButton] = useState('');
 
+    // state for sorting the data 
+    const [sortingMethod, setSortingMethod] = useState('percentage'); // default to sorting by percentage
+    const [sliderValue, setSliderValue] = useState(0);
+
 
     // ################ Helper functions ################ 
     // Set the default start date to January 1, 2010
@@ -400,26 +404,29 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
         const subtopicPercentages = Object.keys(subtopicPerformance).map(subtopic => {
             const { totalMarks, totalQuestionMarks } = subtopicPerformance[subtopic];
             const percentage = totalQuestionMarks > 0 ? (totalMarks / totalQuestionMarks) * 100 : 0;
-            return { subtopic, percentage };
+            return { subtopic, percentage, totalMarks, totalQuestionMarks };
         });
 
-        // Sorting by percentage
-        subtopicPercentages.sort((a, b) => b.percentage - a.percentage);
+        subtopicPercentages.sort((a, b) => {
+            if (b.percentage === a.percentage) {
+                return b.totalQuestionMarks - a.totalQuestionMarks; // Secondary sort by total marks tested if percentages are equal
+            }
+            return b.percentage - a.percentage; // Primary sort by percentage
+        });
+
         return subtopicPercentages;
     };
 
+
+
+
     const subtopicPercentages = calculateSubtopicPercentages();
-    const top5Subtopics = subtopicPercentages.slice(0, 5);
-    const bottom5Subtopics = subtopicPercentages.slice(-5);
+    const maxTotalMarks = Math.max(...subtopicPercentages.map(subtopic => subtopic.totalQuestionMarks));
+    const filteredSubtopics = subtopicPercentages.filter(subtopic => subtopic.totalQuestionMarks >= sliderValue);
 
+    const top5Subtopics = filteredSubtopics.slice(0, 5);
+    const bottom5Subtopics = filteredSubtopics.slice(-5);
 
-    // const handleUnitCheckboxChange = async (unitId: number, checked: boolean) => {
-    //     if (checked) {
-    //         setSelectedUnitIds(prevIds => [...prevIds, unitId]);
-    //     } else {
-    //         setSelectedUnitIds(prevIds => prevIds.filter(id => id !== unitId));
-    //     }
-    // };
 
     const handleUnitCheckboxChange = (unitId: number, checked: boolean) => {
         setSelectedUnitIds(prevIds => {
@@ -452,7 +459,12 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     };
 
     return (
+        
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg flex flex-col space-y-4">
+            {/* <div className="text-4xl md:text-6xl font-bold text-center">{`${}`}</div> */}
+            
+            <div className="text-4xl my-10 md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</div>
+
             <button
                 onClick={toggleAssessmentTypeFilter}
                 className={`px-2 py-1 text-xs rounded cursor-pointer ${filterAssessmentType ? 'bg-primaryColor text-white' : 'border border-primaryColor hover:bg-secondaryColor hover:text-white text-primaryColor'}`}
@@ -503,33 +515,54 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                                     disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
                                 />
                                 <Link href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
-                                
+
                             </label>
                         ))}
                     </div>
-
                 </div>
             </div>
 
-            <p className="text-4xl md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</p>
 
             <div className="flex flex-col space-y-2">
-                <h2 className="text-lg font-semibold">Top 5 Subtopics</h2>
-                {top5Subtopics.map((subtopic, index) => (
-                    <div className="text-[13px] text-gray-500 py-3" key={index}>
-                        {subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}%</span>
+
+                <h2 className="text-2xl font-semibold my-10">Subtopic KPI's</h2>
+                <div className="mx-5">
+                    <div className="flex flex-col space-y-2">
+                        <label htmlFor="totalMarksSlider" className="">Adjust Minimum Total Marks Threshold:</label>
+                        <input
+                            type="range"
+                            id="totalMarksSlider"
+                            className="slider h-2 rounded-lg appearance-none cursor-pointer bg-gray-400"
+                            min="0"
+                            max={maxTotalMarks}
+                            value={sliderValue}
+                            onChange={(e) => setSliderValue(Number(e.target.value))}
+                        />
+                        <div className="text-right">{sliderValue}</div>
                     </div>
-                ))}
+
+                    <div className="flex flex-col space-y-2">
+                        <h2 className="text-lg font-semibold">Top 5 Subtopics</h2>
+                        {top5Subtopics.map((subtopic, index) => (
+                            <div className="text-[13px] text-gray-500 py-3" key={index}>
+                                {subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
+                            </div>
+                        ))}
+                    </div>
+
+
+
+                    <div className="flex flex-col space-y-2">
+                        <h2 className="text-lg font-semibold">Bottom 5 Subtopics</h2>
+                        {bottom5Subtopics.map((subtopic, index) => (
+                            <div className="text-[13px] text-gray-500 py-3" key={index}>
+                                {subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <div className="flex flex-col space-y-2">
-                <h2 className="text-lg font-semibold">Bottom 5 Subtopics</h2>
-                {bottom5Subtopics.map((subtopic, index) => (
-                    <div className="text-[13px] text-gray-500 py-3" key={index}>
-                        {subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}%</span>
-                    </div>
-                ))}
-            </div>
         </div>
     )
 }
