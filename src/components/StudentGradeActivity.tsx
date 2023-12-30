@@ -19,6 +19,13 @@ type GradeItem = {
     alevel_target?: string;
 };
 
+type Units = {
+    unitid: number;
+    unittitle: string;
+    unitnumber: string;
+
+};
+
 // Define a type for the grade items
 type HistoricalPerformance = {
     gcse_target?: string;
@@ -118,10 +125,11 @@ function extractUniqueCourseIds(coursesData: CourseData[]): (string)[] {
 }
 
 export default function StudentGradeActivity({ studentId }: { studentId: number }) {
+    // ################ REACT STATES ################ 
 
     const [grades, setGrades] = useState<GradeItem[]>([]);
-
-    const [course, setCourse] = useState<string>('');
+    const [units, setUnits] = useState<Units[]>([]);
+    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]); // State to manage selected units
 
     const [courses, setCourses] = useState<CourseData[]>([]); // State to store courses
     const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]); // State to manage selected courses
@@ -209,15 +217,6 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
 
-    // handle the selected classes
-    // const handleClassCheckboxChange = (classId: string) => {
-    //     setSelectedClasses(prevSelectedClasses =>
-    //         prevSelectedClasses.includes(classId)
-    //             ? prevSelectedClasses.filter(id => id !== classId)
-    //             : [...prevSelectedClasses, classId]
-    //     );
-    // };
-
     const fetchGradesForSelectedCourses = async (courseIds: string[]) => {
 
         // Clear grades if no courses are selected
@@ -233,7 +232,8 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                 .eq('student_id', studentId)
                 .in('course_id', courseIds)
                 .gte('assessment_date', startDate)
-                .lte('assessment_date', endDate);
+                .lte('assessment_date', endDate)
+                .in('unit_id', selectedUnitIds)
 
             if (gradesError) {
                 console.error('Error fetching grades:', gradesError);
@@ -254,7 +254,6 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                 .select('courseid, offroll')
                 .eq('studentid', studentId)
                 .eq('offroll', false);
-
 
             if (enrollmentError) {
                 console.error('Error fetching enrollment data:', enrollmentError);
@@ -298,8 +297,33 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
         setCourses(coursesData || []);
     };
 
+    const fetchUnits = async () => {
+        const courseIds = selectedCourseIds // Get the course IDs from the selectedCourses
+
+        if (courseIds.length === 0) {
+            setUnits([]); // Set to empty array if no course IDs
+            setSelectedUnitIds([]); // Clear any selections
+            return;
+        }
+
+        let { data: unitData, error: unitDataError } = await supabase
+            .from('unittable')
+            .select('unitid, unitnumber, unittitle')
+            .in('courseid', courseIds); // Fetch units where courseid is in the array of IDs
+
+        if (unitData) {
+            console.log(unitData)
+        } else if (unitDataError) {
+            console.error('Error fetching courses:', unitDataError);
+            return;
+        }
+
+        setUnits(unitData || []);
+
+    };
+
     /* 
-        two use effects required
+        multiple use effects required
         fetchcourses updates selectedCourseIds which is based on the fetched courses
         fetchgradesforselectedcourses depends on the selectedcourseids
         when this updates it triggers the useeffect again due to selected courseids being a dependency
@@ -308,14 +332,21 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
         seperating the two allows each one to manage its own concerns
     */
     useEffect(() => {
-        fetchCourses(); // Fetch and set the list of courses
+        fetchCourses();
     }, [studentId, startDate, endDate]); // Dependencies for fetching courses
 
     useEffect(() => {
         fetchGradesForSelectedCourses(selectedCourseIds); // Fetch and set the grade data for selected courses
-    }, [selectedCourseIds]); // Dependency on selectedCourseIds
+    }, [selectedCourseIds, selectedUnitIds]); // Dependency on selectedCourseIds
 
+    useEffect(() => {
+        fetchUnits(); // Fetch and set the list of courses
+    }, [selectedCourseIds]); // Dependencies for fetching courses
 
+    useEffect(() => {
+        const allUnitIds = units.map(unit => unit.unitid);
+        setSelectedUnitIds(allUnitIds);
+    }, [units]); // Re-run this effect if the units array changes
 
     // New state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
@@ -382,13 +413,30 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     const bottom5Subtopics = subtopicPercentages.slice(-5);
 
 
-    const handleCourseCheckboxChange = async (courseId: string, checked: boolean) => {
-        if (checked) {
-            setSelectedCourseIds(prevIds => [...prevIds, courseId]);
-        } else {
-            setSelectedCourseIds(prevIds => prevIds.filter(id => id !== courseId));
-        }
+    // const handleUnitCheckboxChange = async (unitId: number, checked: boolean) => {
+    //     if (checked) {
+    //         setSelectedUnitIds(prevIds => [...prevIds, unitId]);
+    //     } else {
+    //         setSelectedUnitIds(prevIds => prevIds.filter(id => id !== unitId));
+    //     }
+    // };
+
+    const handleUnitCheckboxChange = (unitId: number, checked: boolean) => {
+        setSelectedUnitIds(prevIds => {
+            if (checked) {
+                // Add unitId if checked
+                return [...prevIds, unitId];
+            } else {
+                // Prevent unchecking if it's the last checked checkbox
+                if (prevIds.length === 1) {
+                    return prevIds;
+                }
+                // Remove unitId if unchecked
+                return prevIds.filter(id => id !== unitId);
+            }
+        });
     };
+
 
     const handleCourseSelectionChange = (courseId: string) => {
         // If courseId is an empty string (the "Select a course" option), clear the selection
@@ -444,18 +492,21 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                     </select>
 
                     <div className="ml-10 mt-4 flex flex-col mb-4">
-                        {courses.map((course, idx) => (
+                        {units.map((unit, idx) => (
                             <label key={idx} className="flex items-center mb-1">
                                 <input
                                     type="checkbox"
-                                    checked={selectedCourseIds.includes(course.courseid)}
-                                    onChange={e => handleCourseCheckboxChange(course.courseid, e.target.checked)}
-                                    className="mr-2"
+                                    checked={selectedUnitIds.includes(unit.unitid)}
+                                    onChange={e => handleUnitCheckboxChange(unit.unitid, e.target.checked)}
+                                    className={`mr-2 ${selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid) ? 'bg-gray-400 border-gray-400' : 'bg-blue-600 border-blue-600'}`}
+                                    // Disable the checkbox if it's the last one checked
+                                    disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
                                 />
-                                {course.level} {course.subjectname} - {course.examboard}
+                                {unit.unitnumber} - {unit.unittitle}
                             </label>
                         ))}
                     </div>
+
                 </div>
             </div>
 
