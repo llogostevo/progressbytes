@@ -502,7 +502,8 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                                     // Disable the checkbox if it's the last one checked
                                     disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
                                 />
-                                {unit.unitnumber} - {unit.unittitle}
+                                <Link href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
+                                
                             </label>
                         ))}
                     </div>
