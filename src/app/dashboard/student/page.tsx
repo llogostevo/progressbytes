@@ -36,8 +36,6 @@ const StudentDashboardPage = async () => {
 
     if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
         studentId = profilesData[0].studenttable[0].studentid;
-        console.log("page", studentId);
-
     } else {
         console.log("No matching student record found");
         redirect("./login")

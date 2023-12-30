@@ -428,8 +428,6 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     };
 
 
-
-
     const subtopicPercentages = calculateSubtopicPercentages();
     const maxTotalMarks = Math.max(...subtopicPercentages.map(subtopic => subtopic.totalQuestionMarks));
     const filteredSubtopics = subtopicPercentages.filter(subtopic => subtopic.totalQuestionMarks >= sliderValue);
@@ -477,7 +475,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
             <div className='mt-10'>
                 <select
                     id="courseSelect"
-                    className="form-select block p-4 text-4xl"
+                    className="form-select block p-2 text-center text-xs border rounded md:text-lg md:border-none lg:text-4xl"
                     value={selectedCourseIds[0] || ""}
                     onChange={e => handleCourseSelectionChange(e.target.value)}
                 >
@@ -489,7 +487,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                     ))}
                 </select>
 
-                <div className="ml-10 mt-4 flex flex-col mb-4">
+                <div className="ml-10 mt-4 flex flex-col mb-1 md:mb-2 lg:mb-4">
                     {units.map((unit, idx) => (
                         <label key={idx} className="flex items-center mb-1">
                             <input
@@ -500,7 +498,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                                 // Disable the checkbox if it's the last one checked
                                 disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
                             />
-                            <Link href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
+                            <Link className="p-2 text-xs md:text-md lg:text-lg" href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
 
                         </label>
                     ))}
