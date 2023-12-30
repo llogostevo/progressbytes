@@ -204,7 +204,7 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
     return (
 
         <div key={filterKey} className="bg-white rounded-md shadow-sm p-4 border border-gray-300">
-            <table className="min-w-full leading-normal">
+            <table id="topicGradeTable" className="min-w-full leading-normal">
                 <thead>
                     <tr>
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">

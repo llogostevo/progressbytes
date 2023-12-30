@@ -7,6 +7,7 @@ import TooltipModalButton from '@/components/tooltipModal/TooltipModalButton';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 import OverallGradeComponent from './OverallGradeComponent';
 import TopicGradeComponent from './TopicGradeComponent';
+import Link from 'next/link';
 
 
 interface Judgment {
@@ -246,32 +247,36 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                     </div>
                 </div>
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
-                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4">
 
-                    <OverallGradeComponent
-                        studentId={studentId}
-                        unitId={unitId}
-                        assessmentType={filterAssessmentType}
-                        startDate={startDate}
-                        endDate={endDate}
-                    />
+                        <OverallGradeComponent
+                            studentId={studentId}
+                            unitId={unitId}
+                            assessmentType={filterAssessmentType}
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
 
-                    <TopicGradeComponent
-                        studentId={studentId}
-                        unitId={unitId}
-                        assessmentType={filterAssessmentType}
-                        startDate={startDate}
-                        endDate={endDate}
-                    />
-                </div>
+                        <TopicGradeComponent
+                            studentId={studentId}
+                            unitId={unitId}
+                            assessmentType={filterAssessmentType}
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
+                    </div>
                 </div>
 
 
                 <div className="bg-white rounded-md shadow-sm pt-10 p-4 border border-gray-300">
                     {sortedTopics?.map((topic) => (
                         <section key={topic.topicid} className="">
-                            <h2 id={`${topic.topictitle}`} className="px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
-                                {topic.topicnumber} - {topic.topictitle}
+                            <h2 id={`${topic.topictitle}`} className=" w-full inline-block px-1 m-0 text-lg sm:text-xl md:px-4 font-bold mb-2">
+                                {topic.topicnumber} - {topic.topictitle} <Link className="inline" href={`#topicGradeTable`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="inline text-primaryColor hover:text-secondaryColor w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </Link>
                             </h2>
                             <div className="flex flex-col my-10 overflow-x-auto"> {/* Wrapping div */}
                                 <table className=" m-0 md:ml-1 lg:ml-10 table-auto overflow-x-auto border border-gray-900">
@@ -308,7 +313,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                                             const judgmentColor = confidenceLevelColors[judgment as keyof typeof confidenceLevelColors] || '';
 
                                             return (
-                                                <tr  key={subtopic.subtopicid} className={`${judgmentColor} text-xs sm:text-sm`}>
+                                                <tr key={subtopic.subtopicid} className={`${judgmentColor} text-xs sm:text-sm`}>
                                                     <td className="p-1 sm:p-2 w-1  hidden sm:table-cell text-xs text-center border-r border border-gray-900">{subtopic.subtopicnumber}</td>
                                                     <td className="p-1 sm:p-2 w-2/4 md:w-7/12 text-xs border-r border border-gray-900">{subtopic.subtopictitle}</td>
                                                     <td className="p-1 sm:p-2 w-1/3 hidden sm:table-cell text-xs border-r border border-gray-900">{subtopic.subtopicdescription}</td>
@@ -338,7 +343,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
                         </section>
                     ))}
                 </div>
-            </div>
+            </div >
 
 
         </>

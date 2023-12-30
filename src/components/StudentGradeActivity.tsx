@@ -465,55 +465,45 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg flex flex-col space-y-4">
             {/* <div className="text-4xl md:text-6xl font-bold text-center">{`${}`}</div> */}
-            <div className="flex flex-col flex-wrap gap-4 mt-4">
-                <div className="text-lg font-bold">{currentCourse}</div>
-                <div className="m-5 mt-3">
-                    {units
-                        .filter(unit => selectedUnitIds.includes(unit.unitid)) // Check if selectedUnitIds includes the unit's ID
-                        .map(filteredUnit => (
-                            <div key={filteredUnit.unitid}>
-                                {/* Render some information about the unit */}
-                                {filteredUnit.unitnumber} - {filteredUnit.unittitle}
-                            </div>
-                        ))}
+            <div className="flex flex-col flex-wrap gap-4">                
+                {/* Course selection details */}
+            <div className='mt-10'>
+                <select
+                    id="courseSelect"
+                    className="form-select block p-4 text-4xl"
+                    value={selectedCourseIds[0] || ""}
+                    onChange={e => handleCourseSelectionChange(e.target.value)}
+                >
+                    <option value="">Select a course</option>
+                    {courses.map((course, idx) => (
+                        <option key={idx} value={course.courseid}>
+                            {course.level} {course.subjectname} - {course.examboard}
+                        </option>
+                    ))}
+                </select>
+
+                <div className="ml-10 mt-4 flex flex-col mb-4">
+                    {units.map((unit, idx) => (
+                        <label key={idx} className="flex items-center mb-1">
+                            <input
+                                type="checkbox"
+                                checked={selectedUnitIds.includes(unit.unitid)}
+                                onChange={e => handleUnitCheckboxChange(unit.unitid, e.target.checked)}
+                                className={`mr-2 ${selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid) ? 'bg-gray-400 border-gray-400' : 'bg-blue-600 border-blue-600'}`}
+                                // Disable the checkbox if it's the last one checked
+                                disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
+                            />
+                            <Link href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
+
+                        </label>
+                    ))}
                 </div>
+            </div>
                 <div className="text-4xl my-10 md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</div>
 
             </div>
 
-            {/* Course selection details */}
-            <div className='mt-10'>
-                    <select
-                        id="courseSelect"
-                        className="form-select block w-full p-2 border rounded"
-                        value={selectedCourseIds[0] || ""}
-                        onChange={e => handleCourseSelectionChange(e.target.value)}
-                    >
-                        <option value="">Select a course</option>
-                        {courses.map((course, idx) => (
-                            <option key={idx} value={course.courseid}>
-                                {course.level} {course.subjectname} - {course.examboard}
-                            </option>
-                        ))}
-                    </select>
-
-                    <div className="ml-10 mt-4 flex flex-col mb-4">
-                        {units.map((unit, idx) => (
-                            <label key={idx} className="flex items-center mb-1">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedUnitIds.includes(unit.unitid)}
-                                    onChange={e => handleUnitCheckboxChange(unit.unitid, e.target.checked)}
-                                    className={`mr-2 ${selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid) ? 'bg-gray-400 border-gray-400' : 'bg-blue-600 border-blue-600'}`}
-                                    // Disable the checkbox if it's the last one checked
-                                    disabled={selectedUnitIds.length === 1 && selectedUnitIds.includes(unit.unitid)}
-                                />
-                                <Link href={`../learningchecklist/student/${unit.unitid}`}>{unit.unitnumber} - {unit.unittitle}</Link>
-
-                            </label>
-                        ))}
-                    </div>
-                </div>
+            
 
             <button
                 onClick={toggleAssessmentTypeFilter}
@@ -537,7 +527,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                 </div>
 
 
-                
+
             </div>
 
 
