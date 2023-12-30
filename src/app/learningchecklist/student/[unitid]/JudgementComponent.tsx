@@ -102,7 +102,7 @@ const JudgmentComponent = ({ studentId, subtopic, confidenceLevels }: Props) => 
 
         <div>
             {/* Radio Button Cards for larger screens */}
-            <div className="flex-row justify-around hidden sm:flex">
+            <div className="sm:flex-row md:flex-col lg:flex-row justify-around hidden sm:flex">
                 {confidenceLevels.map((level) => (
                     <label
                         key={level}
