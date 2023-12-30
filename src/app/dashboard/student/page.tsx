@@ -22,7 +22,9 @@ const StudentDashboardPage = async () => {
     profileid, 
     studenttable(
         profileid,
-        studentid
+        studentid,
+        firstname, 
+        lastname
         )
 `)
         .eq('profileid', user.id);
@@ -44,7 +46,7 @@ const StudentDashboardPage = async () => {
 
     return (
         <>
-            <h1 className="text-4xl mb-4 font-bold text-gray-800">Student Dashboard</h1>
+            <h1 className="text-4xl mb-4 font-bold text-gray-800">{profilesData[0].studenttable[0].firstname} {profilesData[0].studenttable[0].lastname} - Dashboard</h1>
             <StudentGradeActivity studentId={studentId} />
 
 

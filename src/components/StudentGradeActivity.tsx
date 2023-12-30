@@ -130,6 +130,7 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
     const [grades, setGrades] = useState<GradeItem[]>([]);
     const [units, setUnits] = useState<Units[]>([]);
     const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]); // State to manage selected units
+    const [currentCourse, setCurrentCourse] = useState<string>(""); // State to store the current course
 
     const [courses, setCourses] = useState<CourseData[]>([]); // State to store courses
     const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]); // State to manage selected courses
@@ -245,6 +246,8 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
             }
 
             setGrades(gradesData || []);
+            setCurrentCourse(`${gradesData?.[0].exam_board} ${gradesData?.[0].subject_name} ${gradesData?.[0].course_level}`)
+
         } catch (error) {
             console.error('Error fetching grades for selected courses:', error);
         }
@@ -462,33 +465,24 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg flex flex-col space-y-4">
             {/* <div className="text-4xl md:text-6xl font-bold text-center">{`${}`}</div> */}
-
-            <div className="text-4xl my-10 md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</div>
-
-            <button
-                onClick={toggleAssessmentTypeFilter}
-                className={`px-2 py-1 text-xs rounded cursor-pointer ${filterAssessmentType ? 'bg-primaryColor text-white' : 'border border-primaryColor hover:bg-secondaryColor hover:text-white text-primaryColor'}`}
-            >
-                Toggle Exam Assessments
-            </button>
-            <div className="my-2 md:my-4 border p-4 rounded-lg">
-                <div className="flex flex-row flex-wrap gap-4 items-center mt-4">
-                    {/* Buttons */}
-                    <button onClick={setToday} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'today' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Today</button>
-                    <button onClick={setThisYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Year</button>
-                    <button onClick={setLastYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'lastYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Last Year</button>
-                    <button onClick={setThisWeek} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisWeek' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Week</button>
-                    <button onClick={setThisMonth} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisMonth' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Month</button>
+            <div className="flex flex-col flex-wrap gap-4 mt-4">
+                <div className="text-lg font-bold">{currentCourse}</div>
+                <div className="m-5 mt-3">
+                    {units
+                        .filter(unit => selectedUnitIds.includes(unit.unitid)) // Check if selectedUnitIds includes the unit's ID
+                        .map(filteredUnit => (
+                            <div key={filteredUnit.unitid}>
+                                {/* Render some information about the unit */}
+                                {filteredUnit.unitnumber} - {filteredUnit.unittitle}
+                            </div>
+                        ))}
                 </div>
-                <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
-                    {/* Date inputs */}
-                    <input type="date" id="startDate" name="startDate" value={startDate} onChange={(e) => { setStartDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
-                    <input type="date" id="endDate" name="endDate" value={endDate} onChange={(e) => { setEndDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
-                </div>
+                <div className="text-4xl my-10 md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</div>
 
+            </div>
 
-                {/* Course selection details */}
-                <div className='mt-10'>
+            {/* Course selection details */}
+            <div className='mt-10'>
                     <select
                         id="courseSelect"
                         className="form-select block w-full p-2 border rounded"
@@ -520,6 +514,30 @@ export default function StudentGradeActivity({ studentId }: { studentId: number 
                         ))}
                     </div>
                 </div>
+
+            <button
+                onClick={toggleAssessmentTypeFilter}
+                className={`px-2 py-1 text-xs rounded cursor-pointer ${filterAssessmentType ? 'bg-primaryColor text-white' : 'border border-primaryColor hover:bg-secondaryColor hover:text-white text-primaryColor'}`}
+            >
+                Toggle Exam Assessments
+            </button>
+            <div className="my-2 md:my-4 border p-4 rounded-lg">
+                <div className="flex flex-row flex-wrap gap-4 items-center mt-4">
+                    {/* Buttons */}
+                    <button onClick={setToday} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'today' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Today</button>
+                    <button onClick={setThisYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Year</button>
+                    <button onClick={setLastYear} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'lastYear' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>Last Year</button>
+                    <button onClick={setThisWeek} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisWeek' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Week</button>
+                    <button onClick={setThisMonth} className={`px-2 py-1 text-xs rounded cursor-pointer ${activeButton === 'thisMonth' ? 'bg-primaryColor text-white' : 'inline-block border border-primaryColor hover:bg-secondaryColor hover:text-white hover:border-white text-primaryColor rounded transition duration-200'}`}>This Month</button>
+                </div>
+                <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
+                    {/* Date inputs */}
+                    <input type="date" id="startDate" name="startDate" value={startDate} onChange={(e) => { setStartDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
+                    <input type="date" id="endDate" name="endDate" value={endDate} onChange={(e) => { setEndDate(e.target.value); handleDateChange(); }} className="form-input border rounded-md shadow-sm mt-1 w-full" />
+                </div>
+
+
+                
             </div>
 
 
