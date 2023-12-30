@@ -81,7 +81,8 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
         const fetchHistoricalPerformance = async () => {
             const marksByTopic: MarksByTopicType = {};
 
-            let query = supabase.from('historicalperformance').select('*')
+            let query = supabase.from('historicalperformance')
+                .select('*')
                 .eq('unit_id', unitId)
                 .eq('student_id', studentId)
 
@@ -203,8 +204,8 @@ const TopicGrade = ({ studentId, unitId, assessmentType, startDate, endDate }: P
 
     return (
 
-        <div key={filterKey} className="bg-white rounded-md shadow-sm p-4 border border-gray-300">
-            <table id="topicGradeTable" className="min-w-full leading-normal">
+        <div key={filterKey} className="relative w-full lg:max-w-full overflow-x-auto bg-white rounded-md shadow-sm p-4 border border-gray-300">
+            <table id="topicGradeTable" className="min-w-full leading-normal scroll-smooth">
                 <thead>
                     <tr>
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
