@@ -25,7 +25,7 @@ const NavMenu = ({ user }: any) => {
       </div>
 
       {/* Main menu links */}
-      <div className={`flex flex-col md:flex-row justify-between ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
+      <div className={`flex flex-col md:flex-row justify-between  ${isMenuOpen ? 'opacity-100' : 'opacity-0 hidden'} md:opacity-100 md:block`}>
         <Logo logoClasses="hidden md:block ml-5 text-mainText text-3xl sm:text-6xl lg:text-6xl" />
 
         {/* Left section: Logo and links */}
