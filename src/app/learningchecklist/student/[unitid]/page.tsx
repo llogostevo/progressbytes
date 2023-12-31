@@ -1,7 +1,7 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import LearningChecklist from './LearningChecklist'
+import LearningChecklist from '../../../../components/plcComponents/LearningChecklist'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,6 +40,7 @@ interface ConfidenceLevelColors {
 
 
 export default async function UnitChecklist({ params }: { params: { unitid: number } }) {
+    
     // Create a Supabase client configured to use cookies
     const supabase = createServerComponentClient({ cookies })
 
@@ -65,7 +66,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
     }
 
     // FIND OUT THE STUDENT ID OF THE LOGGED IN PROFILE
-    const { data: profilesData, error: profilesDataError } = await supabase
+    const { data: studentProfilesData, error: profilesDataError } = await supabase
         .from('profilestable')
         .select(`
         profileid, 
@@ -76,14 +77,14 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
     `)
         .eq('profileid', user.id);
 
-    if (!profilesData) {
+    if (!studentProfilesData) {
         redirect("/unauthorised")
     }
 
     let studentId: number;
 
-    if ((profilesData && profilesData.length > 0) && profilesData[0].studenttable[0].studentid) {
-        studentId = profilesData[0].studenttable[0].studentid;
+    if ((studentProfilesData && studentProfilesData.length > 0) && studentProfilesData[0].studenttable[0].studentid) {
+        studentId = studentProfilesData[0].studenttable[0].studentid;
     } else {
         console.log("No matching student record found");
         redirect("./login")

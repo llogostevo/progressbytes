@@ -1,35 +1,39 @@
 "use client"
-import StudentGradeActivity from "../../dashboardComponents/StudentGradeActivity";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState } from 'react'
+import StaffStudentGradeActivity from "../../dashboardComponents/StaffStudentGradeActivity";
+
 
 export default function TeacherStudentDashboard({ params }: { params: { studentdashboard: string } }) {
+    
     const studentId = Number(decodeURIComponent(params.studentdashboard));
     const [studentData, setStudentData] = useState<any[]>([])
 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
-  
+
     useEffect(() => {
-      const getStudentData = async () => {
-        
-        let { data: studenttable, error } = await supabase
-        .from('studenttable')
-        .select('*')
-        .eq('studentid', studentId)
+        const getStudentData = async () => {
 
-        if (studenttable) {
-            setStudentData(studenttable)
+            let { data: studenttable, error } = await supabase
+                .from('studenttable')
+                .select('*')
+                .eq('studentid', studentId)
 
-        } else if (error){
-            console.log(error)
+            if (studenttable) {
+                setStudentData(studenttable)
 
+            } else if (error) {
+                console.log(error)
+
+            }
         }
-      }
-      console.log(studentData)
-      getStudentData()
+        console.log(studentData)
+        getStudentData()
     }, [supabase])
+
+    
 
     return (
 
@@ -39,7 +43,7 @@ export default function TeacherStudentDashboard({ params }: { params: { studentd
 
 
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                <StudentGradeActivity studentId={studentId} />
+                <StaffStudentGradeActivity studentId={studentId} />
             </div>
 
         </div>

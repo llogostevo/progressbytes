@@ -1,7 +1,7 @@
-import StudentGradeActivity from "@/app/dashboard/dashboardComponents/StudentGradeActivity"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import StudentGradeActivity from "../dashboardComponents/StudentGradeActivity"
 
 
 const StudentDashboardPage = async () => {
