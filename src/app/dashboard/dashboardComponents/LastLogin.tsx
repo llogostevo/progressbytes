@@ -70,6 +70,7 @@ export default function LastLogin() {
                     profileid,
                     lastsignin,
                     studenttable(
+                        studentid,
                         firstname,
                         lastname
                     )
@@ -106,7 +107,7 @@ export default function LastLogin() {
                     return (
                         <div key={user.profileid} className="bg-white p-1">
                             <p className="text-sm text-gray-700">
-                                {user.studenttable[0].firstname} {user.studenttable[0].lastname}
+                                <Link href={`./teacher/${user.studenttable[0].studentid}`}>{user.studenttable[0].firstname} {user.studenttable[0].lastname}</Link>
                             </p>
                             <p className="">
                                 <span className={`px-1 py-1 text-xs text-white rounded bg-${color}`}>
@@ -124,7 +125,7 @@ export default function LastLogin() {
                         disabled={currentPage === 1}
                     >
                         {`<<`} Previous
-                    </button> 
+                    </button>
                     <span> Page {currentPage} of {totalPages} </span>
                     <button
                         className={`${currentPage === totalPages ? 'text-gray-100' : 'hover:underline text-gray-700'}`}

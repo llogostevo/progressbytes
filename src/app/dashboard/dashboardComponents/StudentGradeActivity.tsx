@@ -17,7 +17,7 @@ type GradeItem = {
     assessment_type: string;
     gcse_target?: string;
     alevel_target?: string;
-    topic_name?: string; // Add this if it's part of the returned data
+    topic_name?: string;
     unit_id?: number;
 };
 

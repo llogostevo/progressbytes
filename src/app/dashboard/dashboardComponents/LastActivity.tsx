@@ -68,7 +68,7 @@ export default function LastActivity() {
                 .select(`
                     profileid,
                     lastsignin,
-                    studenttable(firstname, lastname)
+                    studenttable(firstname, lastname, studentid)
                 `, { count: 'exact' }) // Requesting the count
                 .eq('schoolid', 1)
                 .eq('profiletype', 'Student')
@@ -110,7 +110,6 @@ export default function LastActivity() {
     const goToNextPage = () => setCurrentPage((page) => Math.min(page + 1, totalPages));
     const goToPreviousPage = () => setCurrentPage((page) => Math.max(page - 1, 1));
 
-
     return (
         <div>
             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between mt-10">
@@ -122,7 +121,7 @@ export default function LastActivity() {
                     return (
                         <div key={user.profileid} className="bg-white p-1">
                             <p className="text-sm text-gray-700">
-                                {user.studenttable[0].firstname} {user.studenttable[0].lastname}
+                                <Link href={`./teacher/${user.studenttable[0].studentid}`}>{user.studenttable[0].firstname} {user.studenttable[0].lastname}</Link>
                             </p>
                             <p className="">
                                 <span className={`px-1 py-1 text-xs text-white rounded bg-${color}`}>

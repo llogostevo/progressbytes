@@ -1,4 +1,4 @@
-import StudentGradeActivity from "@/components/StudentGradeActivity"
+import StudentGradeActivity from "@/app/dashboard/dashboardComponents/StudentGradeActivity"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
