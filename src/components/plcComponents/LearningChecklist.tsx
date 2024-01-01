@@ -49,6 +49,7 @@ interface LearningChecklistProps {
     unitTitle: string;
     unitNumber: string;
     studentId: number;
+    studentname: string,
     confidenceLevelColors: ConfidenceLevelColors;
     confidenceLevels: string[];
 }
@@ -109,7 +110,7 @@ const getThisMonthRange = () => {
 
 // COMPONENT
 export default function LearningChecklist(props: LearningChecklistProps) {
-    const { unitId, unitTitle, unitNumber, topics, studentId, confidenceLevelColors, confidenceLevels } = props;
+    const { unitId, unitTitle, unitNumber, topics, studentId, confidenceLevelColors, confidenceLevels, studentname } = props;
     // state for toggling filtered assessments
     const [filterAssessmentType, setFilterAssessmentType] = useState(false);
 
@@ -211,7 +212,7 @@ export default function LearningChecklist(props: LearningChecklistProps) {
     return (
         <>
             <div className="space-y-4">
-                <h2 className="text-2xl">{unitNumber} {unitTitle}</h2>
+                <h2 className="text-2xl">{unitNumber} {unitTitle} - {studentname}</h2>
                 <div className="flex items-center gap-3">
                     <AssessmentModal />
                     <TooltipModalButton toolTitle="Learning Checklists:" toolDetails="Select the judgement for each subtopic based upon your current understanding" />

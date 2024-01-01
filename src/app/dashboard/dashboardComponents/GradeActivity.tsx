@@ -111,6 +111,7 @@ export default function GradeActivity({ course }: GradeActivityProps) {
     // const [totalItems, setTotalItems] = useState(0);
     const [targetGrades, setTargetGrades] = useState<string[]>([]);
     const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
+    const [sliderValue, setSliderValue] = useState(0);
 
     // Add state for active button and date range
     const [activeButton, setActiveButton] = useState('');
@@ -449,18 +450,28 @@ export default function GradeActivity({ course }: GradeActivityProps) {
         const subtopicPercentages = Object.keys(subtopicPerformance).map(subtopic => {
             const { totalMarks, totalQuestionMarks } = subtopicPerformance[subtopic];
             const percentage = totalQuestionMarks > 0 ? (totalMarks / totalQuestionMarks) * 100 : 0;
-            return { subtopic, percentage };
+            return { subtopic, percentage, totalMarks, totalQuestionMarks };
         });
 
-        // Sorting by percentage
-        subtopicPercentages.sort((a, b) => b.percentage - a.percentage);
+        subtopicPercentages.sort((a, b) => {
+            if (b.percentage === a.percentage) {
+                return b.totalQuestionMarks - a.totalQuestionMarks; // Secondary sort by total marks tested if percentages are equal
+            }
+            return b.percentage - a.percentage; // Primary sort by percentage
+        });
+
         return subtopicPercentages;
     };
 
     const subtopicPercentages = calculateSubtopicPercentages();
-    const top5Subtopics = subtopicPercentages.slice(0, 5);
-    const bottom5Subtopics = subtopicPercentages.slice(-5);
+    
+    const maxTotalMarks = Math.max(...subtopicPercentages.map(subtopic => subtopic.totalQuestionMarks));
+    const filteredSubtopics = subtopicPercentages.filter(subtopic => subtopic.totalQuestionMarks >= sliderValue);
 
+    // const top5Subtopics = subtopicPercentages.slice(0, 5);
+    // const bottom5Subtopics = subtopicPercentages.slice(-5);
+    const top5Subtopics = filteredSubtopics.slice(0, 5);
+    const bottom5Subtopics = filteredSubtopics.slice(-5);
 
     // Handler for checking/unchecking a grade
     const handleGradeSelectionChange = (grade: string) => {
@@ -546,11 +557,32 @@ export default function GradeActivity({ course }: GradeActivityProps) {
             </div>
             <p className="text-4xl md:text-6xl font-bold text-center">{`${percentage.toFixed(2)}%`}</p>
 
+
+
+            <div className="mb-5 border border-primaryColor rounded-lg p-5">
+                <div className="flex flex-col space-y-4">
+                    <label htmlFor="totalMarksSlider" className="border border-primaryColor rounded p-2">Adjust Minimum Assessed Marks Threshold: <span className="p-2">{sliderValue}</span></label>
+                    <input
+                        type="range"
+                        id="totalMarksSlider"
+                        className="slider h-2 flex-1 border border-primaryColor range-lg rounded-2xl appearance-none cursor-pointer bg-green-100"
+                        min="0"
+                        max={maxTotalMarks}
+                        value={sliderValue}
+                        onChange={(e) => setSliderValue(Number(e.target.value))}
+                    />
+                    <div className="flex">
+                        <div className="flex-1">0</div>
+                        <div className="flex-1 text-center">{Math.floor(maxTotalMarks / 2)}</div>
+                        <div className="flex-1 text-right">{maxTotalMarks}</div>
+                    </div>
+                </div>
+            </div>
             <div className="flex flex-col space-y-2">
                 <h2 className="text-lg font-semibold">Top 5 Subtopics</h2>
                 {top5Subtopics.map((subtopic, index) => (
                     <div className="text-[13px] text-gray-500 py-3" key={index}>
-                        {subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}%</span>
+                        {subtopic.subtopic} - <span className=' text-green-600'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
                     </div>
                 ))}
             </div>
@@ -559,7 +591,7 @@ export default function GradeActivity({ course }: GradeActivityProps) {
                 <h2 className="text-lg font-semibold">Bottom 5 Subtopics</h2>
                 {bottom5Subtopics.map((subtopic, index) => (
                     <div className="text-[13px] text-gray-500 py-3" key={index}>
-                        {subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}%</span>
+                        {subtopic.subtopic} - <span className=' text-red-700'>{subtopic.percentage.toFixed(2)}% ({subtopic.totalMarks} / {subtopic.totalQuestionMarks})</span>
                     </div>
                 ))}
             </div>

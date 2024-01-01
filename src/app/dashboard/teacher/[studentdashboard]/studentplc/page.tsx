@@ -50,7 +50,8 @@ export default function UnitChecklist() {
     const [unitTitle, setUnitTitle] = useState<string>("")
     const [unitNumber, setUnitNumber] = useState<string>("")
     const [topics, setTopics] = useState<Topic[]>([])
-
+    const [studentName, setStudentName] = useState<string>("")
+    
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
 
@@ -107,6 +108,24 @@ export default function UnitChecklist() {
     
         getTopics()
       }, [supabase, setTopics])
+
+      useEffect(() => {
+        const getStudent = async () => {
+          
+            const { data: studenttable, error: studenttableerror } = await supabase
+            .from('studenttable')
+            .select(`firstname, lastname`)
+            .eq('studentid', studentid);
+  
+
+          if (studenttable) {
+            setStudentName(`${studenttable[0].firstname} ${studenttable[0].lastname}`)
+            
+          }
+        }
+    
+        getStudent()
+      }, [supabase, setStudentName])
     
 
     return (
@@ -122,6 +141,7 @@ export default function UnitChecklist() {
                     studentId={studentid}
                     confidenceLevelColors={confidenceLevelColors}
                     confidenceLevels={confidenceLevels}
+                    studentname = {studentName}
                 />
             </div>
         </>

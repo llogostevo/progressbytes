@@ -72,7 +72,9 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
         profileid, 
         studenttable(
             profileid,
-            studentid
+            studentid, 
+            firstname,
+            lastname
             )
     `)
         .eq('profileid', user.id);
@@ -82,9 +84,13 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
     }
 
     let studentId: number;
+    let studentName: string;
+
 
     if ((studentProfilesData && studentProfilesData.length > 0) && studentProfilesData[0].studenttable[0].studentid) {
         studentId = studentProfilesData[0].studenttable[0].studentid;
+        studentName = `${studentProfilesData[0].studenttable[0].firstname} ${studentProfilesData[0].studenttable[0].lastname}`
+
     } else {
         console.log("No matching student record found");
         redirect("./login")
@@ -149,6 +155,7 @@ export default async function UnitChecklist({ params }: { params: { unitid: numb
                     studentId={studentId}
                     confidenceLevelColors={confidenceLevelColors}
                     confidenceLevels={confidenceLevels}
+                    studentname={studentName}
                 />
             </div>
         </>
