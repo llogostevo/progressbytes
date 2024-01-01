@@ -254,9 +254,10 @@ export default async function StudentAssessmentView({ params }: { params: { asse
                                     <td className="border px-2 py-1">{percentage}% <div className="mt-1">Grade:{getGCSEGrade(Number(percentage))}/{getAlevelGrade(Number(percentage))}</div></td>
                                     {!hideComponents && (
                                         <td className="border px-2 py-1">
-                                            <Link href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>
-                                                Edit Marks
+                                            <Link className="hover:underline text-orange-500 ml-2"href={`${assessment.assessmentid}/editassessmentquestion/${question.questionid}`}>
+                                                Edit
                                             </Link>
+                                            
                                         </td>
                                     )}
                                 </tr>

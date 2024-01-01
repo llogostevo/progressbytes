@@ -1,5 +1,6 @@
 'use client'
 
+import SubTopicDropDownSearch from '@/components/SubTopicDropDownSearch';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState, useCallback } from 'react'
 
@@ -62,6 +63,32 @@ export default function EditQuestion({ questionData }: Props) {
     const [answers, setAnswers] = useState(questionData.answertable);
     const [dataChangeFlag, setDataChangeFlag] = useState(false);
 
+    console.log("questionid", editableQuestionData.questionid)
+    console.log("subtopicid", questionData.questionsubtopictable[0].subtopictable.subtopicid)
+
+
+    const studentId = questionData.answertable[0].studentid
+
+    // const [selectedTopic, setSelectedTopic] = useState<number | null>(subtopicId);
+    // const [selectedUnit, setSelectedUnit] = useState<number | null>(subtopicId);
+
+    // State for the selected subtopic
+    const [selectedSubtopic, setSelectedSubtopic] = useState<number | null>(questionData.questionsubtopictable[0].subtopictable.subtopicid);
+    
+    const handleSubtopicChange = (subtopicId: number) => {
+        setSelectedSubtopic(subtopicId);
+        setEditableQuestionData({
+          ...editableQuestionData,
+          questionsubtopictable: editableQuestionData.questionsubtopictable.map(subtopicTable => ({
+            ...subtopicTable,
+            subtopictable: {
+              ...subtopicTable.subtopictable,
+              subtopicid: subtopicId
+            }
+          }))
+        });
+        setDataChangeFlag(true);
+      };
 
     // Create a Supabase client configured to use cookies
     const supabase = createClientComponentClient()
@@ -106,6 +133,19 @@ export default function EditQuestion({ questionData }: Props) {
                 return;  // Exit early if there's an error
             }
 
+            const { data: questionSubtopicData, error: questionSubtopicError } = await supabase
+                .from('questionsubtopictable')
+                .update({ subtopicid: selectedSubtopic })
+                .eq('questionid', editableQuestionData.questionid)
+                .select();
+
+            
+            if (questionSubtopicError) {
+                console.error("Error updating questionsubtopic:", questionSubtopicError);
+                setSubmissionMessage({ text: "Error updating question. Please try again.", type: "error" });
+                return;  // Exit early if there's an error
+            } 
+
             // Updating the student data
             const updateStudentPromises = answers.map(answer =>
                 supabase
@@ -114,6 +154,7 @@ export default function EditQuestion({ questionData }: Props) {
                     .eq('answerid', answer.answerid)
             );
             const studentResults = await Promise.all(updateStudentPromises);
+
 
             // Check for any errors in updating the student data
             const studentErrors = studentResults.filter(result => result.error);
@@ -188,6 +229,12 @@ export default function EditQuestion({ questionData }: Props) {
                         <p className="text-gray-700">Topic: {questionData.questionsubtopictable[0].subtopictable.topictable.topictitle}</p>
                         <p className="text-gray-700">Subtopic: {questionData.questionsubtopictable[0].subtopictable.subtopictitle}</p>
                     </div>
+                    
+                    <SubTopicDropDownSearch
+                        studentId={studentId}
+                        selectedSubtopicId={selectedSubtopic}
+                        onSubtopicChange={handleSubtopicChange}
+                    />
                 </div>
 
                 <div className="student-results bg-gray-100 p-4 rounded-md">
